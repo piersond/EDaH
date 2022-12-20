@@ -144,14 +144,15 @@ get_unit_conversions <- function(keyPath) {
 }
 
 
-locationData_to_convert <- function(locationData) {
+locationData_to_convert <- function(locationData, unitsConv) {
+
   # capture only location tab DATA with specified units 
   locationDataUnits <- locationData %>%
     dplyr::filter(!is.na(Unit)) %>%
     dplyr::select(Value, unit_levels = Unit, Var_long, var)
   
   # join location DATA with units and corresponding vars in conversion table
-  LDU_UCL <- dplyr::left_join(locationDataUnits, unitsConversions, #DEBUG where does this get loaded?
+  LDU_UCL <- dplyr::left_join(locationDataUnits, unitsConv, 
                               by = c("var", "unit_levels"),
                               suffix = c(".PD", ".UT")) %>%
     dplyr::filter(
@@ -159,21 +160,25 @@ locationData_to_convert <- function(locationData) {
       unitConversionFactor != 1  # Resulting data is only vars that need to be converted
     )
   
+  ### DEBUG: Add error message if unit conversion not found
+  
+  LDU_UCL$Value <- as.numeric(LDU_UCL$Value)
+  LDU_UCL$unitConversionFactor <- as.numeric(LDU_UCL$unitConversionFactor)
+  
+  return(LDU_UCL)
 }
 
 
-apply_locData_UnitConv <- function(locationData, LDU_UCL) {
+apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes) {
   # standardize location data units
   for (varValue in c(LDU_UCL$var)) { 
     # for each var, multiply the value by the conversion factor
-    locationData[locationData$var == varValue,]["Value"] <- as.numeric(locationData[locationData$var == varValue,]["Value"]) * LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]
-  }
+    locationData[locationData$var == varValue,]["Value"] <- as.character(as.numeric(locationData[locationData$var == varValue,]["Value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]))
+    
+    #Print message showing conversion applied
+    print(paste0(varValue, " multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
   
-  return(locationData)
-}
-
-
-update_locDataConv_Notes <- function(conversionNotes, LDU_UCL) {
+  
   # Record note of data conversion
   conversionNotes <- conversionNotes %>%
     add_row(source = "location",
@@ -184,23 +189,27 @@ update_locDataConv_Notes <- function(conversionNotes, LDU_UCL) {
             unit_conversion_factor = LDU_UCL[LDU_UCL$var == varValue,]$unitConversionFactor,
             varNotes = 'converted'
     )
+  }
   
-  return(conversionNotes)
+  return(list(locationData, conversionNotes))
 }
+
+
+
 
 
 
 ### Homog apply
 #---------------------------------------------------------------
 
-data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+# data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+# 
+# key_path <- find_key_path(data_dir)
+# locationData <- read_key_location(key_path)
+# profileData <- read_key_profile(key_path)
+# notes <- build_key_notes(key_path, locationData, profileData)
+# unitsConversions <- get_unit_conversions(key_path, unitsConversions)
+# conversionNotes <- build_unitConv_notes()
+# LDU_UCL<- locationData_to_convert(locationData)
+# locationData <- apply_locData_UnitConv(locationData, LDU_UCL)
 
-key_path <- find_key_path(data_dir)
-locationData <- read_key_location(key_path)
-profileData <- read_key_profile(key_path)
-notes <- build_key_notes(key_path, locationData, profileData)
-unitsConversions <- get_unit_conversions(key_path)
-conversionNotes <- build_unitConv_notes()
-LDU_UCL<- locationData_to_convert(locationData)
-locationData <- apply_locData_UnitConv(locationData, LDU_UCL)
-conversionNotes <- update_locDataConv_Notes(conversionNotes, LDU_UCL)  
