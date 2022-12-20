@@ -1,20 +1,11 @@
 # Homogenization functions
+## Key file used to store all information necessary to homogenize data file stored in the same folder
 
 #Packages
 library(dplyr)
 library(readxl)
 library(tibble)
-
-# Set working drive to script directory
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-# Source lookup tables
-# load("LookupTbls/unitsConversions.rda")
-# write.csv(unitsConversions, "LookupTbls/unitsConversions.csv", row.names = F)
-# units2 <- read.csv("LookupTbls/unitsConversions.csv")
-# 
-# str(unitsConversions)
-# str(units2)
+library(purrr)
 
 #Homog Functions
 find_key_path <- function(target_dir) {
@@ -38,6 +29,7 @@ find_key_path <- function(target_dir) {
   dirFileList <- dirFileList[!grepl("\\.html", dirFileList)] # remove html files
   dirFileList <- dirFileList[!grepl("\\.txt", dirFileList)]# remove txt files
   dirFileList <- dirFileList[!grepl("\\.R", dirFileList)]# remove R files
+  dirFileList <- dirFileList[!grepl("[~$]", dirFileList)]# remove open excel files
   
   # isolate key file, and extract details in location and profile tabs
   keyFileName <- dirFileList[grepl("KEY|Key|key", dirFileList, ignore.case = F)]
@@ -48,7 +40,7 @@ find_key_path <- function(target_dir) {
 
 read_key_location <- function(keyPath, req_fields="default") {
   # Read sheet
-  locationData <- read_excel(keyPath, sheet=1)
+  locationData <- read_excel(keyPath, sheet=1, na="NA")
   
   # Default required fields
   if(req_fields == "default") {
@@ -81,7 +73,7 @@ read_key_location <- function(keyPath, req_fields="default") {
 
 read_key_profile <- function(keyPath) {
   # Read sheet
-  profileData <- read_excel(keyPath, sheet=2)
+  profileData <- read_excel(keyPath, sheet=2, na="NA")
   
   # Remove missing fields
   profileData <- profileData %>% dplyr::filter(!is.na(header_name)) 
@@ -176,7 +168,7 @@ apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes) {
     locationData[locationData$var == varValue,]["Value"] <- as.character(as.numeric(locationData[locationData$var == varValue,]["Value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]))
     
     #Print message showing conversion applied
-    print(paste0(varValue, " multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
+    print(paste0("Location var unit conversion: '",varValue, "' --> multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
   
   
   # Record note of data conversion
@@ -195,21 +187,163 @@ apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes) {
 }
 
 
+### Location data QC here --------------------------------------------------------
+
+# function to check for location vars in prescribed range
+location_range_check <- function(locVarData) {
+
+  tryCatch({
+    
+    locVarData$Value <- as.numeric(locVarData$Value)
+    locVarData$minValue <- as.numeric(locVarData$minValue)
+    locVarData$maxValue <- as.numeric(locVarData$maxValue)
+    
+    if (locVarData$Value < locVarData$minValue | locVarData$Value > locVarData$maxValue) {
+      return(
+        data.frame(
+          var = locVarData$Var,
+          error = "out of defined range"
+        )
+      )
+    } 
+  },
+  warning = function(cond) {
+    return(
+      data.frame(
+        var = locVarData$Var,
+        error = "expected the var, min, and max values to be numeric"
+        )
+      )
+  })
+} # close location_range_check
+
+
+# function to check provided data are appropriate type (numeric, character)
+location_type_check <- function(locVarData) {
+  
+  #DEBUG
+  #locVarData <- locationData %>% filter(var == "slope_shape") 
+  
+  if (locVarData[["class"]] == "numeric") {
+    if (!is.numeric(as.numeric(locVarData$Value))) {
+      return(data.frame(var = locVarData$Var,
+                        error = "expected numeric value"))
+    }
+  } else if (locVarData[["class"]] == "character") {
+    if (!grepl("\\D", locVarData$Value)) {
+      return(data.frame(var = locVarData$Var,
+                        error = "expected character value"))
+    }
+  }
+}
+
+
+# Function to map through range and type checks for location data
+locationData_QC <- function(locData) {
+  
+  range_data <- locData %>% filter(!is.na(minValue) | !is.na(maxValue)) %>% filter(!is.na(Value))
+  location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~location_range_check(.)) %>% bind_rows()
+  
+  locData = locationData
+  
+  type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(Value)) 
+  location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~location_type_check(.)) %>% bind_rows()
+  
+  return(bind_rows(location_range_report, location_type_report))
+}
+
+
+### ----- Starting work with data files here ---
+
+# Collect raw data and apply skip rows and NA values defined in location data tab
+collect_data_to_homog <- function(target_dir, locData) {
+  
+  #Fix slash errors in target folder path
+  target_dir <- gsub("\\\\", "/", target_dir)
+  
+  if(substr(target_dir, nchar(target_dir), nchar(target_dir)) != "/") {
+    target_dir <- paste0(target_dir, "/")
+  }
+  
+  #get data formatting parameters
+  skip_rows <- ifelse(length(locData[locData$var == "header_row",]$var) > 0,
+                      as.numeric(locData[locData$var == "header_row",]$Value) - 1,
+                      0)
+  
+  na_val1 <- locData[locData$var == "NA_1",]$Value
+  na_val2 <- locData[locData$var == "NA_2",]$Value
+  
+  if(na_val1 == "blank") {na_val1 = NA}
+  if(na_val2 == "blank") {na_val2 = NA}
+  if(is.na(na_val1)){na_val1 = ""}
+  if(is.na(na_val2)){na_val2 = " "}
+   
+  #Find .csv data file   ###DEBUG: Can we make this work across multiple files?
+  csvFile <- list.files(target_dir, pattern = ".csv")
+  if(length(csvFile) == 0) {
+    excelFileList <- list.files(target_dir, pattern = ".xls")
+    excelFileList <- excelFileList[!grepl("KEY|Key|key", excelFileList)] # remove open excel files 
+    target_file <- excelFileList[!grepl("[~$]", excelFileList)] # remove open excel files
+    data_raw <- read_excel(paste0(target_dir, target_file), sheet=1, skip=skip_rows, na=c(na_val1, na_val2))
+  } else {
+    data_raw <- read.csv(paste0(target_dir, csvFile, skip=skip_rows, header=T, as.is=T, na.strings = c(na_val1, na_val2))) 
+  }
+  
+  return(data_raw)
+}
+
+
+# Add columns to profile data with the experimental levels
+add_exp_trt_levels <- function(df_in, profileData) {
+
+  experimentTreatmentVarSet <- c(
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6",
+    "tx_L1",
+    "tx_L2",
+    "tx_L3",
+    "tx_L4",
+    "tx_L5",
+    "tx_L6"
+  )
+  
+  profileDataExpTrt <- profileData %>%
+    filter(var %in% experimentTreatmentVarSet,) %>%
+    mutate(var_level = paste0(var, "_level")) %>%
+    select(unit_levels, var, var_level, header_name)
+  
+  #create treatment levels dataframe to add to profileData
+  for (i in 1:nrow(profileDataExpTrt)) {
+    if (i == 1) {
+      trt_lvls_df = data.frame(L1 = df_in[[as.character(profileDataExpTrt[i, 4])]],
+                               L1_level = as.character(profileDataExpTrt[i, 1]))
+      data_cols_replaced <- c(as.character(profileDataExpTrt[i, 4]))
+    } else {
+      row_to_df <-
+        data.frame(data = df_in[[as.character(profileDataExpTrt[i, 4])]],
+                   level = as.character(profileDataExpTrt[i, 1]))
+      colnames(row_to_df) <-
+        c(as.character(profileDataExpTrt[i, 2]),
+          as.character(profileDataExpTrt[i, 3]))
+      trt_lvls_df <- cbind(trt_lvls_df, row_to_df)
+      data_cols_replaced <-
+        c(data_cols_replaced, as.character(profileDataExpTrt[i, 4]))
+    }
+  }
+  
+  #Add trt level columns to data, removing data columns that were included in 
+  # treatment level dataframe
+  df_out <-
+    cbind(trt_lvls_df, df_in[,-which(names(df_in) %in% data_cols_replaced)])
+  
+  return(df_out)
+} 
 
 
 
 
-### Homog apply
-#---------------------------------------------------------------
-
-# data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
-# 
-# key_path <- find_key_path(data_dir)
-# locationData <- read_key_location(key_path)
-# profileData <- read_key_profile(key_path)
-# notes <- build_key_notes(key_path, locationData, profileData)
-# unitsConversions <- get_unit_conversions(key_path, unitsConversions)
-# conversionNotes <- build_unitConv_notes()
-# LDU_UCL<- locationData_to_convert(locationData)
-# locationData <- apply_locData_UnitConv(locationData, LDU_UCL)
 

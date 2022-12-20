@@ -1,0 +1,73 @@
+"","minValue","maxValue","Unit","Var_long","var","Level","givenUnit","class","definition","authority"
+"1",NA,NA,NA,"Name of Person Entering Data","curator_PersonName","location",NA,"character",NA,NA
+"2",NA,NA,NA,"Organization of Person Entering Data","curator_organization","location",NA,"character",NA,NA
+"3",NA,NA,NA,"Email Address of Person Entering Data","curator_email","location",NA,"character",NA,NA
+"4",NA,NA,NA,"Template Modification Date","modification_date","location",NA,"character",NA,NA
+"5",NA,NA,NA,"Corresponding Author of Publication/ Dataset","author_PersonName","location",NA,"character",NA,NA
+"6",NA,NA,NA,"Corresponding Author Email","author_email","location",NA,"character",NA,NA
+"7",NA,NA,NA,"Corresponding Author ORCID ID Number","author_orcid_id","location",NA,NA,NA,NA
+"8",NA,NA,NA,"Additional contacts (site leads)","addit_contact_person","location",NA,"character",NA,NA
+"9",NA,NA,NA,"Additional contacts Email","addit_contact_email","location",NA,"character",NA,NA
+"10",NA,NA,NA,"Bibliographical Reference","bibliographical_reference","location",NA,"character",NA,NA
+"11",NA,NA,NA,"Dataset Digital Object Identifier (DOI) Number","data_doi","location",NA,NA,NA,NA
+"12",NA,NA,NA,"header row number","header_row","location",NA,"numeric",NA,NA
+"13",NA,NA,NA,"missing value (1)","NA_1","location",NA,NA,NA,NA
+"14",NA,NA,NA,"missing value (2)","NA_2","location",NA,NA,NA,NA
+"15",NA,NA,NA,"Network (e.g. LTER, CZO, DIRT, NutNet, etc)","network","location",NA,"character",NA,NA
+"16",NA,NA,NA,"Site code (e.g. LUQ) or name","site_code","location",NA,"character",NA,NA
+"17",NA,NA,NA,"Location name","location_name","location",NA,"character",NA,NA
+"18",-90,90,"decimal degrees","Latitude","lat","location","decimal degrees","numeric",NA,NA
+"19",-180,180,"decimal degrees","Longitude","long","location","decimal degrees","numeric",NA,NA
+"20",NA,NA,NA,"Latitude/Longitude Datum","datum","location",NA,"character",NA,NA
+"21",-500,5000,"m","Elevation","elevation","location","m","numeric",NA,NA
+"22",0,8000,"mm","Mean Annual Precipitation","map","location","mm","numeric",NA,NA
+"23",-30,40,"degC","Mean Annual Temperature","mat","location","degC","numeric",NA,NA
+"24",NA,NA,NA,"Climate averaging period","clim_avg_yrs","location",NA,NA,NA,NA
+"25",NA,NA,NA,"Treatment initiation","tx_start","location",NA,"date",NA,NA
+"26",0,360,"degrees","Site Aspect (degrees)","aspect_deg","location","degrees","numeric",NA,NA
+"27",NA,NA,NA,"Site Aspect Class","aspect_class","location",NA,NA,NA,NA
+"28",NA,NA,NA,"Slope","slope","location",NA,"numeric",NA,NA
+"29",NA,NA,NA,"Slope Shape","slope_shape","location",NA,"character",NA,NA
+"30",NA,NA,NA,"Drainage Class","drainage_class","location",NA,NA,NA,NA
+"31",0,1000,NA,"Depth to Water Table","depth_water","location","m","numeric",NA,NA
+"32",NA,NA,NA,"parent_transport","parent_transport","location",NA,"character",NA,NA
+"33",NA,NA,NA,"parent_material (NRCS)","parent_material","location",NA,"character",NA,NA
+"34",NA,NA,NA,"bedrock chemistry","rock_chem","location",NA,"character",NA,NA
+"35",NA,NA,NA,"Land Cover Category","land_cover","location",NA,"character",NA,NA
+"36",NA,NA,NA,"Ecoregion (wwf)","eco_region","location",NA,"character",NA,NA
+"37",NA,NA,NA,"Soil texture class (NRCS)","loc_texture_class","location",NA,"character",NA,NA
+"38",NA,NA,NA,"Dominant plant species","plant","location",NA,"character",NA,NA
+"39",0.1,600,NA,"Fine Litterfall Carbon","lit_c","location","mg g-1","numeric",NA,NA
+"40",0,20,NA,"Fine Litterfall Nitrogen","lit_n","location","%","numeric",NA,NA
+"41",0,1000,NA,"Fine Litterfall phosphorus","lit_p","location","mg g-1","numeric",NA,NA
+"42",0,200,NA,"Fine Litterfall C:N","lit_cn","location","unitless","numeric",NA,NA
+"43",0,100,NA,"aboveground litterfall lignin","lit_lig","location","%","numeric",NA,NA
+"44",NA,NA,NA,"aboveground litterfall Lignin:N","lit_lit_n","location","unitless","numeric",NA,NA
+"45",0,2000,NA,"net primary productivity","npp","location","g/m2/y","numeric",NA,NA
+"46",0,2000,NA,"aboveground net primary productivity","anpp","location","g/m2/y","numeric",NA,NA
+"47",0,2000,NA,"belowground net primary productivity","bnpp","location","g/m2/y","numeric",NA,NA
+"48",NA,NA,NA,"bnpp notes (ingrowth, sequential coring, etc)","bnpp_notes","location",NA,"character",NA,NA
+"49",0,40,NA,"aboveground biomass","agb","location","kg/m2","numeric",NA,NA
+"50",0,40,NA,"root biomass","bgb","location","kg/m2","numeric",NA,NA
+"51",0.01,100,NA,"root biomass lower diameter cutoff","bgb_lowerdiam","location","mm","numeric",NA,NA
+"52",0.01,100,NA,"root biomass upper diameter cutoff","bgb_upperdiam","location","mm","numeric",NA,NA
+"53",NA,NA,"live/dead/both","root biomass type","bgb_type","location",NA,"character",NA,NA
+"54",NA,NA,NA,"root biomass comments","bgb_notes","location",NA,"character",NA,NA
+"55",0,100,NA,"root biomass C","bgb_c","location","%","numeric",NA,NA
+"56",0,20,NA,"root biomass N","bgb_n","location","%","numeric",NA,NA
+"57",0,500,NA,"root biomass C:N","bgb_cn","location",NA,"numeric",NA,NA
+"58",0,100,NA,"root biomass lignin","bgb_lignin","location",NA,"numeric",NA,NA
+"59",0,5000,NA,"Wood litterfall C flux","wood_lit_c","location","g/m2/y","numeric",NA,NA
+"60",0,1000,NA,"Wood litterfall N flux","wood_lit_n","location","g/m2/y","numeric",NA,NA
+"61",0,1000,NA,"Wood litterfall C:N","wood_lit_cn","location",NA,"numeric",NA,NA
+"62",NA,NA,NA,"alignment notes for profile data 1","align_1","location",NA,"character",NA,NA
+"63",NA,NA,NA,"alignment notes for profile data 2","align_2","location",NA,"character",NA,NA
+"64",NA,NA,NA,"comments","loc_comments","location",NA,"character",NA,NA
+"65",NA,NA,NA,"includes time-series data","time_series","location",NA,"binary",NA,NA
+"66",NA,NA,NA,"is a gradient study","gradient","location",NA,"binary",NA,NA
+"67",NA,NA,NA,"includes experimental manipulations","experiments","location",NA,"binary",NA,NA
+"68",NA,NA,NA,"control samples identifier","control_id","location",NA,NA,NA,NA
+"69",NA,NA,NA,"number of treatments","number_treatments","location",NA,"numeric",NA,NA
+"70",NA,NA,NA,"merging datafiles required? please add details to alignment notes","merge_align","location",NA,"binary",NA,NA
+"71",NA,NA,NA,"key file version (do not edit)","key_version","location",NA,NA,NA,NA
+"72",0,10,"mm","Coarse Fraction Size Threshold Used","coarse_tot","location","mm","numeric",NA,NA
