@@ -70,7 +70,6 @@ read_key_location <- function(keyPath, req_fields="default") {
   return(locationData)
 }
 
-
 read_key_profile <- function(keyPath) {
   # Read sheet
   profileData <- read_excel(keyPath, sheet=2, na="NA")
@@ -111,6 +110,15 @@ build_key_notes <- function(keyPath, locationData, profileData) {
   return(notes)
 }
 
+
+# Read unit conversion sheet from key file
+read_key_units <- function(keyPath) {
+  unitConversions <- read_excel(keyPath, sheet="unitConversions_simple", na="NA")
+  unitConversions$ConversionFactor <- suppressWarnings(as.numeric(unitConversions$ConversionFactor))
+  return(unitConversions)
+}
+
+
 build_unitConv_notes <- function() {
   conversionNotes <- tibble(
     source = as.character(),
@@ -138,6 +146,11 @@ get_unit_conversions <- function(keyPath) {
 
 locationData_to_convert <- function(locationData, unitsConv) {
 
+  #DEBUG
+  #locationData = locationData
+  #unitsConv = unitsConversions
+  
+  
   # capture only location tab DATA with specified units 
   locationDataUnits <- locationData %>%
     dplyr::filter(!is.na(Unit)) %>%
@@ -154,55 +167,72 @@ locationData_to_convert <- function(locationData, unitsConv) {
   
   ### DEBUG: Add error message if unit conversion not found
   
+  # Make sure values to be converted are numeric
+  # Check to make sure value is numeric or NA
+  if(any(is.na(suppressWarnings(as.numeric(as.character(LDU_UCL$Value)))))) {
+    print(paste0("FAILED location unit conversion: Expecting numeric value"))
+    print("Fix value in location tab and retry.")
+    return()
+  }
+  
   LDU_UCL$Value <- as.numeric(LDU_UCL$Value)
   LDU_UCL$unitConversionFactor <- as.numeric(LDU_UCL$unitConversionFactor)
   
   return(LDU_UCL)
 }
 
-
-apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes) {
+#FIX: Change to structure used below for profile data
+apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes, print_msg = T) {
+  
   # standardize location data units
   for (varValue in c(LDU_UCL$var)) { 
-    # for each var, multiply the value by the conversion factor
-    locationData[locationData$var == varValue,]["Value"] <- as.character(as.numeric(locationData[locationData$var == varValue,]["Value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]))
-    
-    #Print message showing conversion applied
-    print(paste0("Location var unit conversion: '",varValue, "' --> multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
-  
-  
-  # Record note of data conversion
-  conversionNotes <- conversionNotes %>%
-    add_row(source = "location",
-            var = varValue,
-            Var_long = LDU_UCL[LDU_UCL$var == varValue,]$Var_long.PD,
-            given_unit = LDU_UCL[LDU_UCL$var == varValue,]$givenUnit,
-            target_unit = LDU_UCL[LDU_UCL$var == varValue,]$unit_levels,
-            unit_conversion_factor = LDU_UCL[LDU_UCL$var == varValue,]$unitConversionFactor,
-            varNotes = 'converted'
-    )
+    #Check to make sure value is numeric
+    if(is.na(suppressWarnings(as.numeric(as.character(locationData[locationData$var == varValue,]["Value"]))))) {
+      print(paste0("FAILED location unit conversion: '", varValue, "' value is not numeric"))
+      print("Fix value in key file and retry.")
+    } else {
+      
+      # for each var, multiply the value by the conversion factor
+      locationData[locationData$var == varValue,]["Value"] <- as.character(as.numeric(locationData[locationData$var == varValue,]["Value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]))
+      
+      #Print message showing conversion applied
+      if(print_msg){
+        print(paste0("Location var unit conversion: '",varValue, "' --> multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
+      }
+
+
+    # Record note of data conversion
+    conversionNotes <- conversionNotes %>%
+      add_row(source = "location",
+              var = varValue,
+              Var_long = LDU_UCL[LDU_UCL$var == varValue,]$Var_long.PD,
+              given_unit = LDU_UCL[LDU_UCL$var == varValue,]$givenUnit,
+              target_unit = LDU_UCL[LDU_UCL$var == varValue,]$unit_levels,
+              unit_conversion_factor = LDU_UCL[LDU_UCL$var == varValue,]$unitConversionFactor,
+              varNotes = 'converted'
+      )
+    }
+    return(list(locationData, conversionNotes))
   }
-  
-  return(list(locationData, conversionNotes))
 }
 
 
 ### Location data QC here --------------------------------------------------------
 
 # function to check for location vars in prescribed range
-location_range_check <- function(locVarData) {
-
+locationData_range_check <- function(varData) {
+  
   tryCatch({
     
-    locVarData$Value <- as.numeric(locVarData$Value)
-    locVarData$minValue <- as.numeric(locVarData$minValue)
-    locVarData$maxValue <- as.numeric(locVarData$maxValue)
+    varData$Value <- as.numeric(varData$Value)
+    varData$minValue <- as.numeric(varData$minValue)
+    varData$maxValue <- as.numeric(varData$maxValue)
     
-    if (locVarData$Value < locVarData$minValue | locVarData$Value > locVarData$maxValue) {
+    if (varData$Value < varData$minValue | varData$Value > varData$maxValue) {
       return(
         data.frame(
-          var = locVarData$Var,
-          error = "out of defined range"
+          var = varData$Var,
+          error = "Out of defined range"
         )
       )
     } 
@@ -210,28 +240,28 @@ location_range_check <- function(locVarData) {
   warning = function(cond) {
     return(
       data.frame(
-        var = locVarData$Var,
-        error = "expected the var, min, and max values to be numeric"
-        )
+        var = varData$Var,
+        error = "Value is not numeric"
       )
+    )
   })
-} # close location_range_check
+} 
 
 
 # function to check provided data are appropriate type (numeric, character)
-location_type_check <- function(locVarData) {
+locationData_type_check <- function(varData) {
   
   #DEBUG
-  #locVarData <- locationData %>% filter(var == "slope_shape") 
+  #varData <- locationData %>% filter(var == "elevation") 
   
-  if (locVarData[["class"]] == "numeric") {
-    if (!is.numeric(as.numeric(locVarData$Value))) {
-      return(data.frame(var = locVarData$Var,
+  if (varData[["class"]] == "numeric") {
+    if (!is.numeric(suppressWarnings(as.numeric(varData$Value)))) {
+      return(data.frame(var = varData$Var,
                         error = "expected numeric value"))
     }
-  } else if (locVarData[["class"]] == "character") {
-    if (!grepl("\\D", locVarData$Value)) {
-      return(data.frame(var = locVarData$Var,
+  } else if (varData[["class"]] == "character") {
+    if (!grepl("\\D", varData$Value)) {
+      return(data.frame(var = varData$Var,
                         error = "expected character value"))
     }
   }
@@ -242,12 +272,12 @@ location_type_check <- function(locVarData) {
 locationData_QC <- function(locData) {
   
   range_data <- locData %>% filter(!is.na(minValue) | !is.na(maxValue)) %>% filter(!is.na(Value))
-  location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~location_range_check(.)) %>% bind_rows()
+  location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~locationData_range_check(.)) %>% bind_rows()
   
   locData = locationData
   
   type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(Value)) 
-  location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~location_type_check(.)) %>% bind_rows()
+  location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~locationData_type_check(.)) %>% bind_rows()
   
   return(bind_rows(location_range_report, location_type_report))
 }
@@ -344,6 +374,170 @@ add_exp_trt_levels <- function(df_in, profileData) {
 } 
 
 
+standardize_col_names <- function(df_in, profileData) {
+  
+  #DEBUG
+  df_in = data_to_homog_w_lvls
+  
+  # Select headers that need to be renamed
+  header_vars <- profileData %>% select(header_name, var, class)
+  
+  # Find data columns not included in key
+  diff1 <- setdiff(colnames(df_in), header_vars$header_name)
+  diff2 <- setdiff(diff1, c(header_vars$var, paste0(header_vars$var, "_level")))
+  
+  # Send warning message if data column not foudn in key
+  if(length(diff2) > 0) {
+    for(i in 1:length(diff2)){
+    print(paste0("Key entry not found for columns: ", diff2[i]))
+    }
+    print("WARNING: Data columns not included in the key file will not be transferred to the homogenized data file.")
+  }
+  
+  # Remove exp and tx level columns
+  rename_vars <- header_vars  %>% filter(class != "exp_lvl") %>% filter(class != "tx_lvl")
+  
+  # Replace colnames with standardized names
+  for(i in 1:nrow(rename_vars)) {
+    names(df_in)[names(df_in) == rename_vars$header_name[i]] <- rename_vars$var[i]
+  }
+  
+  # Remove data columns not included in key file
+  df_out <- df_in[,!(names(df_in) %in% diff2)]
+  
+  return(df_out)
+}
 
+
+profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
+    
+    # Find which columns need unit conversions
+    unit_data <- profileData %>% filter(!is.na(givenUnit)) %>%
+      filter(var != "observation_date")
+    
+    # Merge unit conversions
+    unit_data_to_convert <-
+      left_join(
+        unit_data,
+        unitConv,
+        by = c("unit_levels" = "unit_options", "givenUnit" = "targetUnit")
+      )
+    
+    # Break and report if conversion factor is missing
+    missing_conversion <-
+      unit_data_to_convert %>% filter(is.na(ConversionFactor))
+    
+    if (nrow(missing_conversion) > 0) {
+      print("Missing conversion factor:")
+      for (i in 1:nrow(missing_conversion)) {
+        print_df <-
+          missing_conversion %>% select(header_name,
+                                        var,
+                                        unit_levels,
+                                        givenUnit,
+                                        ConversionFactor)
+        print(print_df[i, ])
+      }
+      print("FAILED homogenization. Add unit conversion and retry.")
+      return()
+    }
+    
+    # Do not convert if conversion factor = 1
+    unit_data_to_convert$ConversionFactor <-
+      as.numeric(unit_data_to_convert$ConversionFactor)
+    cols_to_convert <-
+      unit_data_to_convert %>% filter(ConversionFactor != 1)
+    
+    # Create a blank notes frame
+    profConvNotes <- build_unitConv_notes()
+    
+    # Apply unit conversion
+    for (i in 1:nrow(cols_to_convert)) {
+      
+      # Check to make sure value is numeric or NA
+      if(all(is.na(suppressWarnings(as.numeric(as.character(df_in[[cols_to_convert$var[i]]])))))) {
+        print(paste0("FAILED profile unit conversion: '", cols_to_convert$var[i], "' contains non-numeric value"))
+        print("Fix value in data file and retry.")
+        return()
+      }
+      
+      df_in[[cols_to_convert$var[i]]] = df_in[[cols_to_convert$var[i]]] * cols_to_convert$ConversionFactor[i]
+      
+      # Record note of data conversion
+      profConvNotes <- profConvNotes %>%
+        add_row(source = "profile",
+                var = cols_to_convert$var[i],
+                Var_long = cols_to_convert$Var_long[i],
+                given_unit = cols_to_convert$givenUnit[i],
+                target_unit = cols_to_convert$unit_levels[i],
+                unit_conversion_factor = cols_to_convert$ConversionFactor[i],
+                varNotes = 'Conversion applied'
+        )
+      
+      
+      if (print_msg) {
+        print(paste0(cols_to_convert$var[i]," unit conversion applied (* ",cols_to_convert$ConversionFactor[i],")")
+        )
+      }
+    }
+    return(list(df_in, profConvNotes))
+  }
+
+
+#Begin profile date QC
+
+profileData_range_check <- function(profDataRow, df_in){
+  
+  #DEBUG
+  #profData <- profileData %>% filter(!is.na(minValue) | !is.na(maxValue))
+  #profDataRow = profData[1,]
+  #df_in = stdzd_unitConv_profileData
+  
+  tryCatch({
+    
+    minVal = as.numeric(profDataRow$minValue)
+    maxVal = as.numeric(profDataRow$maxValue)
+    data_to_check = as.numeric(df_in[[profDataRow$var]]) 
+    
+    if(any(data_to_check < minVal | data_to_check > maxVal)) {
+       return(
+        data.frame(
+          var = profDataRow$var,
+          error = "Out of defined range"
+        )
+      )
+    } 
+  },
+  warning = function(cond) {
+    return(
+      data.frame(
+        var = profDataRow$var,
+        error = "Value is not numeric"
+      )
+    )
+  })
+}
+
+
+# function to check for location vars in prescribed range
+profileData_QC <- function(profData, df_in) {
+  
+  #DEBUG
+  #profData = profileData
+  #df_in = stdzd_unitConv_profileData
+  
+  
+  range_data <- profData %>% filter(!is.na(minValue) | !is.na(maxValue))
+  location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~profileData_range_check(profDataRow = ., df_in = df_in)) %>% bind_rows()
+
+  # locData = locationData
+  # 
+  # type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(Value))
+  # location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~var_type_check(.)) %>% bind_rows()
+  # 
+  # return(bind_rows(location_range_report, location_type_report))
+  
+  return(location_range_report)
+}
 
 
