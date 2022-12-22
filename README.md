@@ -1,5 +1,5 @@
 # Environmental data harmonization framework ('EnDaH')
-#### Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.
+#### Code based from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.
 ##### State: pre-alpha, ready for further testing
 
 ---
