@@ -27,7 +27,7 @@ The harmonization code is split up into a series of easily managed functions.
 
 ---
 
-## Example usage for each function
+## Example single function usage
 
 ```
 source("Homog_ftns.R")
@@ -35,7 +35,7 @@ data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Example_dir"
 homog_data <- homog(data_dir)
 ```
 
-## Example usage for each function
+## Example usage of the sequential functions
 
 ```
 #-----------------------------------
