@@ -13,11 +13,6 @@ Example code below pulls from 'Example' directory with data and working key file
 
 ###### Note: The terms harmonization and homogenization are often used synonymously across text and code in the repository. 
 
-
-### Acknowledgements
-Work made possible by contributions and support from Steven Earl and Will Wieder (continuing authors and original co-authors of the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html)  package and the [SoDaH database](https://lter.github.io/som-website/)), the National Center for Ecological Research and Synthesis (NCEAS grant supported initial soilHarmonization code development), Katheleen Lohse (project and funding support), Critical Zone Network Geomicrobiology project (project and funding support) and the USDA Forest Service Rocky Mountain Research Station (project and funding support). 
-
-
 ### Changes made from soilHarmonization 0.1.0:
 
 - Simlify adding new variables to the key fiel.
@@ -48,6 +43,9 @@ Current state of code is pre-alpha (as of 12/22/2022). Please contact Derek Pier
 - With further cunctionalization and removal of dependencies on Google Drive, the homogenization code runs much faster. Thus, re-homgenizing a large set of files is a breeze. 
 
 - Key file now contains three alignment variables. A future code update is planned to test data alignment across 'HMGZD' files. Expected that such functionality will work well for data from a single project (e.g. align by IGSN and sample date for the CZN GeoMicrobiology project), but will require more thought, code functionality and scrutiny to be implimented across separate projects (e.g. separate datasets from an LTER site, ...original SoDaH database). 
+ 
+### Acknowledgements
+Work made possible by contributions and support from Steven Earl and Will Wieder (continuing authors and original co-authors of the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html)  package and the [SoDaH database](https://lter.github.io/som-website/)), the National Center for Ecological Research and Synthesis (NCEAS grant supported initial soilHarmonization code development), Katheleen Lohse (project and funding support), Critical Zone Network Geomicrobiology project (project and funding support) and the USDA Forest Service Rocky Mountain Research Station (project and funding support). 
  
 <br>
 
