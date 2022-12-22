@@ -1,6 +1,8 @@
 # Environmental data harmonization 
 #### Code state: pre-alpha, ready for further testing
 
+---
+
 Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package. Primary changes made:
 
 1) Simlify adding new variables to the key fiel.
