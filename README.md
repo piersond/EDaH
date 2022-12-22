@@ -51,9 +51,7 @@ Work made possible by contributions and support from Steven Earl and Will Wieder
 
 ## Code Overview
 
-The harmonization code is split up into a series of easily managed functions.
-
-<br>
+The harmonization code is intentionally made up of a series of functions, designed to follow in sequence. The discrete functions aid and help limit errors when for adjusting or adding to the framework functionality, while also improving issues with debugging and code comprehension.
 
 ## Example single function usage
 
