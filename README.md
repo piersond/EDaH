@@ -20,7 +20,7 @@ Noteworthy changes:
 
 - Key file now contains three alignment variables. A future code update is planned to test data alignment across 'HMGZD' files. Expected that such functionality will work well for data from a single project (e.g. align by IGSN and sample date for the CZN GeoMicrobiology project), but will require more thought, code functionality and scrutiny to be implimented across separate projects (e.g. separate datasets from an LTER site, ...original SoDaH database). 
  
----
+<br>
 
 ## Code Overview
 
