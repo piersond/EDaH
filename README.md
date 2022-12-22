@@ -98,7 +98,7 @@ homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_pat
 
 <br>
 
-## Functions
+## Homogenization functions
 
 ---
 
