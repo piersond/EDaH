@@ -1,7 +1,7 @@
 # Environmental data harmonization 
 #### Code state: pre-alpha, ready for further testing
 
-Code is based on the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package. Primary purposes of this code are:
+Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package. Primary changes made:
 
 1) Simlify adding new variables to the key fiel.
 2) Make the homogenization code soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
