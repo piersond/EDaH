@@ -1,9 +1,19 @@
 # Environmental data harmonization 
-##### Code state: pre-alpha, ready for further testing
+#### Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.
+##### State: pre-alpha, ready for further testing
 
 ---
 
-Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package. Primary changes made:
+Code purpose and description paraphrased from soilHarmonization 0.1.0:
+Environmental data vary vastly in their structure, units of measure, granularity and other details. To facilitate their use in models and synthesis research, the data must be homogenized to a sufficient degree such that cross-site, -project, -time comparisons are feasible.
+
+To facilitate data harmonixzation, a key file must be generated for each raw data file, which serves as a guide to translate the user-provided data into a common, database-wide structure and format. For each data set provided, the key file should contain general details about the data provider, the project from which the data were generated, and generalized details that apply to the data broadly (e.g., mean annual precipitation at the study site). Such generalized information is referred to as location or locational data in this project. At a finer resolution, the key file should contain mappings between the provided data and common terminology and units employed by the project for that data type. For example, the project-designated term for the standing stock of soil organic matter is soc_stock in units of g/m2. If the provided data included information about the standing stock of soil organic matter in a column titled soil C with units of %, that translation will be noted by the data provided on the Profile_data tab of the key file. When run, the script will rename the column titled soil C to som_stock and apply the appropriate units conversion.
+
+Example code below pulls from 'Example' directory with data and working key file. 
+
+###### Note: The terms harmonization and homogenization are often used synonymously. 
+
+### Changes made from soilHarmonization 0.1.0:
 
 1) Simlify adding new variables to the key fiel.
 2) Make the homogenization code soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
