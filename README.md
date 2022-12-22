@@ -37,7 +37,7 @@ Current state of code is pre-alpha (as of 12/22/2022). Please contact Derek Pier
 
 - Quality control checks are performed and notes are created in the code, but they are not yet exported to a 'notes.PDF.' Coming soon! (...also hoping to add variable specific QC plots)
 
-- With the refactor and no dependencies on Google Drive, the homogenization code runs much faster. Thus, re-homgenizing a large set of files is a breeze. 
+- With further cunctionalization and removal of dependencies on Google Drive, the homogenization code runs much faster. Thus, re-homgenizing a large set of files is a breeze. 
 
 - Key file now contains three alignment variables. A future code update is planned to test data alignment across 'HMGZD' files. Expected that such functionality will work well for data from a single project (e.g. align by IGSN and sample date for the CZN GeoMicrobiology project), but will require more thought, code functionality and scrutiny to be implimented across separate projects (e.g. separate datasets from an LTER site, ...original SoDaH database). 
  
