@@ -1,5 +1,5 @@
 # Environmental data harmonization ('EDaH') framework 
-#### Code based from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.
+#### Forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.
 ##### State: pre-alpha, ready for further testing
 
 ---
