@@ -13,15 +13,15 @@ Example code below pulls from 'Example' directory with data and working key file
 
 ###### Note: The terms harmonization and homogenization are often used synonymously across text and code in the repository. 
 
-### Changes made from soilHarmonization 0.1.0:
+### Major changes from soilHarmonization v0.1.0:
 
-- Simlify adding new variables to the key fiel.
+- Simplified adding new variables to the key file.
 
-- Make the homogenization code soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
+- Homogenization code is now soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
 
-- Remove dependency on Google Drive.
+- Removed dependency on Google Drive.
 
-- Split code into discrete functions to aid debugging and improvements.
+- Split code up into discrete functions to aid debugging and improvements.
 
 Current state of code is pre-alpha (as of 12/22/2022). Please contact Derek Pierson if interested in using this code prior to the initial release. While functional, the code requires more robust testing and additional core functionality. Official alpha 1.0 release expected Spring 2023.
 
