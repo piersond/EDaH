@@ -1,22 +1,96 @@
-# Soil data harmonization
+# Environmental data harmonization
+
+Refactor of the soilHarmonization package to allow for easier addition of new location and profile variables in the data key. Data homogenization is now soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
+
+Noteworthy changes:
+
+- Adding variable to the key is as simple as adding a new row and filling in the required information. A key_check and update feature will be added in the future to allow for QC of such key changes, updating of the master key, and key field requirments/locks.
+
+- Key file has been updated ('V3'). Future update will likely remove many of the less common var fields. Note: Key file 'V2' no longer works. Key file versioning will now be complicated by data dependent var additions. Additional updates will be needed to handle this. See comment above.
+
+- Additional unit conversions may be added via a sheet in the key. Unit conversion are now only variable specific if specified.
+
+- No longer dependent on Google Drive. Current version requires local directory input. Source/sync from Google Drive directory (or Box, etc.) may be added in the future. 
+
+- By compartmentalizing the code into discrete functions, it's now easier to debug errors and update code. Also hope that this will ease the processs of adding further functionality.
+
+- Quality control checks are performed and notes are created in the code, but they are not yet exported to a 'notes.PDF.' Coming soon! (...also hoping to add variable specific QC plots)
+
+- With the refactor and no dependencies on Google Drive, the homogenization code runs much faster. Thus, re-homgenizing a large set of files is a breeze. 
+
+ 
+---
+
+## Code Overview
 
 The harmonization code is split up into a series of easily managed functions.
 
 ---
 
-## Example usage
+## Example usage for each function
 
 ```
-data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+source("Homog_ftns.R")
+data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Example_dir"
+homog_data <- homog(data_dir)
+```
+
+## Example usage for each function
+
+```
+#-----------------------------------
+### STEP BY STEP CODE
+#-----------------------------------
+
+# Load sheets from key file
+#-----------------------------------------------------------------------
 key_path <- find_key_path(data_dir)
 locationData <- read_key_location(key_path)
 profileData <- read_key_profile(key_path)
 notes <- build_key_notes(key_path, locationData, profileData)
-unitsConversions <- get_unit_conversions(key_path)
-conversionNotes <- build_unitConv_notes()
-LDU_UCL<- locationData_to_convert(locationData)
-locationData <- apply_locData_UnitConv(locationData, LDU_UCL)
-conversionNotes <- update_locDataConv_Notes(conversionNotes, LDU_UCL)  
+unitConversions <- read_key_units(key_path)
+
+
+# Location data unit conversion
+#-----------------------------------------------------------------------
+###REVAMP TO USE unit conversion sheet in key
+unitsConversions <- get_unit_conversions(key_path) 
+conversionNotes <- build_unitConv_notes() 
+LDU_UCL <- locationData_to_convert(locationData, unitsConversions)
+unitConv_locationOutput <- apply_locData_UnitConv(locationData, LDU_UCL, conversionNotes, print_msg = F)
+unitConv_locationData <- as.data.frame(unitConv_locationOutput[[1]])
+loc_conversion_Notes <- as.data.frame(unitConv_locationOutput[[2]]) #output is notes
+
+
+# Location data QC
+#-----------------------------------------------------------------------
+locationDataQC_Notes <- locationData_QC(unitConv_locationData) #output is notes
+
+
+# Standardize profile data
+#-----------------------------------------------------------------------
+data_to_homog <- collect_data_to_homog(data_dir, locationData)
+data_to_homog_w_lvls <- add_exp_trt_levels(data_to_homog, profileData)
+stdzd_data <- standardize_col_names(data_to_homog_w_lvls, profileData)
+
+
+# Profile data unit conversion
+#-----------------------------------------------------------------------
+stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitConversions, print_msg = F)
+stdzd_unitConv_profileData <- as.data.frame(stdzd_unitConv_profileOutput[[1]])
+prof_conversion_Notes <- as.data.frame(stdzd_unitConv_profileOutput[[2]]) #output is notes
+
+
+# Profile data QC
+#-----------------------------------------------------------------------
+profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData) #output is notes
+
+
+# Combine location and profile data, export data (completes data homogenization)
+#----------------------------------------------------------------------------------
+output_path <- getwd()
+homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=T)
+
 ```
 
 ---
