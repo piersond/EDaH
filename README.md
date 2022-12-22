@@ -11,7 +11,7 @@ To facilitate data harmonixzation, a key file must be generated for each raw dat
 
 Example code below pulls from 'Example' directory with data and working key file. 
 
-###### Note: The terms harmonization and homogenization are often used synonymously. 
+###### Note: The terms harmonization and homogenization are often used synonymously across text and code in the repository. 
 
 ### Changes made from soilHarmonization 0.1.0:
 
