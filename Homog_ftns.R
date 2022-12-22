@@ -1,0 +1,661 @@
+# Homogenization functions
+## Key file used to store all information necessary to homogenize data file stored in the same folder
+
+#Packages
+library(dplyr)
+library(readxl)
+library(purrr)  #IMPROVE: Does dplyr have a similar map ftn?
+
+# Homogenization Functions
+#------------------------------------------------------------------------
+
+# Fix formatting of path to dir with key and data files
+format_dir_path <- function(target_dir) {
+
+  #DEBUG
+  #target_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+  
+  key_dir <- gsub("\\\\", "/", target_dir)
+  
+  if(substr(key_dir, nchar(key_dir), nchar(key_dir)) != "/") {
+    key_dir <- paste0(key_dir, "/")
+  }
+  
+  return(key_dir)
+}
+
+# Get full path to key file
+find_key_path <- function(target_dir) {
+  
+  #DEBUG
+  #target_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+  
+  target_dir <- format_dir_path(target_dir)
+  
+  # list files in Google directory
+  dirFileList <- list.files(target_dir)
+  
+  # isolate names from Google directory
+  #IMPROVE CODE: there's a better way to do this --> filenames do not include any of vector of patterns
+  dirFileList <- dirFileList[!duplicated(dirFileList)] #remove duplicates
+  dirFileList <- dirFileList[!grepl("\\.zip", dirFileList)]# remove zip files
+  dirFileList <- dirFileList[!grepl("\\.pdf", dirFileList)] # remove PDF files
+  dirFileList <- dirFileList[!grepl("\\.html", dirFileList)] # remove html files
+  dirFileList <- dirFileList[!grepl("\\.txt", dirFileList)]# remove txt files
+  dirFileList <- dirFileList[!grepl("\\.R", dirFileList)]# remove R files
+  dirFileList <- dirFileList[!grepl("[~$]", dirFileList)]# remove open excel files
+  
+  # isolate key file, and extract details in location and profile tabs
+  keyFileName <- dirFileList[grepl("KEY|Key|key", dirFileList, ignore.case = F)]
+  
+  return(paste0(target_dir, keyFileName))
+}
+
+
+read_key_location <- function(keyPath, req_fields="default") {
+  # Read sheet
+  locationData <- read_excel(keyPath, sheet=1, na="NA")
+  
+  # Default required fields
+  if(req_fields == "default") {
+    req_fields <- c( #IMPROVE get this from column in the key
+      "curator_PersonName",
+      "curator_organization",
+      "curator_email",
+      "time_series",
+      "gradient",
+      "experiments",
+      "merge_align"
+    )
+  }
+  
+  # Check if values exist in required fields
+    # Print message if missing
+  if(any(is.na(locationData[locationData[["var"]] %in% req_fields,]["Value"]))) {
+    print("debug")
+    print("At least one required field in location tab is missing (see output for missing (NA) value)")
+    print(locationData[locationData[["var"]] %in% req_fields,][c("var", "Value")])
+    break
+  }
+  
+  # Remove missing fields 
+  locationData <- locationData %>% dplyr::filter(!is.na(Value)) 
+  
+  return(locationData)
+}
+
+read_key_profile <- function(keyPath) {
+  # Read sheet
+  profileData <- read_excel(keyPath, sheet=2, na="NA")
+  
+  # Remove missing fields
+  profileData <- profileData %>% dplyr::filter(!is.na(header_name)) 
+  
+  return(profileData)
+}
+
+
+build_key_notes <- function(keyPath, locationData, profileData) {
+  notes <- dplyr::bind_rows(
+    tibble(
+      source = "location",
+      Var_long = "Homogenization path",
+      var = NA,
+      var_notes = keyPath
+    ),
+    locationData %>% # Grab necessary info/values from location data
+      filter(var %in% c("site_code", "location_name")) %>% 
+      dplyr::mutate(source = "location") %>%
+      dplyr::select(source, Var_long, var, var_notes = Value),
+    locationData %>% # Pulls in any var (row) with notes in location data
+      dplyr::filter(!is.na(var_notes)) %>% 
+      dplyr::mutate(source = "location") %>%
+      dplyr::select(source, Var_long, var, var_notes),
+    profileData %>% # Pulls in any var (row) with notes or comments in profile data
+      dplyr::filter(!is.na(Notes) | !is.na(Comment)) %>% 
+      mutate(var_notes = case_when(
+        !is.na(Notes) & !is.na(Comment) ~ paste0(Notes, "; ", Comment),
+        !is.na(Notes) & is.na(Comment) ~ Notes,
+        is.na(Notes) & !is.na(Comment) ~ paste0(Comment, ""))
+      ) %>%
+      dplyr::mutate(source = "profile") %>%
+      dplyr::select(source, Var_long, var, var_notes)
+  )
+  return(notes)
+}
+
+
+# Read unit conversion sheet from key file
+read_key_units <- function(keyPath) {
+  unitConversions <- read_excel(keyPath, sheet="unitConversions_simple", na="NA")
+  unitConversions$ConversionFactor <- suppressWarnings(as.numeric(unitConversions$ConversionFactor))
+  return(unitConversions)
+}
+
+
+build_unitConv_notes <- function() {
+  conversionNotes <- tibble(
+    source = as.character(),
+    var = as.character(),
+    Var_long = as.character(),
+    given_unit = as.character(),
+    target_unit = as.character(),
+    unit_conversion_factor = as.numeric(),
+    varNotes = "converted"
+  )
+  
+  return(conversionNotes)
+}
+
+
+get_unit_conversions <- function(keyPath) {
+  unitsConversions <- read_excel(keyPath, sheet=4)
+  suppressWarnings(
+    unitsConversions$unitConversionFactor <- as.numeric(unitsConversions$unitConversionFactor)
+    )
+  
+  return(unitsConversions)
+}
+
+
+locationData_to_convert <- function(locationData, unitsConv) {
+
+  #DEBUG
+  #locationData = locationData
+  #unitsConv = unitsConversions
+  
+  
+  # capture only location tab DATA with specified units 
+  locationDataUnits <- locationData %>%
+    dplyr::filter(!is.na(Unit)) %>%
+    dplyr::select(Value, unit_levels = Unit, Var_long, var)
+  
+  # join location DATA with units and corresponding vars in conversion table
+  LDU_UCL <- dplyr::left_join(locationDataUnits, unitsConv, 
+                              by = c("var", "unit_levels"),
+                              suffix = c(".PD", ".UT")) %>%
+    dplyr::filter(
+      !is.na(unitConversionFactor),
+      unitConversionFactor != 1  # Resulting data is only vars that need to be converted
+    )
+  
+  ### DEBUG: Add error message if unit conversion not found
+  
+  # Make sure values to be converted are numeric
+  # Check to make sure value is numeric or NA
+  if(any(is.na(suppressWarnings(as.numeric(as.character(LDU_UCL$Value)))))) {
+    print(paste0("FAILED location unit conversion: Expecting numeric value"))
+    print("Fix value in location tab and retry.")
+    return()
+  }
+  
+  LDU_UCL$Value <- as.numeric(LDU_UCL$Value)
+  LDU_UCL$unitConversionFactor <- as.numeric(LDU_UCL$unitConversionFactor)
+  
+  return(LDU_UCL)
+}
+
+#FIX: Change to structure used below for profile data
+apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes, print_msg = T) {
+  
+  # standardize location data units
+  for (varValue in c(LDU_UCL$var)) { 
+    #Check to make sure value is numeric
+    if(is.na(suppressWarnings(as.numeric(as.character(locationData[locationData$var == varValue,]["Value"]))))) {
+      print(paste0("FAILED location unit conversion: '", varValue, "' value is not numeric"))
+      print("Fix value in key file and retry.")
+    } else {
+      
+      # for each var, multiply the value by the conversion factor
+      locationData[locationData$var == varValue,]["Value"] <- as.character(as.numeric(locationData[locationData$var == varValue,]["Value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]))
+      
+      #Print message showing conversion applied
+      if(print_msg){
+        print(paste0("Location var unit conversion: '",varValue, "' --> multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
+      }
+
+
+    # Record note of data conversion
+    conversionNotes <- conversionNotes %>%
+      add_row(source = "location",
+              var = varValue,
+              Var_long = LDU_UCL[LDU_UCL$var == varValue,]$Var_long.PD,
+              given_unit = LDU_UCL[LDU_UCL$var == varValue,]$givenUnit,
+              target_unit = LDU_UCL[LDU_UCL$var == varValue,]$unit_levels,
+              unit_conversion_factor = LDU_UCL[LDU_UCL$var == varValue,]$unitConversionFactor,
+              varNotes = 'converted'
+      )
+    }
+    return(list(locationData, conversionNotes))
+  }
+}
+
+
+### Location data QC here --------------------------------------------------------
+
+# function to check for location vars in prescribed range
+locationData_range_check <- function(varData) {
+  
+  tryCatch({
+    
+    varData$Value <- as.numeric(varData$Value)
+    varData$minValue <- as.numeric(varData$minValue)
+    varData$maxValue <- as.numeric(varData$maxValue)
+    
+    if (varData$Value < varData$minValue | varData$Value > varData$maxValue) {
+      return(
+        data.frame(
+          var = varData$Var,
+          error = "Out of defined range"
+        )
+      )
+    } 
+  },
+  warning = function(cond) {
+    return(
+      data.frame(
+        var = varData$Var,
+        error = "Value is not numeric"
+      )
+    )
+  })
+} 
+
+
+# function to check provided data are appropriate type (numeric, character)
+locationData_type_check <- function(varData) {
+  
+  #DEBUG
+  #varData <- locationData %>% filter(var == "elevation") 
+  
+  if (varData[["class"]] == "numeric") {
+    if (!is.numeric(suppressWarnings(as.numeric(varData$Value)))) {
+      return(data.frame(var = varData$Var,
+                        error = "expected numeric value"))
+    }
+  } else if (varData[["class"]] == "character") {
+    if (!grepl("\\D", varData$Value)) {
+      return(data.frame(var = varData$Var,
+                        error = "expected character value"))
+    }
+  }
+}
+
+
+# Function to map through range and type checks for location data
+locationData_QC <- function(locData) {
+  
+  #DEBUG
+  #locData = unitConv_locationData
+  
+  range_data <- locData %>% filter(!is.na(minValue) | !is.na(maxValue)) %>% filter(!is.na(Value))
+  location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~locationData_range_check(.)) %>% bind_rows()
+  
+  type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(Value)) 
+  location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~locationData_type_check(.)) %>% bind_rows()
+  
+  return(bind_rows(location_range_report, location_type_report))
+}
+
+
+### ----- Starting work with data files here ---
+
+# Collect raw data and apply skip rows and NA values defined in location data tab
+collect_data_to_homog <- function(target_dir, locData) {
+  
+  #DEBUG
+  #target_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+  #locData = unitConv_locationData
+  
+  #Fix slash errors in target folder path
+  target_dir <- format_dir_path(target_dir)
+  
+  #get data formatting parameters
+  skip_rows <- ifelse(length(locData[locData$var == "header_row",]$var) > 0,
+                      as.numeric(locData[locData$var == "header_row",]$Value) - 1,
+                      0)
+  
+  na_val1 <- locData[locData$var == "NA_1",]$Value
+  na_val2 <- locData[locData$var == "NA_2",]$Value
+  
+  if(na_val1 == "blank") {na_val1 = NA}
+  if(na_val2 == "blank") {na_val2 = NA}
+  if(is.na(na_val1)){na_val1 = ""}
+  if(is.na(na_val2)){na_val2 = " "}
+   
+  #Find .csv data file   ###IMPROVE: Can we make the homog work across multiple files?
+  csvFile <- list.files(target_dir, pattern = "\\.csv$")
+  csvFile <- csvFile[!grepl('HMGZD', csvFile)] # Remove any previously HMGZD output files
+  if(length(csvFile) == 0) {
+    excelFileList <- list.files(target_dir, pattern = ".xls")
+    excelFileList <- excelFileList[!grepl("KEY|Key|key", excelFileList)] # remove open excel files 
+    target_file <- excelFileList[!grepl("[~$]", excelFileList)] # remove open excel files
+    data_raw <- read_excel(paste0(target_dir, target_file), sheet=1, skip=skip_rows, na=c(na_val1, na_val2))
+  } else {
+    data_raw <- read.csv(paste0(target_dir, csvFile), skip=skip_rows, header=T, as.is=T, na.strings = c(na_val1, na_val2)) 
+  }
+  
+  return(data_raw)
+}
+
+
+# Add columns to profile data with the experimental levels
+add_exp_trt_levels <- function(df_in, profileData) {
+
+  #DEBUG
+  #df_in = data_to_homog
+  
+  experimentTreatmentVarSet <- c(
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6",
+    "tx_L1",
+    "tx_L2",
+    "tx_L3",
+    "tx_L4",
+    "tx_L5",
+    "tx_L6"
+  )
+  
+  profileDataExpTrt <- profileData %>%
+    filter(var %in% experimentTreatmentVarSet,) %>%
+    mutate(var_level = paste0(var, "_level")) %>%
+    select(unit_levels, var, var_level, header_name)
+  
+  #create treatment levels dataframe to add to profileData
+  for (i in 1:nrow(profileDataExpTrt)) {
+    if (i == 1) {
+      trt_lvls_df = data.frame(L1 = df_in[[as.character(profileDataExpTrt[i, 4])]],
+                               L1_level = as.character(profileDataExpTrt[i, 1]))
+      data_cols_replaced <- c(as.character(profileDataExpTrt[i, 4]))
+    } else {
+      row_to_df <-
+        data.frame(data = df_in[[as.character(profileDataExpTrt[i, 4])]],
+                   level = as.character(profileDataExpTrt[i, 1]))
+      colnames(row_to_df) <-
+        c(as.character(profileDataExpTrt[i, 2]),
+          as.character(profileDataExpTrt[i, 3]))
+      trt_lvls_df <- cbind(trt_lvls_df, row_to_df)
+      data_cols_replaced <-
+        c(data_cols_replaced, as.character(profileDataExpTrt[i, 4]))
+    }
+  }
+  
+  #Add trt level columns to data, removing data columns that were included in 
+  # treatment level dataframe
+  df_out <-
+    cbind(trt_lvls_df, df_in[,-which(names(df_in) %in% data_cols_replaced)])
+  
+  return(df_out)
+} 
+
+
+standardize_col_names <- function(df_in, profileData) {
+  
+  #DEBUG
+  #df_in = data_to_homog_w_lvls
+  
+  # Select headers that need to be renamed
+  header_vars <- profileData %>% select(header_name, var, class)
+  
+  # Find data columns not included in key
+  diff1 <- setdiff(colnames(df_in), header_vars$header_name)
+  diff2 <- setdiff(diff1, c(header_vars$var, paste0(header_vars$var, "_level")))
+  
+  # Send warning message if data column not foudn in key
+  if(length(diff2) > 0) {
+    for(i in 1:length(diff2)){
+    print(paste0("Key entry not found for columns: ", diff2[i]))
+    }
+    print("NOTE: Data columns not included in the key file will not be transferred to the homogenized data file.")
+  }
+  
+  # Remove exp and tx level columns
+  rename_vars <- header_vars  %>% filter(class != "exp_lvl") %>% filter(class != "tx_lvl")
+  
+  # Replace colnames with standardized names
+  for(i in 1:nrow(rename_vars)) {
+    names(df_in)[names(df_in) == rename_vars$header_name[i]] <- rename_vars$var[i]
+  }
+  
+  # Remove data columns not included in key file
+  df_out <- df_in[,!(names(df_in) %in% diff2)]
+  
+  return(df_out)
+}
+
+
+profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
+  
+  #DEBUG
+  #df_in = stdzd_data
+  #profileData = profileData
+  #unitConv = unitConversions
+  
+  # Find which columns need unit conversions
+  unit_data <- profileData %>% filter(!is.na(givenUnit)) %>%
+    filter(var != "observation_date")
+  
+  # Merge unit conversions
+  unit_data_to_convert <-
+    left_join(
+      unit_data,
+      unitConv,
+      by = c("unit_levels" = "unit_options", "givenUnit" = "targetUnit")
+    )
+  
+  # Break and report if conversion factor is missing
+  missing_conversion <-
+    unit_data_to_convert %>% filter(is.na(ConversionFactor))
+  
+  if (nrow(missing_conversion) > 0) {
+    print("Missing conversion factor:")
+    for (i in 1:nrow(missing_conversion)) {
+      print_df <-
+        missing_conversion %>% select(header_name,
+                                      var,
+                                      unit_levels,
+                                      givenUnit,
+                                      ConversionFactor)
+      print(print_df[i, ])
+    }
+    print("FAILED homogenization. Add unit conversion and retry.")
+    return()
+  }
+  
+  # Do not convert if conversion factor = 1
+  unit_data_to_convert$ConversionFactor <-
+    as.numeric(unit_data_to_convert$ConversionFactor)
+  cols_to_convert <-
+    unit_data_to_convert %>% filter(ConversionFactor != 1)
+  
+  # Create a blank notes frame
+  profConvNotes <- build_unitConv_notes()
+  
+  # Apply unit conversion
+  if(nrow(cols_to_convert) > 0) {
+    for (i in 1:nrow(cols_to_convert)) {
+      
+      # Check to make sure value is numeric or NA
+      if(all(is.na(suppressWarnings(as.numeric(as.character(df_in[[cols_to_convert$var[i]]])))))) {
+        print(paste0("FAILED profile unit conversion: '", cols_to_convert$var[i], "' contains non-numeric value"))
+        print("Fix value in data file and retry.")
+        return()
+      }
+      
+      df_in[[cols_to_convert$var[i]]] = df_in[[cols_to_convert$var[i]]] * cols_to_convert$ConversionFactor[i]
+      
+      # Record note of data conversion
+      profConvNotes <- profConvNotes %>%
+        add_row(source = "profile",
+                var = cols_to_convert$var[i],
+                Var_long = cols_to_convert$Var_long[i],
+                given_unit = cols_to_convert$givenUnit[i],
+                target_unit = cols_to_convert$unit_levels[i],
+                unit_conversion_factor = cols_to_convert$ConversionFactor[i],
+                varNotes = 'Conversion applied'
+        )
+      
+      
+      if (print_msg) {
+        print(paste0(cols_to_convert$var[i]," unit conversion applied (* ",cols_to_convert$ConversionFactor[i],")")
+        )
+      }
+    }
+  } 
+  return(list(df_in, profConvNotes))
+}
+
+
+#### Begin profile date QC
+
+# Check that each var data column fits within min/max specified in key file.
+## WATCH: Ftn intended to also ensure that the var data type is numeric
+profileData_var_QC <- function(profDataRow, df_in){
+  
+  #DEBUG
+  #profData <- profileData %>% filter(!is.na(minValue) | !is.na(maxValue))
+  #profDataRow = profData[1,]
+  #df_in = stdzd_unitConv_profileData
+  
+  tryCatch({
+    
+    minVal = as.numeric(profDataRow$minValue)
+    maxVal = as.numeric(profDataRow$maxValue)
+    data_to_check = as.numeric(df_in[[profDataRow$var]]) 
+    
+    if(any(data_to_check < minVal | data_to_check > maxVal)) {
+       return(
+        data.frame(
+          var = profDataRow$var,
+          error = "Out of defined range"
+        )
+      )
+    } 
+  },
+  warning = function(cond) {
+    return(
+      data.frame(
+        var = profDataRow$var,
+        error = "Value is not numeric"
+      )
+    )
+  })
+}
+
+# function to check for location vars in prescribed range
+profileData_QC <- function(profData, df_in) {
+  
+  #DEBUG
+  #profData = profileData
+  #df_in = stdzd_unitConv_profileData
+  
+  range_data <- profData %>% filter(!is.na(minValue) | !is.na(maxValue))
+  profile_QC_report <- range_data %>% split(1:nrow(range_data)) %>% map(~profileData_var_QC(profDataRow = ., df_in = df_in)) %>% bind_rows()
+
+  return(profile_QC_report)
+}
+
+
+### Create and save homogenized output 
+
+hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_rds=T) {
+  
+  #DEBUG
+  #prepared_locData = unitConv_locationData
+  #prepared_profData = stdzd_unitConv_profileData
+  #out_path <- getwd()
+  
+  # Filter loc data to keep for homogenized file, then select required columns
+  locData <- prepared_locData %>% filter(HMGZD_include == "TRUE") %>%
+              select(var, Value)
+  
+  # Transpose location data into a single row
+  locData_T_row <- setNames(data.frame(t(locData[,-1])), locData[,1])
+  
+  # Add current date and time
+  locData_T_row$HMGZD_date <- Sys.time()
+  
+  # Prep loc data rows to align with profile data (i.e. create equal number of rows)
+  rep_loc_data <- as.data.frame(lapply(locData_T_row, rep, nrow(prepared_profData)))
+  
+  # Join location and profile data
+  full_data <- cbind(rep_loc_data, prepared_profData)
+  
+  #write homogenized data to .csv and/or .rds
+  if(out_csv) {
+    write.csv(full_data, paste0(out_path, "/HMGZD_data_output.csv"), row.names=F)
+  }
+  
+  if(out_rds) {
+    saveRDS(full_data, paste0(out_path, "/HMGZD_data_output.rds"))
+  }
+  
+  print("------------------------------------")
+  print("Data homogenization complete!")
+  return(full_data)
+}
+
+
+### Compilers
+#----------------------------------------------------------------------------
+
+homog <- function(data_dir){
+  
+  #DEBUG
+  #data_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+  
+  # Load sheets from key file
+  #-----------------------------------------------------------------------
+  key_path <- find_key_path(data_dir)
+  locationData <- read_key_location(key_path)
+  profileData <- read_key_profile(key_path)
+  notes <- build_key_notes(key_path, locationData, profileData)
+  unitConversions <- read_key_units(key_path)
+  
+  
+  # Location data unit conversion
+  #-----------------------------------------------------------------------
+  ###REVAMP TO USE unit conversion sheet in key
+  unitsConversions <- get_unit_conversions(key_path) 
+  conversionNotes <- build_unitConv_notes() 
+  LDU_UCL <- locationData_to_convert(locationData, unitsConversions)
+  unitConv_locationOutput <- apply_locData_UnitConv(locationData, LDU_UCL, conversionNotes, print_msg = F)
+  unitConv_locationData <- as.data.frame(unitConv_locationOutput[[1]])
+  loc_conversion_Notes <- as.data.frame(unitConv_locationOutput[[2]]) #output is notes
+  
+  
+  # Location data QC
+  #-----------------------------------------------------------------------
+  locationDataQC_Notes <- locationData_QC(unitConv_locationData) #output is notes
+  
+  
+  # Standardize profile data
+  #-----------------------------------------------------------------------
+  data_to_homog <- collect_data_to_homog(data_dir, unitConv_locationData)
+  data_to_homog_w_lvls <- add_exp_trt_levels(data_to_homog, profileData)
+  stdzd_data <- standardize_col_names(data_to_homog_w_lvls, profileData)
+  
+  
+  # Profile data unit conversion
+  #-----------------------------------------------------------------------
+  stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitConversions, print_msg = F)
+  stdzd_unitConv_profileData <- as.data.frame(stdzd_unitConv_profileOutput[[1]])
+  prof_conversion_Notes <- as.data.frame(stdzd_unitConv_profileOutput[[2]]) #output is notes
+  
+  
+  # Profile data QC
+  #-----------------------------------------------------------------------
+  profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData) #output is notes
+  
+  
+  # Combine location and profile data, export data (completes data homogenization)
+  #----------------------------------------------------------------------------------
+  output_path <- format_dir_path(data_dir)
+  homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=T)
+  
+  return(homog_data)
+}
