@@ -35,6 +35,7 @@ source("Homog_ftns.R")
 data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Example_dir"
 homog_data <- homog(data_dir)
 ```
+Homogenized output files will be saved to the input data directory ('data_dir' in code above).
 
 <br>
 
