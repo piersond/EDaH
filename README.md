@@ -1,12 +1,17 @@
 # Environmental data harmonization 
 #### Code state: pre-alpha, ready for further testing
 
-Code is based on the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package to allow for easier addition of new location and profile variables in the data key. Data homogenization is now soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
+Code is based on the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package. Primary purposes of this code are:
+
+1) Simlify adding new variables to the key fiel.
+2) Make the homogenization code soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
+3) Remove dependency on Google Drive.
+4) Split code into discrete functions to aid debugging and improvements.
 
 Current state of code is pre-alpha (as of 12/22/2022). Please contact Derek Pierson if interested in using this code prior to the initial release. While functional, the code requires more robust testing and additional core functionality. Official alpha 1.0 release expected Spring 2023.
 
 
-#### Notes:
+#### Further notes:
 
 - Adding variable to the key is as simple as adding a new row and filling in the required information. A key_check and update feature will be added in the future to allow for QC of such key changes, updating of the master key, and key field requirments/locks.
 
