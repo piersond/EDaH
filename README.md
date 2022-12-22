@@ -1,5 +1,5 @@
 # Environmental data harmonization 
-### (State: pre-alpha)
+#### Code state: pre-alpha, ready for further testing
 
 Refactor of the soilHarmonization package to allow for easier addition of new location and profile variables in the data key. Data homogenization is now soley dependent on information provided in the key, including variable properties and constraints, unit conversions, and homogenization settings.
 
