@@ -57,7 +57,6 @@ unitConversions <- read_key_units(key_path)
 
 # Location data unit conversion
 #-----------------------------------------------------------------------
-###REVAMP TO USE unit conversion sheet in key
 unitsConversions <- get_unit_conversions(key_path) 
 conversionNotes <- build_unitConv_notes() 
 LDU_UCL <- locationData_to_convert(locationData, unitsConversions)
