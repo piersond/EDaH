@@ -4,8 +4,16 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("Homog_ftns.R")
 
-data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Example_dir"
 
+### Compiler ftn (full homog in on ftn)
+homog_data <- homog(data_dir)
+
+
+
+#-----------------------------------
+### STEP BY STEP CODE
+#-----------------------------------
 
 # Load sheets from key file
 #-----------------------------------------------------------------------
@@ -22,7 +30,7 @@ unitConversions <- read_key_units(key_path)
 unitsConversions <- get_unit_conversions(key_path) 
 conversionNotes <- build_unitConv_notes() 
 LDU_UCL <- locationData_to_convert(locationData, unitsConversions)
-unitConv_locationOutput <- apply_locData_UnitConv(locationData, LDU_UCL, conversionNotes, print_msg = T)
+unitConv_locationOutput <- apply_locData_UnitConv(locationData, LDU_UCL, conversionNotes, print_msg = F)
 unitConv_locationData <- as.data.frame(unitConv_locationOutput[[1]])
 loc_conversion_Notes <- as.data.frame(unitConv_locationOutput[[2]]) #output is notes
 
@@ -32,7 +40,7 @@ loc_conversion_Notes <- as.data.frame(unitConv_locationOutput[[2]]) #output is n
 locationDataQC_Notes <- locationData_QC(unitConv_locationData) #output is notes
 
 
-# Standardize data
+# Standardize profile data
 #-----------------------------------------------------------------------
 data_to_homog <- collect_data_to_homog(data_dir, locationData)
 data_to_homog_w_lvls <- add_exp_trt_levels(data_to_homog, profileData)
@@ -41,22 +49,20 @@ stdzd_data <- standardize_col_names(data_to_homog_w_lvls, profileData)
 
 # Profile data unit conversion
 #-----------------------------------------------------------------------
-stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data , profileData, unitConversions, print_msg = T)
+stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitConversions, print_msg = F)
 stdzd_unitConv_profileData <- as.data.frame(stdzd_unitConv_profileOutput[[1]])
 prof_conversion_Notes <- as.data.frame(stdzd_unitConv_profileOutput[[2]]) #output is notes
 
 
 # Profile data QC
 #-----------------------------------------------------------------------
-profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData)
+profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData) #output is notes
 
 
-#profileDataQC_Notes <- profileData_QC(stdzd_unitConv_profileData) #output is notes
-
-
-# Combine location and profile data, completes homogenization
-#-----------------------------------------------------------------------
-# Add location data columns to profile data, export homogenized file
+# Combine location and profile data, export data (completes data homogenization)
+#----------------------------------------------------------------------------------
+output_path <- getwd()
+homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=T)
 
 
 # Profile data QA report
@@ -67,6 +73,8 @@ profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData)
 
 ### Future steps:
 # Simplified starter key file
+
+# Ftn to update master key file with changes in given key file
 
 # Alignment with other HMGZD files?
 
