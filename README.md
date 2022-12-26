@@ -4,6 +4,7 @@
 **Extends work completed by the [SOils DAta Harmonization (SoDaH) & Synthesis project](https://lter.github.io/som-website/).**
 
 #### Code state: pre-alpha, ready for further testing (as of 12/22/2022)
+[Development Jamboard](https://jamboard.google.com/d/1HWn4mVZ4OYa2J6sptLG2d7qirtVryNWYJfHaEapndEA/edit?usp=sharing)
 
 ---
 
