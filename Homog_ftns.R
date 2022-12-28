@@ -53,33 +53,26 @@ find_key_path <- function(target_dir) {
 
 
 read_key_location <- function(keyPath, req_fields="default") {
+  
+  #DEBUG
+  #keyPath = key_path
+  #req_fields="default"
+  
   # Read sheet
   locationData <- read_excel(keyPath, sheet=1, na="NA")
   
-  # Default required fields
-  if(req_fields == "default") {
-    req_fields <- c( #IMPROVE get this from column in the key
-      "curator_PersonName",
-      "curator_organization",
-      "curator_email",
-      "time_series",
-      "gradient",
-      "experiments",
-      "merge_align"
-    )
-  }
+  # Pull required fields from key
+  req_fields <- locationData %>% filter(require == "TRUE")
   
   # Check if values exist in required fields
-    # Print message if missing
-  if(any(is.na(locationData[locationData[["var"]] %in% req_fields,]["Value"]))) {
-    print("debug")
-    print("At least one required field in location tab is missing (see output for missing (NA) value)")
-    print(locationData[locationData[["var"]] %in% req_fields,][c("var", "Value")])
+  if(any(is.na(req_fields$value))) {
+    print("At least one required field in location tab is missing value")
+    print(req_fields[,c(1,3:5)])
     break
   }
   
   # Remove missing fields 
-  locationData <- locationData %>% dplyr::filter(!is.na(Value)) 
+  locationData <- locationData %>% dplyr::filter(!is.na(value)) 
   
   return(locationData)
 }
@@ -96,50 +89,77 @@ read_key_profile <- function(keyPath) {
 
 
 build_key_notes <- function(keyPath, locationData, profileData) {
-  notes <- dplyr::bind_rows(
-    tibble(
-      source = "location",
-      Var_long = "Homogenization path",
-      var = NA,
-      var_notes = keyPath
-    ),
-    locationData %>% # Grab necessary info/values from location data
-      filter(var %in% c("site_code", "location_name")) %>% 
-      dplyr::mutate(source = "location") %>%
-      dplyr::select(source, Var_long, var, var_notes = Value),
-    locationData %>% # Pulls in any var (row) with notes in location data
-      dplyr::filter(!is.na(var_notes)) %>% 
-      dplyr::mutate(source = "location") %>%
-      dplyr::select(source, Var_long, var, var_notes),
-    profileData %>% # Pulls in any var (row) with notes or comments in profile data
-      dplyr::filter(!is.na(Notes) | !is.na(Comment)) %>% 
-      mutate(var_notes = case_when(
-        !is.na(Notes) & !is.na(Comment) ~ paste0(Notes, "; ", Comment),
-        !is.na(Notes) & is.na(Comment) ~ Notes,
-        is.na(Notes) & !is.na(Comment) ~ paste0(Comment, ""))
-      ) %>%
-      dplyr::mutate(source = "profile") %>%
-      dplyr::select(source, Var_long, var, var_notes)
+  #DEBUG
+  #keyPath <- key_path
+  
+  # Add file path to notes as first row
+  notes_base <- data.frame(
+    source = "location",
+    var_long = "Homogenization path",
+    var = NA,
+    var_notes = keyPath
   )
+  
+  # Pull in any var (row) with notes in location data
+  notes_location <- locationData %>% filter(!is.na(var_notes))
+  if (nrow(notes_location) > 0) {
+    notes_location <- notes_location %>%
+      mutate(source = "location") %>%
+      select(source, var_long, var, var_notes)
+  } else {
+    notes_location <- data.frame(
+      source = "location",
+      var_long = "NA",
+      var = NA,
+      var_notes = "No var notes found for location data"
+    )
+  }
+  
+  # Pull in any var (row) with notes in profile data
+  notes_profile <-
+    profileData %>% filter(!is.na(notes) | !is.na(comment))
+  if (nrow(notes_profile) > 0) {
+    notes_profile <- notes_profile %>%
+      mutate(
+        var_notes = case_when(
+          !is.na(notes) & !is.na(comment) ~ paste0(notes, "; ", comment),!is.na(notes) &
+            is.na(comment) ~ notes,
+          is.na(notes) & !is.na(comment) ~ paste0(comment, "")
+        )
+      ) %>%
+      mutate(source = "profile") %>%
+      select(source, var_long, var, var_notes)
+  } else {
+    notes_profile <- data.frame(
+      source = "profile",
+      var_long = "NA",
+      var = NA,
+      var_notes = "No var notes found for profile data"
+    )
+  }
+
+  notes <- bind_rows(notes_base, notes_location, notes_profile)
+  
   return(notes)
 }
 
 
+# FIX: Ftn no longer needed?
 # Read unit conversion sheet from key file
-read_key_units <- function(keyPath) {
-  unitConversions <- read_excel(keyPath, sheet="unitConversions_simple", na="NA")
-  unitConversions$ConversionFactor <- suppressWarnings(as.numeric(unitConversions$ConversionFactor))
-  return(unitConversions)
-}
+# read_key_units <- function(keyPath) {
+#   unitConversions <- read_excel(keyPath, sheet="unitConversions", na="NA")
+#   unitConversions$ConversionFactor <- suppressWarnings(as.numeric(unitConversions$ConversionFactor))
+#   return(unitConversions)
+# }
 
 
 build_unitConv_notes <- function() {
   conversionNotes <- tibble(
     source = as.character(),
     var = as.character(),
-    Var_long = as.character(),
+    var_long = as.character(),
     given_unit = as.character(),
-    target_unit = as.character(),
+    hard_unit = as.character(),
     unit_conversion_factor = as.numeric(),
     varNotes = "converted"
   )
@@ -149,9 +169,9 @@ build_unitConv_notes <- function() {
 
 
 get_unit_conversions <- function(keyPath) {
-  unitsConversions <- read_excel(keyPath, sheet=4)
+  unitsConversions <- read_excel(keyPath, sheet="unitConversions", na="NA")
   suppressWarnings(
-    unitsConversions$unitConversionFactor <- as.numeric(unitsConversions$unitConversionFactor)
+    unitsConversions$ConversionFactor <- as.numeric(unitsConversions$ConversionFactor)
     )
   
   return(unitsConversions)
@@ -161,73 +181,82 @@ get_unit_conversions <- function(keyPath) {
 locationData_to_convert <- function(locationData, unitsConv) {
 
   #DEBUG
-  #locationData = locationData
   #unitsConv = unitsConversions
-  
   
   # capture only location tab DATA with specified units 
   locationDataUnits <- locationData %>%
-    dplyr::filter(!is.na(Unit)) %>%
-    dplyr::select(Value, unit_levels = Unit, Var_long, var)
+    filter(!is.na(unit)) %>%
+    filter(!is.na(hardUnit)) %>%    
+    select(value, unit, var_long, var, hardUnit)
   
-  # join location DATA with units and corresponding vars in conversion table
-  LDU_UCL <- dplyr::left_join(locationDataUnits, unitsConv, 
-                              by = c("var", "unit_levels"),
-                              suffix = c(".PD", ".UT")) %>%
-    dplyr::filter(
-      !is.na(unitConversionFactor),
-      unitConversionFactor != 1  # Resulting data is only vars that need to be converted
-    )
+  # join location data with units (LDU) with conversion table
+  LDU_conversions <- left_join(locationDataUnits, unitsConv, 
+                                      by = "hardUnit") %>%
+                      filter(unit == givenUnit) %>%
+                      filter( # Resulting data is only vars that need to be converted
+                        !is.na(ConversionFactor),
+                        ConversionFactor != 1  
+                      )
   
-  ### DEBUG: Add error message if unit conversion not found
+  # halt if unit conversion is missing
+  if(!all(locationDataUnits$var %in% LDU_conversions$var)) {
+    print("ERROR: Missing hard unit conversion factor.")
+    print("Review units and conversion table in key file.")
+    print(paste0("Missing conversion factors for: ", 
+                 setdiff(locationDataUnits$var, LDU_conversions$var)))
+    break
+  }
   
   # Make sure values to be converted are numeric
   # Check to make sure value is numeric or NA
-  if(any(is.na(suppressWarnings(as.numeric(as.character(LDU_UCL$Value)))))) {
+  if(any(is.na(suppressWarnings(as.numeric(as.character(LDU_conversions$value)))))) {
     print(paste0("FAILED location unit conversion: Expecting numeric value"))
     print("Fix value in location tab and retry.")
     return()
   }
   
-  LDU_UCL$Value <- as.numeric(LDU_UCL$Value)
-  LDU_UCL$unitConversionFactor <- as.numeric(LDU_UCL$unitConversionFactor)
+  LDU_conversions$value <- as.numeric(LDU_conversions$value)
+  LDU_conversions$ConversionFactor <- as.numeric(LDU_conversions$ConversionFactor)
   
-  return(LDU_UCL)
+  return(LDU_conversions)
 }
 
 #FIX: Change to structure used below for profile data
 apply_locData_UnitConv <- function(locationData, LDU_UCL, conversionNotes, print_msg = T) {
   
+  #DEBUG
+  #print_msg = T
+  
   # standardize location data units
-  for (varValue in c(LDU_UCL$var)) { 
+  for (varvalue in c(LDU_UCL$var)) { 
     #Check to make sure value is numeric
-    if(is.na(suppressWarnings(as.numeric(as.character(locationData[locationData$var == varValue,]["Value"]))))) {
-      print(paste0("FAILED location unit conversion: '", varValue, "' value is not numeric"))
+    if(is.na(suppressWarnings(as.numeric(as.character(locationData[locationData$var == varvalue,]["value"]))))) {
+      print(paste0("FAILED location unit conversion: '", varvalue, "' value is not numeric"))
       print("Fix value in key file and retry.")
     } else {
       
       # for each var, multiply the value by the conversion factor
-      locationData[locationData$var == varValue,]["Value"] <- as.character(as.numeric(locationData[locationData$var == varValue,]["Value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"]))
+      locationData[locationData$var == varvalue,]["value"] <- as.character(as.numeric(locationData[locationData$var == varvalue,]["value"]) * as.numeric(LDU_UCL[LDU_UCL$var == varvalue,]["ConversionFactor"]))
       
       #Print message showing conversion applied
       if(print_msg){
-        print(paste0("Location var unit conversion: '",varValue, "' --> multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varValue,]["unitConversionFactor"])))  
+        print(paste0("Location var unit conversion: '",varvalue, "' --> multiplied by ", as.character(LDU_UCL[LDU_UCL$var == varvalue,]["ConversionFactor"])))  
       }
 
 
     # Record note of data conversion
     conversionNotes <- conversionNotes %>%
       add_row(source = "location",
-              var = varValue,
-              Var_long = LDU_UCL[LDU_UCL$var == varValue,]$Var_long.PD,
-              given_unit = LDU_UCL[LDU_UCL$var == varValue,]$givenUnit,
-              target_unit = LDU_UCL[LDU_UCL$var == varValue,]$unit_levels,
-              unit_conversion_factor = LDU_UCL[LDU_UCL$var == varValue,]$unitConversionFactor,
+              var = varvalue,
+              var_long = LDU_UCL[LDU_UCL$var == varvalue,]$var_long,#.PD,
+              given_unit = LDU_UCL[LDU_UCL$var == varvalue,]$givenUnit,
+              hard_unit = LDU_UCL[LDU_UCL$var == varvalue,]$unit,
+              unit_conversion_factor = LDU_UCL[LDU_UCL$var == varvalue,]$ConversionFactor,
               varNotes = 'converted'
       )
     }
-    return(list(locationData, conversionNotes))
   }
+  return(list(locationData, conversionNotes))
 }
 
 
@@ -238,11 +267,11 @@ locationData_range_check <- function(varData) {
   
   tryCatch({
     
-    varData$Value <- as.numeric(varData$Value)
+    varData$value <- as.numeric(varData$value)
     varData$minValue <- as.numeric(varData$minValue)
     varData$maxValue <- as.numeric(varData$maxValue)
     
-    if (varData$Value < varData$minValue | varData$Value > varData$maxValue) {
+    if (varData$value < varData$minValue | varData$value > varData$maxValue) {
       return(
         data.frame(
           var = varData$Var,
@@ -255,7 +284,7 @@ locationData_range_check <- function(varData) {
     return(
       data.frame(
         var = varData$Var,
-        error = "Value is not numeric"
+        error = "value is not numeric"
       )
     )
   })
@@ -269,12 +298,12 @@ locationData_type_check <- function(varData) {
   #varData <- locationData %>% filter(var == "elevation") 
   
   if (varData[["class"]] == "numeric") {
-    if (!is.numeric(suppressWarnings(as.numeric(varData$Value)))) {
+    if (!is.numeric(suppressWarnings(as.numeric(varData$value)))) {
       return(data.frame(var = varData$Var,
                         error = "expected numeric value"))
     }
   } else if (varData[["class"]] == "character") {
-    if (!grepl("\\D", varData$Value)) {
+    if (!grepl("\\D", varData$value)) {
       return(data.frame(var = varData$Var,
                         error = "expected character value"))
     }
@@ -288,13 +317,35 @@ locationData_QC <- function(locData) {
   #DEBUG
   #locData = unitConv_locationData
   
-  range_data <- locData %>% filter(!is.na(minValue) | !is.na(maxValue)) %>% filter(!is.na(Value))
-  location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~locationData_range_check(.)) %>% bind_rows()
-  
-  type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(Value)) 
-  location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~locationData_type_check(.)) %>% bind_rows()
-  
-  return(bind_rows(location_range_report, location_type_report))
+  if(nrow(locData) > 0){
+    range_data <- locData %>% filter(!is.na(minValue) | !is.na(maxValue)) %>% filter(!is.na(value))
+    if(nrow(range_data) > 0) {
+      location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~locationData_range_check(.)) %>% bind_rows()
+    } else {
+      location_range_report = data.frame(
+                                var = "ALL",
+                                error = "No range errors found.")
+    }
+    
+    type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(value)) 
+    if(nrow(type_data) > 0) {
+      location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~locationData_type_check(.)) %>% bind_rows()
+    } else {
+      location_type_report = data.frame(
+                    var = "ALL",
+                    error = "No data class errors found.")
+    }
+    
+    if(nrow(location_type_report) == 0) {
+      location_type_report = data.frame(
+        var = "ALL",
+        error = "No data class errors found.")
+    }
+    
+    return(bind_rows(location_range_report, location_type_report))
+  } else {
+    return("Error: No location data to QC")
+  }
 }
 
 
@@ -312,14 +363,14 @@ collect_data_to_homog <- function(target_dir, locData) {
   
   #get data formatting parameters
   skip_rows <- ifelse(length(locData[locData$var == "header_row",]$var) > 0,
-                      as.numeric(locData[locData$var == "header_row",]$Value) - 1,
+                      as.numeric(locData[locData$var == "header_row",]$value) - 1,
                       0)
   
-  na_val1 <- locData[locData$var == "NA_1",]$Value
-  na_val2 <- locData[locData$var == "NA_2",]$Value
+  na_val1 <- locData[locData$var == "NA_1",]$value
+  na_val2 <- locData[locData$var == "NA_2",]$value
   
-  if(na_val1 == "blank") {na_val1 = NA}
-  if(na_val2 == "blank") {na_val2 = NA}
+  if(length(na_val1) == 0) {na_val1 = NA} else if(toupper(na_val1) == "BLANK"){na_val1 = NA} 
+  if(length(na_val2) == 0) {na_val2 = NA} else if(toupper(na_val2) == "BLANK"){na_val2 = NA} 
   if(is.na(na_val1)){na_val1 = ""}
   if(is.na(na_val2)){na_val2 = " "}
    
@@ -363,7 +414,7 @@ add_exp_trt_levels <- function(df_in, profileData) {
   profileDataExpTrt <- profileData %>%
     filter(var %in% experimentTreatmentVarSet,) %>%
     mutate(var_level = paste0(var, "_level")) %>%
-    select(unit_levels, var, var_level, header_name)
+    select(unit, var, var_level, header_name)
   
   #create treatment levels dataframe to add to profileData
   for (i in 1:nrow(profileDataExpTrt)) {
@@ -408,7 +459,7 @@ standardize_col_names <- function(df_in, profileData) {
   # Send warning message if data column not foudn in key
   if(length(diff2) > 0) {
     for(i in 1:length(diff2)){
-    print(paste0("Key entry not found for columns: ", diff2[i]))
+    print(paste0("Key entry not found for data column: ", diff2[i]))
     }
     print("NOTE: Data columns not included in the key file will not be transferred to the homogenized data file.")
   }
@@ -433,18 +484,20 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
   #DEBUG
   #df_in = stdzd_data
   #profileData = profileData
-  #unitConv = unitConversions
+  #unitConv = unitsConversions
   
   # Find which columns need unit conversions
-  unit_data <- profileData %>% filter(!is.na(givenUnit)) %>%
+  unit_data <- profileData %>% filter(!is.na(hardUnit)) %>%
     filter(var != "observation_date")
   
   # Merge unit conversions
   unit_data_to_convert <-
-    left_join(
-      unit_data,
-      unitConv,
-      by = c("unit_levels" = "unit_options", "givenUnit" = "targetUnit")
+    left_join(unit_data, unitConv, 
+              by = "hardUnit") %>%
+    filter(unit == givenUnit) %>%
+    filter( # Resulting data is only vars that need to be converted
+      !is.na(ConversionFactor),
+      ConversionFactor != 1  
     )
   
   # Break and report if conversion factor is missing
@@ -457,8 +510,8 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
       print_df <-
         missing_conversion %>% select(header_name,
                                       var,
-                                      unit_levels,
-                                      givenUnit,
+                                      unit,
+                                      hardUnit,
                                       ConversionFactor)
       print(print_df[i, ])
     }
@@ -474,7 +527,7 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
   
   # Create a blank notes frame
   profConvNotes <- build_unitConv_notes()
-  
+
   # Apply unit conversion
   if(nrow(cols_to_convert) > 0) {
     for (i in 1:nrow(cols_to_convert)) {
@@ -486,15 +539,19 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
         return()
       }
       
+      # Apply conversion factor
       df_in[[cols_to_convert$var[i]]] = df_in[[cols_to_convert$var[i]]] * cols_to_convert$ConversionFactor[i]
+      
+      # Update unit in df to help avoid confusion
+      df_in[[cols_to_convert$unit[i]]] = df_in[[cols_to_convert$hardUnit[i]]]
       
       # Record note of data conversion
       profConvNotes <- profConvNotes %>%
         add_row(source = "profile",
                 var = cols_to_convert$var[i],
-                Var_long = cols_to_convert$Var_long[i],
-                given_unit = cols_to_convert$givenUnit[i],
-                target_unit = cols_to_convert$unit_levels[i],
+                var_long = cols_to_convert$var_long[i],
+                hard_unit = cols_to_convert$hardUnit[i],
+                given_unit = cols_to_convert$unit[i],
                 unit_conversion_factor = cols_to_convert$ConversionFactor[i],
                 varNotes = 'Conversion applied'
         )
@@ -540,7 +597,7 @@ profileData_var_QC <- function(profDataRow, df_in){
     return(
       data.frame(
         var = profDataRow$var,
-        error = "Value is not numeric"
+        error = "value is not numeric"
       )
     )
   })
@@ -570,14 +627,14 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
   #out_path <- getwd()
   
   # Filter loc data to keep for homogenized file, then select required columns
-  locData <- prepared_locData %>% filter(HMGZD_include == "TRUE") %>%
-              select(var, Value)
+  locData <- prepared_locData %>% filter(include == "TRUE") %>%
+              select(var, value)
   
   # Transpose location data into a single row
   locData_T_row <- setNames(data.frame(t(locData[,-1])), locData[,1])
   
   # Add current date and time
-  locData_T_row$HMGZD_date <- Sys.time()
+  locData_T_row$homog_date <- Sys.time()
   
   # Prep loc data rows to align with profile data (i.e. create equal number of rows)
   rep_loc_data <- as.data.frame(lapply(locData_T_row, rep, nrow(prepared_profData)))
@@ -587,11 +644,11 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
   
   #write homogenized data to .csv and/or .rds
   if(out_csv) {
-    write.csv(full_data, paste0(out_path, "/HMGZD_data_output.csv"), row.names=F)
+    write.csv(full_data, paste0(out_path, "/HMGZD_data_output_",   format(Sys.time(), "%m-%d-%Y"), ".csv"), row.names=F)
   }
   
   if(out_rds) {
-    saveRDS(full_data, paste0(out_path, "/HMGZD_data_output.rds"))
+    saveRDS(full_data, paste0(out_path, "/HMGZD_data_output_",   format(Sys.time(), "%m-%d-%Y"), ".rds"))
   }
   
   print("------------------------------------")
@@ -614,7 +671,7 @@ homog <- function(data_dir){
   locationData <- read_key_location(key_path)
   profileData <- read_key_profile(key_path)
   notes <- build_key_notes(key_path, locationData, profileData)
-  unitConversions <- read_key_units(key_path)
+  #unitConversions <- read_key_units(key_path)
   
   
   # Location data unit conversion
@@ -642,7 +699,7 @@ homog <- function(data_dir){
   
   # Profile data unit conversion
   #-----------------------------------------------------------------------
-  stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitConversions, print_msg = F)
+  stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitsConversions, print_msg = F)
   stdzd_unitConv_profileData <- as.data.frame(stdzd_unitConv_profileOutput[[1]])
   prof_conversion_Notes <- as.data.frame(stdzd_unitConv_profileOutput[[2]]) #output is notes
   
@@ -655,7 +712,7 @@ homog <- function(data_dir){
   # Combine location and profile data, export data (completes data homogenization)
   #----------------------------------------------------------------------------------
   output_path <- format_dir_path(data_dir)
-  homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=T)
+  homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=F)
   
   return(homog_data)
 }

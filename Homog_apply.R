@@ -4,11 +4,10 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("Homog_ftns.R")
 
-data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Example_dir"
+data_dir <- "C:/GitHub/EDaH/Data/GeoMicro/IGSN/"
 
 ### Compiler ftn (full homog in on ftn)
 homog_data <- homog(data_dir)
-
 
 
 #-----------------------------------
@@ -21,12 +20,11 @@ key_path <- find_key_path(data_dir)
 locationData <- read_key_location(key_path)
 profileData <- read_key_profile(key_path)
 notes <- build_key_notes(key_path, locationData, profileData)
-unitConversions <- read_key_units(key_path)
+#unitConversions <- read_key_units(key_path)
 
 
 # Location data unit conversion
 #-----------------------------------------------------------------------
-###REVAMP TO USE unit conversion sheet in key
 unitsConversions <- get_unit_conversions(key_path) 
 conversionNotes <- build_unitConv_notes() 
 LDU_UCL <- locationData_to_convert(locationData, unitsConversions)
@@ -49,7 +47,7 @@ stdzd_data <- standardize_col_names(data_to_homog_w_lvls, profileData)
 
 # Profile data unit conversion
 #-----------------------------------------------------------------------
-stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitConversions, print_msg = F)
+stdzd_unitConv_profileOutput <- profileUnitConversion(stdzd_data, profileData, unitsConversions, print_msg = F)
 stdzd_unitConv_profileData <- as.data.frame(stdzd_unitConv_profileOutput[[1]])
 prof_conversion_Notes <- as.data.frame(stdzd_unitConv_profileOutput[[2]]) #output is notes
 
