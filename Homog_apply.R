@@ -4,7 +4,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("Homog_ftns.R")
 
-data_dir <- "C:/GitHub/EDaH/Data/GeoMicro/IGSN/"
+data_dir <- "C:/GitHub/EDaH/Data/GeoMicro/Enzymes/"
 
 ### Compiler ftn (full homog in on ftn)
 homog_data <- homog(data_dir)
@@ -20,7 +20,6 @@ key_path <- find_key_path(data_dir)
 locationData <- read_key_location(key_path)
 profileData <- read_key_profile(key_path)
 notes <- build_key_notes(key_path, locationData, profileData)
-#unitConversions <- read_key_units(key_path)
 
 
 # Location data unit conversion

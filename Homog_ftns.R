@@ -144,15 +144,6 @@ build_key_notes <- function(keyPath, locationData, profileData) {
 }
 
 
-# FIX: Ftn no longer needed?
-# Read unit conversion sheet from key file
-# read_key_units <- function(keyPath) {
-#   unitConversions <- read_excel(keyPath, sheet="unitConversions", na="NA")
-#   unitConversions$ConversionFactor <- suppressWarnings(as.numeric(unitConversions$ConversionFactor))
-#   return(unitConversions)
-# }
-
-
 build_unitConv_notes <- function() {
   conversionNotes <- tibble(
     source = as.character(),
@@ -295,16 +286,17 @@ locationData_range_check <- function(varData) {
 locationData_type_check <- function(varData) {
   
   #DEBUG
-  #varData <- locationData %>% filter(var == "elevation") 
-  
-  if (varData[["class"]] == "numeric") {
-    if (!is.numeric(suppressWarnings(as.numeric(varData$value)))) {
-      return(data.frame(var = varData$Var,
+  #print(varData$var)
+  #varData <- locationData %>% filter(var == "modification_date")
+
+  if(varData[["class"]] == "numeric") {
+    if(!is.numeric(suppressWarnings(as.numeric(varData$value)))) {
+      return(data.frame(var = varData$var,
                         error = "expected numeric value"))
     }
-  } else if (varData[["class"]] == "character") {
-    if (!grepl("\\D", varData$value)) {
-      return(data.frame(var = varData$Var,
+  } else if(varData[["class"]] == "character") {
+    if(!grepl("\\D", varData$value)) {
+      return(data.frame(var = varData$var,
                         error = "expected character value"))
     }
   }
@@ -417,23 +409,24 @@ add_exp_trt_levels <- function(df_in, profileData) {
     select(unit, var, var_level, header_name)
   
   #create treatment levels dataframe to add to profileData
-  for (i in 1:nrow(profileDataExpTrt)) {
-    if (i == 1) {
-      trt_lvls_df = data.frame(L1 = df_in[[as.character(profileDataExpTrt[i, 4])]],
-                               L1_level = as.character(profileDataExpTrt[i, 1]))
-      data_cols_replaced <- c(as.character(profileDataExpTrt[i, 4]))
-    } else {
-      row_to_df <-
-        data.frame(data = df_in[[as.character(profileDataExpTrt[i, 4])]],
-                   level = as.character(profileDataExpTrt[i, 1]))
-      colnames(row_to_df) <-
-        c(as.character(profileDataExpTrt[i, 2]),
-          as.character(profileDataExpTrt[i, 3]))
-      trt_lvls_df <- cbind(trt_lvls_df, row_to_df)
-      data_cols_replaced <-
-        c(data_cols_replaced, as.character(profileDataExpTrt[i, 4]))
+  if(nrow(profileDataExpTrt) > 0) {
+    for (i in 1:nrow(profileDataExpTrt)) {
+      if (i == 1) {
+        trt_lvls_df = data.frame(L1 = df_in[[as.character(profileDataExpTrt[i, 4])]],
+                                 L1_level = as.character(profileDataExpTrt[i, 1]))
+        data_cols_replaced <- c(as.character(profileDataExpTrt[i, 4]))
+      } else {
+        row_to_df <-
+          data.frame(data = df_in[[as.character(profileDataExpTrt[i, 4])]],
+                     level = as.character(profileDataExpTrt[i, 1]))
+        colnames(row_to_df) <-
+          c(as.character(profileDataExpTrt[i, 2]),
+            as.character(profileDataExpTrt[i, 3]))
+        trt_lvls_df <- cbind(trt_lvls_df, row_to_df)
+        data_cols_replaced <-
+          c(data_cols_replaced, as.character(profileDataExpTrt[i, 4]))
+      }
     }
-  }
   
   #Add trt level columns to data, removing data columns that were included in 
   # treatment level dataframe
@@ -441,6 +434,10 @@ add_exp_trt_levels <- function(df_in, profileData) {
     cbind(trt_lvls_df, df_in[,-which(names(df_in) %in% data_cols_replaced)])
   
   return(df_out)
+  
+  } else {
+    return(df_in)
+  }
 } 
 
 
