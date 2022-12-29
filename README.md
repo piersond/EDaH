@@ -58,7 +58,7 @@ Current state of code is pre-alpha (as of 12/22/2022). Please contact Derek Pier
 ### Acknowledgements
 Work made possible by contributions and support from Steven Earl and Will Wieder (co-authors of the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package and the [SoDaH database](https://lter.github.io/som-website/)), the [National Center for Ecological Analysis and Synthesis](https://www.nceas.ucsb.edu/) (NCEAS grant supported initial soilHarmonization code development), Kate Lajtha and Kathleen Lohse (project and funding support), and the Critical Zone Network Geomicrobiology project and the USDA Forest Service Rocky Mountain Research Station (project support). 
  
-<br>
+---
 
 ## Code Overview
 
