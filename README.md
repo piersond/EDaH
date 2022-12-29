@@ -62,9 +62,13 @@ Work made possible by contributions and support from Steven Earl and Will Wieder
 
 ## Code Overview
 
-The harmonization code is intentionally made up of a series of functions, designed to follow in sequence. The discrete functions aid and help limit errors when for adjusting or adding to the framework functionality, while also improving issues with debugging and code comprehension.
+Data harmonization is performed through a series of functions, designed to be performed in sequence (i.e., dependent on output from previous function calls). The use of stepwise discrete functions facilitates adjusting or adding to the framework functionality, while also improving debugging and code comprehension.
 
-## Example single function usage
+## Key file
+
+[ADD INSTRUCTIONS FOR FILLING OUT A KEY FILE]
+
+## Example of data harmonization with the compiled homog() function
 
 ```
 source("Homog_ftns.R")
