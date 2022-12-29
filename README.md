@@ -1,6 +1,6 @@
 ![alt text](https://github.com/piersond/EDaH/blob/main/Doc/EDaH_bannerBW.png?raw=true)
 
-# Environmental data harmonization ('EDaH') framework 
+# Environmental Data Harmonization Framework 
 **Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.** 
 
 **Extends work completed by the [SOils DAta Harmonization (SoDaH) & Synthesis project](https://lter.github.io/som-website/).**
