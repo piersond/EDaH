@@ -77,8 +77,6 @@ homog_data <- homog(data_dir)
 ```
 Homogenized output files will be saved to the input data directory ('data_dir' in code above).
 
-<br>
-
 ## Example usage of the sequential functions
 
 ```
