@@ -5,7 +5,7 @@
 
 **Extends work completed by the [SOils DAta Harmonization (SoDaH) & Synthesis project](https://lter.github.io/som-website/).**
 
-#### Code state: pre-alpha. Core functionality completed. Further development and testing required.
+#### Version: pre-release, alpha. Core functionality complete. Further development and testing required.
 
 [Development Jamboard](https://jamboard.google.com/d/1HWn4mVZ4OYa2J6sptLG2d7qirtVryNWYJfHaEapndEA/edit?usp=sharing)
 
