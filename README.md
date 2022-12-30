@@ -1,9 +1,12 @@
-# Environmental data harmonization ('EDaH') framework 
+![alt text](https://github.com/piersond/EDaH/blob/main/Doc/EDaH_bannerBW.png?raw=true)
+
+# Environmental Data Harmonization Framework 
 **Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.** 
 
 **Extends work completed by the [SOils DAta Harmonization (SoDaH) & Synthesis project](https://lter.github.io/som-website/).**
 
-#### Code state: pre-alpha, ready for further testing (as of 12/22/2022)
+#### VERSION: alpha v1.0, pre-release. 
+Core functionality complete. Further development and testing required.
 
 [Development Jamboard](https://jamboard.google.com/d/1HWn4mVZ4OYa2J6sptLG2d7qirtVryNWYJfHaEapndEA/edit?usp=sharing)
 
@@ -55,13 +58,17 @@ Current state of code is pre-alpha (as of 12/22/2022). Please contact Derek Pier
 ### Acknowledgements
 Work made possible by contributions and support from Steven Earl and Will Wieder (co-authors of the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package and the [SoDaH database](https://lter.github.io/som-website/)), the [National Center for Ecological Analysis and Synthesis](https://www.nceas.ucsb.edu/) (NCEAS grant supported initial soilHarmonization code development), Kate Lajtha and Kathleen Lohse (project and funding support), and the Critical Zone Network Geomicrobiology project and the USDA Forest Service Rocky Mountain Research Station (project support). 
  
-<br>
+---
 
 ## Code Overview
 
-The harmonization code is intentionally made up of a series of functions, designed to follow in sequence. The discrete functions aid and help limit errors when for adjusting or adding to the framework functionality, while also improving issues with debugging and code comprehension.
+Data harmonization is performed through a series of functions, designed to be performed in sequence (i.e., dependent on output from previous function calls). The use of stepwise discrete functions facilitates adjusting or adding to the framework functionality, while also improving debugging and code comprehension.
 
-## Example single function usage
+## Key file
+
+[ADD INSTRUCTIONS FOR FILLING OUT A KEY FILE]
+
+## Example of data harmonization with the compiled homog() function
 
 ```
 source("Homog_ftns.R")
@@ -69,8 +76,6 @@ data_dir <- "C:\\GitHub\\CZnetGM_SoDaH\\Example_dir"
 homog_data <- homog(data_dir)
 ```
 Homogenized output files will be saved to the input data directory ('data_dir' in code above).
-
-<br>
 
 ## Example usage of the sequential functions
 
