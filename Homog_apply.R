@@ -4,7 +4,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("Homog_ftns.R")
 
-data_dir <- "C:/GitHub/EDaH/Data/GeoMicro/Yang_Enzymes/"
+data_dir <- "C:/GitHub/EDaH/Data/GeoMicro/Kitty_microbiomass/"
 
 ### Compiler ftn (full homog in on ftn)
 homog_data <- homog(data_dir)

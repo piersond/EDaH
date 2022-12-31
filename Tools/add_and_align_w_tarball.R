@@ -10,9 +10,10 @@ setwd("C:/GitHub/EDaH/Data/GeoMicro")
 
 # Required inputs for ftn
 #-----------------------------------------------------------------------------------
-data_add <- read.csv("Yang_Enzymes/HMGZD_data_output_12-29-2022.csv", as.is=T)
-tarball <- read.csv("IGSN/HMGZD_data_output_12-28-2022.csv", as.is=T)
-key_filepath <- "Yang_Enzymes/SoilEnzymes_Key_V3.xlsx"
+data_add <- read.csv("Kitty_microbiomass/HMGZD_data_output_12-30-2022.csv", as.is=T)
+#tarball <- read.csv("IGSN/HMGZD_data_output_12-28-2022.csv", as.is=T) #Use the IGSN spreadsheet for first tarball
+tarball <- readRDS("GeoMicro_aligned_tarball_2022-12-30.rds")
+key_filepath <- "Kitty_microbiomass/geomicro_mb_Key_V3.xlsx"
 
 
 # Pull alignment instructions from key file
@@ -71,7 +72,9 @@ for(i in 1:nrow(cols_to_match)) {
 
 # Check that remaining duplicate columns are specified to be such in key
 #------------------------------------------------------------------------------------
-dup_cols <- colnames(join_df)[grepl("_ALIGN", colnames(join_df))]
+
+
+dup_cols <- colnames(join_df)[grepl(align_name, colnames(join_df))]
 cols_to_add_dup <- cols_not_ignore %>% filter(align_how == "add_dup") %>% select(var)
 extra_dups <- setdiff(gsub(align_name, "", dup_cols), cols_to_add_dup$var)
 
@@ -88,7 +91,9 @@ if(length(extra_dups) > 0) {
 
 
 
+#DEBUG
+#dfx <- join_df %>% select(IGSN, layer_bot, layer_bot_ALIGN2)
+#dfx$check <- ifelse(dfx$layer_bot == dfx$layer_bot_ALIGN2, "GOOD", "BAD")
 
-
-
+#dfz <- join_df %>% filter(!is.na(lf_low_cut))
 

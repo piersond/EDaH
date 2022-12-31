@@ -1,0 +1,232 @@
+Var_long,Var_short,var,Level,givenUnit,class,type,hardUnit
+Experimental Level 1(top level),,L1,profile,,,,
+Experimental Level 2,,L2,profile,,,,
+Experimental Level 3,,L3,profile,,,,
+Experimental Level 4,,L4,profile,,,,
+Experimental Level 5,,L5,profile,,,,
+Experimental Level 6,,L6,profile,,,,
+Treatment_1_level,,tx_L1,profile,,,,
+Treatment_2_level,,tx_L2,profile,,,,
+Treatment_3_level,,tx_L3,profile,,,,
+Treatment_4_level,,tx_L4,profile,,,,
+Treatment_5_level,,tx_L5,profile,,,,
+Treatment_6_level,,tx_L6,profile,,,,
+Observation Date,,observation_date,profile,YYYY-MM-DD or MM/DD/YYYY,character,,
+Profile Vegetation,,veg_note_profile,profile,species names,character,,
+"Bulk Layer Total Carbon, not acid treated to remove inorganic C",Soil Total Carbon (%),lyr_c_tot,layer,percent,numeric,value,percent
+"Bulk Layer Organic Carbon (CN analyzer) concentration, inorganic C removed or not present",Soil Organic Carbon (%),lyr_soc,layer,percent,numeric,value,percent
+Bulk Layer Organic Carbon (CN analyzer) stock,Soil Organic Carbon Stock (g C m-2),lyr_soc_stock,layer,g C m-2,numeric,value,percent
+Bulk Layer Loss on Ignition,Soil Loss on Ignition,lyr_loi,layer,percent,numeric,value,percent
+Bulk Layer OM (Walkley Balck),,lyr_som_WalkleyBlack,layer,percent,,,
+Bulk Layer Total Nitrogen concentration,Soil Total Nitrogen (%),lyr_n_tot,layer,percent,numeric,value,percent
+Bulk Layer Total Nitrogen stock,Soil Total Nitrogen Stock (g N m-2),lyr_n_tot_stock,layer,g N m-2,numeric,value,percent
+Bulk Layer C:N,Soil C:N,lyr_c_to_n,layer,unitless,numeric,value,unitless
+Bulk Layer ?15N,Soil 15N (‰),lyr_15n,layer,permil,numeric,value,permil
+Bulk Layer ?13C,Soil 13C (‰),lyr_13c,layer,permil,numeric,value,permil
+Layer Top,,layer_top,layer,cm,numeric,,cm
+Layer Bottom,,layer_bot,layer,cm,numeric,,cm
+Layer middle,,layer_mid,layer,cm,numeric,,cm
+Horizon,,hzn,layer,,character,,
+"Bulk Density, Coarse Fragments Removed",Bulk Density - Coarse Removed (g cm-3),bd_samp,layer,g cm-3,numeric,value,g cm-3
+Bulk Density With Coarse Fragments,Bulk Density - Coarse Included (g cm-3),bd_tot,layer,g cm-3,numeric,value,g cm-3
+Bulk Density Method or Other Notes,,^bd_,layer,,character,method,
+Soil pH CaCl2,,ph_cacl,layer,unitless,numeric,value,
+Soil pH in water,Soil pH  (water),ph_h2o,layer,unitless,numeric,value,
+Soil pH Other,,ph_other,layer,unitless,numeric,value,
+Sand,Sand (%),sand,layer,percent,numeric,value,percent
+Silt,Silt (%),silt,layer,percent,numeric,value,percent
+Clay,Clay (%),clay,layer,percent,numeric,value,percent
+Coarse Fraction,Coarse Fraction (%),coarse_frac,layer,percent,numeric,value,percent
+Coarse Fraction Size Threshold Used,,coarse_tot,layer,mm,character,method,
+Texture Class,,profile_texture_class,profile,(texture_class),factor,,
+Bulk Layer Surface Area Measured By BET,,bet_surface_area,layer,,character,value,
+Calcium Carbonate,,caco3,layer,percent,numeric,value,percent
+Calcium,,Ca,layer,mmol kg-1,numeric,value,percent
+Magnesium,,Mg,layer,mmol kg-1,numeric,value,percent
+Posassium,,K,layer,mmol kg-1,numeric,value,percent
+Sodium,,Na,layer,mmol kg-1,numeric,value,percent
+Cation Exchange,,cat_exch,layer,cmol H+ kg-1,numeric,value,cmol H+ kg-1
+Sum of Bases,,base_sum,layer,meq 100g-1,numeric,value,meq 100g-1
+Sum of Cation Exchange Capacity,,cec_sum,layer,meq 100g-1,numeric,value,meq 100g-1
+Effective Cation Exchange Capacity,,ecec,layer,meq 100g-1,numeric,value,meq 100g-1
+% Base Saturation,,bs,layer,percent,numeric,value,percent
+"Microbial biomass C, raw value",,mbc_raw,layer,mgC/g,numeric,method,
+"Microbial biomass C, reported Value After Transformation",,mbc_trans,layer,mgC/g,character,value,mgC/g
+"Microbial biomass N, raw value",,mbn_raw,layer,mgN/g,numeric,method,
+"Microbial biomass N, reported Value After Transformation",,mbn_trans,layer,mgN/g,character,value,mgC/g
+"Microbial biomass P, raw value",,mbp_raw,layer,mgP/g,numeric,method,
+"Microbial biomass P, reported Value After Transformation",,mbp_trans,layer,mgP/g,character,value,mgC/g
+Microbial Biomass C:N,,mb_cn,layer,unitless,,,
+Microbial Biomass C:P,,mb_cp,layer,unitless,,,
+Microbial Biomass N:P,,mb_np,layer,unitless,,,
+Microbial Biomass Method,,mbc_method,layer,(mbc_method),factor,method,
+Extractable Phosphorus_1,,p_ex_1,layer,,numeric,value,
+Specify Method For P_1,,p_1_method,layer,,character,method,
+Specify Notes for P1 (e.g. sum of several fractions),,p_1_notes,,,,,
+Extractable Phosphorus_2,,p_ex_2,layer,,numeric,value,
+Specify Method For P_2,,p_2_method,layer,,character,method,
+Specify Notes for P2 (e.g. sum of several fractions),,p_2_notes,,,,,
+Extractable Phosphorus_3,,p_ex_3,layer,,numeric,value,
+Specify Method For P_3,,p_3_method,layer,,character,method,
+Specify Notes for P3 (e.g. sum of several fractions),,p_3_notes,,,,,
+Extractable Phosphorus_4,,p_ex_4,layer,,numeric,value,
+Specify Method For P_4,,p_4_method,layer,,character,method,
+Specify Notes for P4 (e.g. sum of several fractions),,p_4_notes,,,,,
+Extractable Phosphorus_5,,p_ex_5,layer,,numeric,value,
+Specify Method For P_5,,p_5_method,layer,,character,method,
+Specify Notes for P5 (e.g. sum of several fractions),,p_5_notes,,,,,
+Net N mineralization,Net N mineralization,n_min,layer,mg/ g/ d,,,
+Soil Taxonomy,,soil_taxon,profile,,character,,
+Soil Series,,soil_series,profile,,character,,
+Depth to Bedrock,,bedrock_depth,profile,cm,numeric,,cm
+Thaw Depth,,thaw_depth_profile,profile,cm,numeric,,cm
+Fire Frequency,,fire_freq,profile,,,,
+comments,,comment_profile,profile,,,,
+Pyrophosphate Extractable Al,,lyr_al_py,layer,mg/g,numeric,value,mg/g
+Pyrophosphate Extractable Si,,lyr_si_py,layer,mg/g,numeric,value,mg/g
+Pyrophosphate Extractable C,,lyr_c_py,layer,mg/g,numeric,value,mg/g
+"Pyrophosphate Notes: Concentration, Extraction Time, Sequential or Parallel",,lyr_py$,layer,,character,method,
+Oxalate Extractable Fe,,lyr_fe_ox,layer,mg/g,numeric,value,mg/g
+Oxalate Extractable Al,,lyr_al_ox,layer,mg/g,numeric,value,mg/g
+Oxalate Extractable Si,,lyr_si_ox,layer,mg/g,numeric,value,mg/g
+"Oxalate Notes: Concentration, Extraction Time, Sequential or Parallel",,lyr_ox$,layer,,character,method,
+Hydroxylamine Extractable Fe,,lyr_fe_hy,layer,mg/g,numeric,value,mg/g
+Hydroxylamine Extractable Al,,lyr_al_hy,layer,mg/g,numeric,value,mg/g
+Hydroxylamine Extractable Si,,lyr_si_hy,layer,mg/g,numeric,value,mg/g
+Hydroxylamine Extractable C,,lyr_c_hy,layer,mg/g,numeric,value,mg/g
+"Hydroxylamine Notes: Concentration, Extraction Time, Sequential or Parallel",,lyr_hy$,layer,mg/g,character,method,mg/g
+Dithionite Extractable Fe,,lyr_fe_dith,layer,mg/g,numeric,value,mg/g
+Dithionite Extractable Al,,lyr_al_dith,layer,mg/g,numeric,value,mg/g
+Dithionite Extractable Si,,lyr_si_dith,layer,mg/g,numeric,value,mg/g
+"Dithionite Notes: Concentration, Extraction Time, Sequential or Parallel",,lyr_dith$,layer,,character,method,
+Quartz Abundance,,lyr_quartz,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Alkali Feldspar Abundance,,lyr_alkali_feldspar,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Plagioclase Feldspar Abundance,,lyr_plag_feldspar,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Mica + Chlorite Abundance,,lyr_mica_chlorite,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Amphibole (Hornblende),,lyr_amphibole,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Enstatite + Augite + Diopside,,lyr_pyroxine,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Olivine Abundance,,lyr_olivine,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Volcanic Glass Abundance,,lyr_volc_glass,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Kaolinite + Halloysite,,lyr_kaol_halloy,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Smectite (Montmorillonite) + Vermincullite,,lyr_smect_vermic,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Gibbsite Abundance,,lyr_gibbsite,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Goethite + Hematite + Magnetite + Lepidocrocite,,lyr_fe_oxides,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Imogolite + Allophane,,lyr_imog_alloph,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Ferrihydrite Abundance,,lyr_ferrihydrite,layer,percent or +/++/+++,character,value,percent or +/++/+++
+Radiocarbon Laboratory ID,,lyr_radiolabID,layer,rc_lab,character,method,
+Radiocarbon Laboratory layer Number,,lyr_radiolab_lyrnum,layer,,character,method,
+Radiocarbon Analysis Year,,lyr_radioanlys_yr,layer,YYYY,character,method,YYYY
+Bulk Layer ?14C,,lyr_14c,layer,permil,numeric,value,permil
+Bulk Layer ?14C Standard Deviation,,lyr_14c_sdv,layer,permil,numeric,sigma,permil
+Bulk Layer Fraction Modern,,lyr_frc_modern,layer,,numeric,value,
+Bulk Layer Fraction Modern Standard Deviation,,lyr_frc_modern_sdv,layer,,numeric,sigma,
+Fractionation Scheme,,frc_scheme,fraction,(f_scheme),character,method,
+Fraction Property,,frc_property,fraction,(f_property),character,method,
+Fractionation Scheme Units,,frc_scheme_units,fraction,(f_scheme_units),character,method,
+"Lower Cutoff Numerical (e.g., density, diameter, days, etc.)",,frc_low_cutoff,fraction,,character,method,
+"Upper Cutoff Numerical (e.g., density, diameter, days, etc.)",,frc_high_cutoff,fraction,,character,method,
+Concentration of Extractant,,frc_extr_conc,fraction,moles,character,method,moles
+Sequential Fractionation?,,frc_sqtl,fraction,Yes or Blank,character,method,Yes or Blank
+Numerical Ordering of Fractions From the Same Sequence,,frc_seq_order,fraction,,character,method,
+Was Fraction a Composite?,,frc_composite,fraction,Yes or Blank,character,method,Yes or Blank
+Fraction Notes,,frc_notes,fraction,,character,method,
+Fraction Proportion of layer Carbon,,frc_c_perc,fraction,percent,numeric,value,percent
+Fraction Proportion of layer Mass,,frc_mass_perc,fraction,percent,numeric,value,percent
+Fraction Total Carbon,,frc_c_tot,fraction,percent,numeric,value,percent
+Fraction Organic Carbon,,frc_oc,fraction,percent,numeric,value,percent
+Fraction Total Nitrogen,,frc_n_tot,fraction,percent,numeric,value,percent
+Fraction C:N,,frc_c_to_n,fraction,,numeric,value,unitless
+Fraction ?15N,,frc_15n,fraction,permil,numeric,value,permil
+Fraction ?13C,,frc_13c,fraction,permil,numeric,value,permil
+Radiocarbon Laboratory ID,,frc_radiolabID,fraction,,character,method,
+Radiocarbon Laboratory layer Number,,frc_radiolab_lyrnum,fraction,,character,method,
+Radiocarbon Analysis Year,,frc_radioanlys_yr,fraction,YYYY,character,method,YYYY
+Fraction ?14C,,frc_14c,fraction,permil,numeric,value,permil
+Fraction ?14C Standard Deviation,,frc_14c_sdv,fraction,permil,numeric,sigma,permil
+Fraction Fraction Modern,,frc_frc_modern,fraction,,numeric,value,
+Fraction Fraction Modern Standard Deviation,,frc_frc_modern_sdv,fraction,,numeric,sigma,
+Quartz Abundance,,frc_quartz,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Alkali Feldspar Abundance,,frc_alkali_feldspar,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Plagioclase Feldspar Abundance,,frc_plag_feldspar,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Mica + Chlorite,,frc_mica_chlorite,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Amphibole (Hornblende),,frc_amphibole,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Enstatite + Augite + Diopside,,frc_pyroxine,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Olivine Abundance,,frc_olivine,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Volcanic Glass Abundance,,frc_volc_glass,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Kaolinite + Halloysite,,frc_kaol_halloy,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Smectite (Montmorillonite) + Vermincullite,,frc_smect_vermic,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Gibbsite Abundance,,frc_gibbsite,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Goethite + Hematite + Magnetite + Lepidocrocite,,frc_fe_oxides,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Imogolite + Allophane,,frc_imog_alloph,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Ferrihydrite Abundance,,frc_ferrihydrite,fraction,percent or +/++/+++,character,value,percent or +/++/+++
+Name of Person Entering Data,,curator_PersonName,location,,,,
+Organization of Person Entering Data,,curator_organization,location,,,,
+Email Address of Person Entering Data,,curator_email,location,,,,
+Template Modification Date,,modification_date,location,,,,
+Corresponding Author of Publication/ Dataset,,author_PersonName,location,,,,
+Corresponding Author Email,,author_email,location,,,,
+Corresponding Author ORCID ID Number,,author_orcid_id,location,,,,
+Additional contacts (site leads),,addit_contact_person,location,,,,
+Additional contacts Email,,addit_contact_email,location,,,,
+Bibliographical Reference,,bibliographical_reference,location,,,,
+Dataset Digital Object Identifier (DOI) Number,,data_doi,location,,,,
+header row number,,header_row,location,,,,
+missing value (1),,NA_1,location,,,,
+missing value (2),,NA_2,location,,,,
+"Network (e.g. LTER, CZO, DIRT, NutNet, etc)",,network,location,,,,
+Site code (e.g. LUQ) or name,,site_code,location,,,,
+Location name,,location_name,location,,,,
+Latitude (degrees),,lat,location,,,,
+Longitude (degrees),,long,location,,,,
+Latitude/Longitude Datum,,datum,location,,,,
+Elevation,,elevation,location,,,,
+Mean Annual Precipitation,,map,location,,,,
+Mean Annual Temperature,,mat,location,,,,
+Climate averaging period,,clim_avg_yrs,location,,,,
+Treatment initiation,,tx_start,location,,,,
+Site Aspect (degrees),,aspect_deg,location,,,,
+Site Aspect Class,,aspect_class,location,,,,
+Slope,,slope,location,,,,
+Slope Shape,,slope_shape,location,,,,
+Drainage Class,,drainage_class,location,,,,
+Depth to Water Table,,depth_water,location,,,,
+parent_transport,,parent_transport,location,,,,
+parent_material (NRCS),,parent_material,location,,,,
+bedrock chemistry,,rock_chem,location,,,,
+Land Cover Category,,land_cover,location,,,,
+Ecoregion (wwf),,eco_region,location,,,,
+Soil texture class (NRCS),,loc_texture_class,location,,,,
+Dominant plant species,,plant,location,,,,
+Fine Litterfall Carbon,,lit_c,location,,,,
+Fine Litterfall Nitrogen,,lit_n,location,,,,
+Fine Litterfall phosphorus,,lit_p,location,,,,
+Fine Litterfall C:N,,lit_cn,location,,,,
+aboveground litterfall lignin,,lit_lig,location,,,,
+aboveground litterfall Lignin:N,,lit_lit_n,location,,,,
+net primary productivity,,npp,location,,,,
+aboveground net primary productivity,,anpp,location,,,,
+belowground net primary productivity,,bnpp,location,,,,
+"bnpp notes (ingrowth, sequential coring, etc)",,bnpp_notes,location,,,,
+aboveground biomass,,agb,location,,,,
+root biomass,,bgb,location,,,,
+root biomass lower diameter cutoff,,bgb_lowerdiam,location,,,,
+root biomass upper diameter cutoff,,bgb_upperdiam,location,,,,
+root biomass type,,bgb_type,location,,,,
+root biomass comments,,bgb_notes,location,,,,
+root biomass C,,bgb_c,location,,,,
+root biomass N,,bgb_n,location,,,,
+root biomass C:N,,bgb_cn,location,,,,
+root biomass lignin,,bgb_lignin,location,,,,
+Wood litterfall C flux,,wood_lit_c,location,,,,
+Wood litterfall N flux,,wood_lit_n,location,,,,
+Wood litterfall C:N,,wood_lit_cn,location,,,,
+alignment notes for profile data 1,,align_1,location,,,,
+alignment notes for profile data 2,,align_2,location,,,,
+comments,,loc_comments,location,,,,
+includes time-series data,,time_series,location,,,,
+is a gradient study,,gradient,location,,,,
+includes experimental manipulations,,experiments,location,,,,
+control samples identifier,,control_id,location,,,,
+number of treatments,,number_treatments,location,,,,
+merging datafiles required? please add details to alignment notes,,merge_align,location,,,,
+key file version (do not edit),,key_version,location,,,,
