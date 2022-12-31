@@ -105,51 +105,51 @@ function(input, output, session) {
         position = "topleft",
         #overlayGroups = c(""),
         options = layersControlOptions(collapsed = TRUE, autoZIndex = FALSE)) %>%
-        setView(lng = -116.75, lat = 43.16, zoom = 11) %>% #Set the default map location
+        setView(lng = -93.4, lat = 35.5, zoom = 4) %>% #Set the default map location
   
   ### Base map elements to start with
       
       # Add RCrk Boundary
-      addPolygons(data=app_boundary,
-                  col = 'black',
-                  stroke = TRUE, 
-                  weight=3,
-                  opacity=1,
-                  fillOpacity = 0, 
-                  smoothFactor = 2,
-                  layerId = 'RCbnd') %>%
+      # addPolygons(data=app_boundary,
+      #             col = 'black',
+      #             stroke = TRUE, 
+      #             weight=3,
+      #             opacity=1,
+      #             fillOpacity = 0, 
+      #             smoothFactor = 2,
+      #             layerId = 'RCbnd') %>%
       
       # Add shapefile overlay of watershed boundaries
-      addPolygons(data=app_watersheds,
-                  group = "watersheds",
-                  col = '#120046',
-                  stroke = TRUE, 
-                  weight=2,
-                  opacity=1,
-                  fillColor= "grey90",
-                  fillOpacity = 0, 
-                  smoothFactor = 2) %>%
+      # addPolygons(data=app_watersheds,
+      #             group = "watersheds",
+      #             col = '#120046',
+      #             stroke = TRUE, 
+      #             weight=2,
+      #             opacity=1,
+      #             fillColor= "grey90",
+      #             fillOpacity = 0, 
+      #             smoothFactor = 2) %>%
     
       # Add CZCN soil pit markers
-      addMarkers(data=app_CZCN_pits, ~Lon, ~Lat, 
+      addMarkers(data=app_CZCN_pits, ~long, ~lat, 
                  icon = ~ favicons['pit'],
-                 popup = ~as.character(ID), 
-                 label = ~as.character(Name),
-                 group = "CZCN_pits") %>%
+                 popup = ~as.character(location_name), 
+                 label = ~as.character(L1),
+                 group = "CZCN_pits") #%>%
       
-      # Add ARS met station points
-      addMarkers(data=app_met, ~long, ~lat, 
-                  icon = ~ favicons['met'],
-                  popup = ~as.character(Description), 
-                  label = ~as.character(StationID),
-                  group = "met_markers") %>%
-      
-      # Add ARS stream weirs
-      addMarkers(data=app_weir, ~long, ~lat, 
-                  icon = ~ favicons['weir'],
-                  popup = ~as.character(Description), 
-                  label = ~as.character(StationID),
-                  group = "weir_markers")
+      # # Add ARS met station points
+      # addMarkers(data=app_met, ~long, ~lat, 
+      #             icon = ~ favicons['met'],
+      #             popup = ~as.character(Description), 
+      #             label = ~as.character(StationID),
+      #             group = "met_markers") %>%
+      # 
+      # # Add ARS stream weirs
+      # addMarkers(data=app_weir, ~long, ~lat, 
+      #             icon = ~ favicons['weir'],
+      #             popup = ~as.character(Description), 
+      #             label = ~as.character(StationID),
+      #             group = "weir_markers")
   })
   
   
@@ -255,7 +255,7 @@ function(input, output, session) {
   ## Data Key ####################################################
   ## Var info summary tables
   # Location var info tbl
-  var_loc.tbl <- var.info %>% filter(Level == "location")
+  var_loc.tbl <- var_info %>% filter(Level == "location")
   output$var_info.loc = renderDT(
     var_loc.tbl,
     options = list(lengthChange = TRUE,
@@ -265,7 +265,7 @@ function(input, output, session) {
   )
   
   # Profile var info tbl
-  var_prof.tbl <- var.info %>% filter(Level != "location")
+  var_prof.tbl <- var_info %>% filter(Level != "location")
   output$var_info.prof = renderDT(
     var_prof.tbl,
     options = list(lengthChange = TRUE,
@@ -297,51 +297,51 @@ function(input, output, session) {
         ),
         position = "topleft",
         options = layersControlOptions(collapsed = TRUE, autoZIndex = FALSE)) %>%
-      setView(lng = -116.75, lat = 43.16, zoom = 10) %>% #Set the default map location
+      setView(lng = -93.4, lat = 30.0, zoom = 3) %>% #Set the default map location
       
       ### Base map elements to start with
       
-      #Add RCrk Boundary
-      addPolygons(data=app_boundary,
-                  col = 'black',
-                  stroke = TRUE,
-                  weight=3,
-                  opacity=1,
-                  fillOpacity = 0,
-                  smoothFactor = 2,
-                  layerId = 'RCbnd') %>%
-
-      # Add shapefile  overlay of watershed boundaries
-      addPolygons(data=app_watersheds,
-                  group = "watersheds",
-                  col = '#120046',
-                  stroke = TRUE,
-                  weight=2,
-                  opacity=1,
-                  fillColor= "grey90",
-                  fillOpacity = 0,
-                  smoothFactor = 2) %>%
+      # #Add RCrk Boundary
+      # addPolygons(data=app_boundary,
+      #             col = 'black',
+      #             stroke = TRUE,
+      #             weight=3,
+      #             opacity=1,
+      #             fillOpacity = 0,
+      #             smoothFactor = 2,
+      #             layerId = 'RCbnd') %>%
+      # 
+      # # Add shapefile  overlay of watershed boundaries
+      # addPolygons(data=app_watersheds,
+      #             group = "watersheds",
+      #             col = '#120046',
+      #             stroke = TRUE,
+      #             weight=2,
+      #             opacity=1,
+      #             fillColor= "grey90",
+      #             fillOpacity = 0,
+      #             smoothFactor = 2) %>%
 
       # Add CZCN soil pit markers
-      addMarkers(data=app_CZCN_pits, ~Lon, ~Lat,
+      addMarkers(data=app_CZCN_pits, ~long, ~lat,
                  icon = ~ favicons['pit'],
-                 popup = ~as.character(ID),
-                 label = ~as.character(Name),
-                 group = "CZCN_pits") %>%
-
-      # Add ARS met station points
-      addMarkers(data=app_met, ~long, ~lat, 
-                 icon = ~ favicons['met'],
-                 popup = ~as.character(Description), 
-                 label = ~as.character(StationID),
-                 group = "met_markers") %>%
-      
-      # Add ARS stream weirs
-      addMarkers(data=app_weir, ~long, ~lat, 
-                 icon = ~ favicons['weir'],
-                 popup = ~as.character(Description), 
-                 label = ~as.character(StationID),
-                 group = "weir_markers")
+                 popup = ~as.character(location_name), 
+                 label = ~as.character(L1),
+                 group = "CZCN_pits") #%>%
+      # 
+      # # Add ARS met station points
+      # addMarkers(data=app_met, ~long, ~lat, 
+      #            icon = ~ favicons['met'],
+      #            popup = ~as.character(Description), 
+      #            label = ~as.character(StationID),
+      #            group = "met_markers") %>%
+      # 
+      # # Add ARS stream weirs
+      # addMarkers(data=app_weir, ~long, ~lat, 
+      #            icon = ~ favicons['weir'],
+      #            popup = ~as.character(Description), 
+      #            label = ~as.character(StationID),
+      #            group = "weir_markers")
   })
   
 
