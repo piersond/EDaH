@@ -1,0 +1,9 @@
+Project,ID,Name,Lat,Lon
+CZCN,NB_R,"North aspect, Basalt, Ridge",43.11949434,-116.7237818
+CZCN,NL_M,"North aspect, Loess, Mid-slope",43.11988319,-116.7235507
+CZCN,SWB_T,"South aspect, Basalt, Toe-slope",43.1217744,-116.72325
+CZCN,NB_T,"North aspect, Basalt, Toe-slope",43.12007703,-116.7226474
+CZCN,NL_T,"North aspect, Loess, Toe-slope",43.11982379,-116.7229718
+CZCN,SWL_T,"South aspect, Loess, Toe-slope",43.12044746,-116.7222308
+CZCN,SWB_M,"South aspect, Basalt, Mid-slope",43.1216411,-116.7221659
+CZCN,SWB_R,"South aspect, Basalt, Ridge",43.1216565,-116.7215386

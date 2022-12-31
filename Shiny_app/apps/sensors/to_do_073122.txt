@@ -1,0 +1,5 @@
+- Lookup table for sensor column names --> Function that takes column name and provides formatted name for app to use in dropdowns, etc.
+
+- Add more categories of selecting sensors
+  --> Site enough?
+  --> Add option to plot from two different sites?

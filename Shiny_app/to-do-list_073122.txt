@@ -1,0 +1,11 @@
+
+- Use global.R to help make app easier to reuse
+- Split up code into test apps for each tab (map, plot, sensor, database)
+  - Use the same global.R to feed the tab-apps
+
+- Add site shapefiles to map
+  - Eventually add points for all data with GPS locations (overlapping?)
+
+- Make sensor data work for each site
+  - Pull sensor data from GDrive (use local if fail)
+  - Sensors need names --> make a lookup tbl

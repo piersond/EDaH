@@ -1,0 +1,37 @@
+long,lat,StationID,Group,Description
+-116.8280000,43.2967890,12,WEIR,Little Salmon Creek
+-116.8499190,43.2668520,31,MET,Upper Salmon Creek near Salmon Butte Meteorology and raingage Site
+-116.8183291,43.2562980,043b ,MET,Murphy Creek Meteorology Station
+-116.7070540,43.2470600,49,,Summit raingage Site
+-116.7375240,43.2285670,57,WEIR,Flats weir and raingages and microclimate
+-116.7502730,43.2051190,76,MET,Reynolds Quonset
+-116.7910070,43.1784760,095b ,MET,Meteorology and raingage Site southeast of Whisky Mountain
+-116.7136750,43.1687580,098c ,MET,Nancy Gulch Meteorology and raingage Site
+-116.7672420,43.1414150,116c ,WEIR,Raingage Site near Tollgate weir
+-116.7993920,43.1291860,124,MET,Meteorology and raingage Site on RCEW boundary above Johnston Draw headwaters
+-116.7966100,43.1286040,124b ,MET,Meteorology and raingage Site at Johnston Draw headwaters
+-116.7764100,43.1232780,125,MET,Meteorology and raingage Site near Johnston Draw and Dobson Creek confluence
+-116.7335680,43.1399990,127,WEIR,Lower Sheep Creek
+-116.7124320,43.1298330,128,MET,Meteorology Site near Black Mountain summit
+-116.7232310,43.1221420,13803,,Upper Sheep Creek  Weather Site at D03
+-116.7226440,43.1201980,138j10 ,,Upper Sheep Creek  Weather Site at J10
+-116.7197460,43.1175900,138l21 ,,Upper Sheep Creek  Weather Site at L21
+-116.8049590,43.1022610,144,MET,Christmas Meadows Meteorology and raingage Site
+-116.7738840,43.1067820,145,MET,Breaks  Meteorology and raingage Site
+-116.7386980,43.1052130,147,,Raingage Site on divide between Peters Gulch and North Fork Peters Gulch headwaters
+-116.7745490,43.0961380,155,,Raingage Site near Democrat historic site
+-116.8273350,43.0792450,163,MET,Meteorology and raingage Site at Dobson Creek headwaters
+-116.7535860,43.0694980,166b ,,Reynolds Mountain East Basin ridge site
+-116.7355970,43.0822440,167,MET,Bull Meadow Meteorology and raingage Site
+-116.7425490,43.0833200,167b ,MET,Western Juniper canopy influenced metoeorological site near Slacks Corner
+-116.7944640,43.0665200,174,MET,Headwaters of West Fork Reynolds Creek Meteorology and raingage Site
+-116.7591350,43.0656050,176,MET,Reynolds Mountain exposed ridge Meteorology and raingage Site
+-116.7550910,43.0679540,176b ,,Reynolds Mountain East Basin 10-m flux tower
+-116.7794360,43.1223180,jdt1 ,,Johnston Draw Tripod #1
+-116.7827980,43.1229270,jdt2 ,,Johnston Draw Tripod #2
+-116.7856090,43.1218800,jdt3 ,,Johnston Draw Tripod #3
+-116.7856200,43.1256830,jdt3b ,,Johnston Draw Tripod #3 South Facing Slope Hydraprobe Profile
+-116.7879870,43.1215930,jdt4 ,,Johnston Draw Tripod #4
+-116.7947280,43.1256440,jdt5 ,,Johnston Draw Tripod #5
+-116.7546490,43.0673450,rmsp3 ,MET,Reynolds Mountain wind-sheltered Meteorology and raingage Site
+-116.7502180,43.0628900,urt ,,Reynolds Mountain Upper Ridge Tripod
