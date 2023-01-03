@@ -7,7 +7,7 @@ library(tidyr)
 
 setwd("C:/github/EDaH/Data/GeoMicro/")
 
-eoc <- read_xlsx("Micah_EOC/eoc_all.xlsx")
+eoc <- read_xlsx("Micah_EOC/eoc_all_revised_dp.xlsx")
 IGSN <- read_xlsx("IGSN/IGSN number_IECZM_426_1669919052.xlsx", skip=1)
 
 # Add top depth column to eoc
@@ -59,11 +59,11 @@ IGSN$date_mY <- format(IGSN$sample_date, format='%m-%Y')
 eoc$date_mY <- format(paste0(eoc$month, "-", eoc$year), format='%m-%Y')
 
 # Create IGSN dataframe to join to eocyme data, then match column names with eoc df
-IGSN_join <- IGSN %>% select(IGSN, date_mY, loc_code, site_code, landscape_code, `Depth in Core (min)`)
-colnames(IGSN_join) <- c("IGSN", "date_mY", "Location", "Site", "Position", "top_depth_cm")
+IGSN_join <- IGSN %>% select(IGSN, date_mY, loc_code, site_code, landscape_code, `Depth in Core (min)`, `Depth in Core (max)`)
+colnames(IGSN_join) <- c("IGSN", "date_mY", "Location", "Site", "Position", "top_depth_cm", "bottom_depth_cm")
 
 # Join data
-IGSN_eoc <- left_join(eoc, IGSN_join, by=c("date_mY", "Location", "Site", "Position", "top_depth_cm"))
+IGSN_eoc <- left_join(eoc, IGSN_join, by=c("date_mY", "Location", "Site", "Position", "top_depth_cm", "bottom_depth_cm"))
 
 # save modified eoc data
 write.csv(IGSN_eoc, "Micah_EOC/geomicro_EOC_wIGSN.csv", row.names=F)
