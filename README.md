@@ -1,4 +1,4 @@
-![alt text](https://github.com/piersond/EDaH/blob/main/Doc/EDaH_bannerBW.png?raw=true)
+![alt text](https://github.com/piersond/EDaH/blob/main/Docs/EDaH_bannerBW.png?raw=true)
 
 # Environmental Data Harmonization Framework 
 **Code forked from the [soilHarmonization](https://lter.github.io/soilHarmonization/index.html) package.** 
