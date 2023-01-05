@@ -1,2 +1,3 @@
 *.RData
 *.Rhistory
+/Data/GeoMicro/Sensors/sensor_data_01032023.rds
