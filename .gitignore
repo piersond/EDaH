@@ -1,3 +1,4 @@
 *.RData
 *.Rhistory
 /Data/GeoMicro/Sensors/sensor_data_01032023.rds
+/Shiny_app/data/Sensors/sensor_data.rds

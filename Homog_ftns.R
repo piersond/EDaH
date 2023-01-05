@@ -347,7 +347,7 @@ locationData_QC <- function(locData) {
 collect_data_to_homog <- function(target_dir, locData) {
   
   #DEBUG
-  #target_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+  #target_dir = "C:/github/EDaH/Data/Geomicro/Micah_EOC"
   #locData = unitConv_locationData
   
   #Fix slash errors in target folder path

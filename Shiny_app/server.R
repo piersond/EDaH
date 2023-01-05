@@ -255,7 +255,7 @@ function(input, output, session) {
   ## Data Key ####################################################
   ## Var info summary tables
   # Location var info tbl
-  var_loc.tbl <- var_info %>% filter(Level == "location")
+  var_loc.tbl <- var_info %>% filter(level == "location")
   output$var_info.loc = renderDT(
     var_loc.tbl,
     options = list(lengthChange = TRUE,
@@ -265,7 +265,7 @@ function(input, output, session) {
   )
   
   # Profile var info tbl
-  var_prof.tbl <- var_info %>% filter(Level != "location")
+  var_prof.tbl <- var_info %>% filter(level != "location")
   output$var_info.prof = renderDT(
     var_prof.tbl,
     options = list(lengthChange = TRUE,
@@ -347,200 +347,159 @@ function(input, output, session) {
 
 ### Sensor graphs start here
   
-  # Get sensor filenames based on group
-  senID_choices <- reactive({
-    if(input$sensor_group == "CZCN Soil Pits") {
-      sensor_filenames[grepl("geomicro", sensor_filenames)]
-    } #else if...for other sensor groups
+  # Get list of location names
+  senID_loc <- unique(sensor_df$Site)
+  updateSelectInput(session, "sensor1_ID_loc", choices = senID_loc)
+
+  # Update list of site at the selected location
+  senID_site <- reactive({
+    df <- sensor_df %>% filter(Site == input$sensor1_ID_loc)  
+    unique(df$Subsite)
+  })
+  
+  # Update list of pits at the selected site
+  senID_pos <- reactive({
+    df <- sensor_df %>% filter(Site == input$sensor1_ID_loc) %>% filter(Subsite == input$sensor1_ID_site)  
+    unique(df$Pit)
   })
   
   #When sensor group changes, update sensor file dropdown options
   observe({
-    updateSelectInput(session, "sensor_ID1", choices = senID_choices(), selected = senID_choices()[1])
-    updateSelectInput(session, "sensor_ID2", choices = senID_choices(), selected = senID_choices()[1])
+    updateSelectInput(session, "sensor1_ID_site", choices = senID_site())#, selected = senID_site()[1])
+    updateSelectInput(session, "sensor1_ID_pos", choices = senID_pos())#, selected = senID_pos()[1])
   })
   
-  # Get file path for selected sensor 1
-  sensor_file1 <- reactive({
-    #c(input$sensor_ID1, input$sensor_ID2)
-    if(input$sensor_ID1 == "") {
-      paste0("./data/Sensors/", senID_choices()[1], ".dat")
-    } else {
-      paste0("./data/Sensors/", input$sensor_ID1, ".dat")
-    }
-  })
-  
-  # Get file path for selected sensor 2
-  sensor_file2 <- reactive({
-    if(input$sensor_ID2 == "") {
-      paste0("./data/Sensors/", senID_choices()[1], ".dat")
-    } else {
-      paste0("./data/Sensors/", input$sensor_ID2, ".dat")
-    }
-  })
- 
-  # Load data from selected sensor 1
-  sensor1_df <- reactive({
-    
-    # UNIQUE FORMATTING BY SENSOR GROUP
-    if(input$sensor_group == "CZCN Soil Pits") {
-    df <- read.table(sensor_file1(), sep=",", skip=1, fill=T, header=T, na.strings = c("NAN", "NA"))
-    df <- df %>% distinct()
-    df$TIMESTAMP <- as.POSIXct(df$TIMESTAMP, format = "%Y-%m-%d %H:%M:%OS", optional=T)
-    df <- df %>% filter(!is.na(TIMESTAMP)) %>% arrange(TIMESTAMP)
-    df <- df %>% mutate_at(c(2:ncol(df)), as.numeric)
-    } #else if...for other sensor groups
-    
-    df
-    }) 
-
-  # Update analyte options for sensor 1
-  observe({
-    #input$sensor_ID1
-    all_fields <- colnames(sensor1_df())
-    fields <- c(all_fields[3], all_fields[grepl("Avg", all_fields)])
-    
-    updateSelectInput(session, "sensor1_analyte1", choices = fields, selected = fields[5])
-    updateSelectInput(session, "sensor1_analyte2", choices = c("None",fields), selected = "None")
-    updateSelectInput(session, "sensor1_analyte3", choices = c("None",fields), selected = "None")
-  })
-  
-  # Load data from selected sensor 2
-  sensor2_df <- reactive({
-    
-    # UNIQUE FORMATTING BY SENSOR GROUP
-    if(input$sensor_group == "CZCN Soil Pits") {
-      df <- read.table(sensor_file2(), sep=",", skip=1, fill=T, header=T, na.strings = c("NAN", "NA"))
-      df <- df %>% distinct()
-      df$TIMESTAMP <- as.POSIXct(df$TIMESTAMP, format = "%Y-%m-%d %H:%M:%OS", optional=T)
-      df <- df %>% filter(!is.na(TIMESTAMP)) %>% arrange(TIMESTAMP)
-      df <- df %>% mutate_at(c(2:ncol(df)), as.numeric)
-    } #else if...for other sensor groups
-    
-    df
-  }) 
-  
-  # Update analyte options for sensor 1
-  observe({
-    #input$sensor_ID2
-    all_fields <- colnames(sensor2_df())
-    fields <- c(all_fields[3], all_fields[grepl("Avg", all_fields)])
-    
-    updateSelectInput(session, "sensor2_analyte1", choices = fields, selected = fields[8])
-    updateSelectInput(session, "sensor2_analyte2", choices = c("None",fields), selected = "None")
-    updateSelectInput(session, "sensor2_analyte3", choices = c("None",fields), selected = "None")
-  })
-
   #Create sensor plot
   output$plot_sens1 <- renderPlotly({
-    df <- sensor1_df()
-    fig <- plot_ly(type = 'scatter', mode = 'lines+markers')
-    fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor1_analyte1], name = input$sensor1_analyte1, 
-                             fill="tozeroy", fillcolor='rgba(26,150,65,0.5)',               
-                             line = list(color = 'rgba(26,150,65,0.7)', width = 2),
-                             marker = list(color = 'rgba(26,150,65,0.8)', size = 3))
     
-    if(input$sensor1_analyte2 != "None"){
-      fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor1_analyte2], name = input$sensor1_analyte2, 
+    df <- sensor_df %>% filter(Site == input$sensor1_ID_loc) %>%
+                        filter(Subsite == input$sensor1_ID_site) %>%
+                        filter(Pit == input$sensor1_ID_pos) %>%
+                        arrange(TIMESTAMP)
+                        
+    df_surf <- df %>% filter(Depth == "Shallow")
+    df_mid <- df %>% filter(Depth == "Middle")
+    df_deep <- df %>% filter(Depth == "Deep")
+    
+    plot_analyte <- input$sensor1_analyte
+    
+    fig <- plot_ly(type = 'scatter', mode = 'lines+markers')
+  
+    if(input$surf_show){
+      fig <- fig %>% add_trace(x = df_surf$TIMESTAMP, y = df_surf[[`plot_analyte`]], name = paste0(plot_analyte, " Shallow"), 
+                               fill="tozeroy", fillcolor='rgba(26,150,65,0.5)',               
+                               line = list(color = 'rgba(26,150,65,0.7)', width = 2),
+                               marker = list(color = 'rgba(26,150,65,0.8)', size = 3))
+    }
+    
+    if(input$mid_show){
+      fig <- fig %>% add_trace(x = df_mid$TIMESTAMP, y = df_mid[[`plot_analyte`]], name = paste0(plot_analyte, " Middle"), 
                                fill="tozeroy", fillcolor='rgba(16,110,25,0.5)',               
                                line = list(color = 'rgba(16,110,25,0.7)', width = 2),
                                marker = list(color = 'rgba(16,110,25,0.8)', size = 5))
     }
     
-    if(input$sensor1_analyte3 != "None"){
-      fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor1_analyte3], name = input$sensor1_analyte3, 
+    if(input$deep_show){
+      fig <- fig %>% add_trace(x = df_deep$TIMESTAMP, y = df_deep[[`plot_analyte`]], name = paste0(plot_analyte, " Deep"), 
                                fill="tozeroy", fillcolor='rgba(8,50,5,0.5)',               
                                line = list(color = 'rgba(8,50,5,0.7)', width = 2),
                                marker = list(color = 'rgba(8,50,5,0.8)', size = 3))
     }
     
-    fig <- fig %>% layout(xaxis = list(title = 'Date',
-                                       rangeslider = list(type = "date", thickness=0.1)),
+
+    fig <- fig %>% layout(xaxis = list(title = 'Date'),#,
+                                       #rangeslider = list(type = "date", thickness=0.1)),
                           yaxis = list(title = '')) #Y-Axis Label
     fig
     })
   
-  output$plot_sens2 <- renderPlotly({  
-    df <- sensor2_df()
-    fig <- plot_ly(type = 'scatter', mode = 'lines+markers')
-    fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor2_analyte1], name = input$sensor2_analyte1, 
-                             fill="tozeroy", fillcolor='rgba(26,150,185,0.5)',               
-                             line = list(color = 'rgba(26,150,185,0.7)', width = 2),
-                             marker = list(color = 'rgba(26,150,185,0.8)', size = 3))
-    
-    if(input$sensor2_analyte2 != "None"){
-      fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor2_analyte2], name = input$sensor2_analyte2, 
-                               fill="tozeroy", fillcolor='rgba(16,110,145,0.5)',               
-                               line = list(color = 'rgba(16,110,145,0.7)', width = 2),
-                               marker = list(color = 'rgba(16,110,145,0.8)', size = 3))
-    }
-    
-    if(input$sensor2_analyte3 != "None"){
-      fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor2_analyte3], name = input$sensor2_analyte3, 
-                               fill="tozeroy", fillcolor='rgba(8,50,125,0.5)',               
-                               line = list(color = 'rgba(8,50,125,0.7)', width = 2),
-                               marker = list(color = 'rgba(8,50,125,0.8)', size = 3))
-    }
-    
-    fig <- fig %>% layout(xaxis = list(title = 'Date',
-                                       rangeslider = list(type = "date", thickness=0.1)),
-                          yaxis = list(title = '')) #Y-Axis Label
-    fig
-  })
-  
+  # output$plot_sens2 <- renderPlotly({  
+  #   df <- sensor2_df()
+  #   fig <- plot_ly(type = 'scatter', mode = 'lines+markers')
+  #   fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor2_analyte1], name = input$sensor2_analyte1, 
+  #                            fill="tozeroy", fillcolor='rgba(26,150,185,0.5)',               
+  #                            line = list(color = 'rgba(26,150,185,0.7)', width = 2),
+  #                            marker = list(color = 'rgba(26,150,185,0.8)', size = 3))
+  #   
+  #   if(input$sensor2_analyte2 != "None"){
+  #     fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor2_analyte2], name = input$sensor2_analyte2, 
+  #                              fill="tozeroy", fillcolor='rgba(16,110,145,0.5)',               
+  #                              line = list(color = 'rgba(16,110,145,0.7)', width = 2),
+  #                              marker = list(color = 'rgba(16,110,145,0.8)', size = 3))
+  #   }
+  #   
+  #   if(input$sensor2_analyte3 != "None"){
+  #     fig <- fig %>% add_trace(x = df[,'TIMESTAMP'], y = df[,input$sensor2_analyte3], name = input$sensor2_analyte3, 
+  #                              fill="tozeroy", fillcolor='rgba(8,50,125,0.5)',               
+  #                              line = list(color = 'rgba(8,50,125,0.7)', width = 2),
+  #                              marker = list(color = 'rgba(8,50,125,0.8)', size = 3))
+  #   }
+  #   
+  #   fig <- fig %>% layout(xaxis = list(title = 'Date',
+  #                                      rangeslider = list(type = "date", thickness=0.1)),
+  #                         yaxis = list(title = '')) #Y-Axis Label
+  #   fig
+  # })
+  # 
   
   ### Sensor DataTable
   
-  # Get sensor filenames based on group
-  sensor_tbl_choices <- reactive({
-    if(input$sensor_tbl_group == "CZCN Soil Pits") {
-      sensor_filenames[grepl("geomicro", sensor_filenames)]
-    } #else if...for other sensor groups
-  })
-  
-  # Update sensor file dropdown options
-  observe({
-    updateSelectInput(session, "sensor_tbl_ID", choices = sensor_tbl_choices(), selected = sensor_tbl_choices()[1])
-  })
-  
-  # Change sensor file if plot 1 changes
+  # # Get sensor filenames based on group
+  # sensor_tbl_choices <- reactive({
+  #   if(input$sensor_tbl_group == "CZCN Soil Pits") {
+  #     sensor_filenames[grepl("geomicro", sensor_filenames)]
+  #   } #else if...for other sensor groups
+  # })
+  # 
+  # # Update sensor file dropdown options
   # observe({
-  #   c(input$sensor_ID1)
-  #   updateSelectInput(session, "sensor_tbl_ID", selected = input$sensor_ID1)
-  #   })
-  
-  # Get file path for selected sensor 2
-  sensor_tbl_file <- reactive({
-    if(input$sensor_tbl_ID == "") {
-      paste0("./data/Sensors/", sensor_tbl_choices()[1], ".dat")
-    } else {
-      paste0("./data/Sensors/", input$sensor_tbl_ID, ".dat")
-    }
-  })
-  
-  # Load data from selected sensor 2
-  sensor_tbl_df <- reactive({
-    
-    # UNIQUE FORMATTING BY SENSOR GROUP
-    if(input$sensor_group == "CZCN Soil Pits") {
-      df <- read.table(sensor_tbl_file(), sep=",", skip=1, fill=T, header=T, na.strings = c("NAN", "NA"))
-      df <- df %>% distinct()
-      df$TIMESTAMP <- as.POSIXct(df$TIMESTAMP, format = "%Y-%m-%d %H:%M:%OS", optional=T)
-      df <- df %>% filter(!is.na(TIMESTAMP)) %>% arrange(TIMESTAMP)
-      df <- df %>% mutate_at(c(2:ncol(df)), as.numeric)
-    } #else if...for other sensor groups
-    
-    df
-  }) 
-  
+  #   updateSelectInput(session, "sensor_tbl_ID", choices = sensor_tbl_choices(), selected = sensor_tbl_choices()[1])
+  # })
+  # 
+  # # Change sensor file if plot 1 changes
+  # # observe({
+  # #   c(input$sensor_ID1)
+  # #   updateSelectInput(session, "sensor_tbl_ID", selected = input$sensor_ID1)
+  # #   })
+  # 
+  # # Get file path for selected sensor 2
+  # sensor_tbl_file <- reactive({
+  #   if(input$sensor_tbl_ID == "") {
+  #     paste0("./data/Sensors/", sensor_tbl_choices()[1], ".dat")
+  #   } else {
+  #     paste0("./data/Sensors/", input$sensor_tbl_ID, ".dat")
+  #   }
+  # })
+  # 
+  # # Load data from selected sensor 2
+  # sensor_tbl_df <- reactive({
+  #   
+  #   # UNIQUE FORMATTING BY SENSOR GROUP
+  #   if(input$sensor_group == "CZCN Soil Pits") {
+  #     df <- read.table(sensor_tbl_file(), sep=",", skip=1, fill=T, header=T, na.strings = c("NAN", "NA"))
+  #     df <- df %>% distinct()
+  #     df$TIMESTAMP <- as.POSIXct(df$TIMESTAMP, format = "%Y-%m-%d %H:%M:%OS", optional=T)
+  #     df <- df %>% filter(!is.na(TIMESTAMP)) %>% arrange(TIMESTAMP)
+  #     df <- df %>% mutate_at(c(2:ncol(df)), as.numeric)
+  #   } #else if...for other sensor groups
+  #   
+  #   df
+  # }) 
+  # 
   # Create DataTable
-  output$sensor_tbl <- DT::renderDataTable({    
-    DT::datatable(sensor_tbl_df(), 
-                  rownames = FALSE, 
-                  options = list(dom = 't', 
-                                 lengthMenu = c(50, 100, 500), 
-                                 pageLength = 100), 
-                  escape = FALSE, 
+  output$sensor_tbl <- DT::renderDataTable({
+    
+    df <- sensor_df %>% filter(Site == input$sensor1_ID_loc) %>%
+      filter(Subsite == input$sensor1_ID_site) %>%
+      filter(Pit == input$sensor1_ID_pos) %>%
+      arrange(TIMESTAMP)
+    
+    DT::datatable(df,
+                  rownames = FALSE,
+                  options = list(dom = 't',
+                                 lengthMenu = c(50, 100, 500),
+                                 pageLength = 100),
+                  escape = FALSE,
                   class = "display nowrap")
   })
   

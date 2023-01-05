@@ -3,17 +3,17 @@ library(readxl)
 
 ### 1) NEED TO FIX DATE FORMATS! SET TO SOMETHING EXCEL WONT CHANGE!!!
 ### 2) ALIGN NEEDS TO BE OPTIONAL, SUCH THAT USERS CAN PRODUCE A COMPLETE DATABASE AND AN ALIGNED DATABASE
-### 3) This script also needs a log and notes output
+### 3) This script also needs a log and notes output, must watch for errors in the alignment, i.e. rows that don't align
 
 setwd("C:/GitHub/EDaH/Data/GeoMicro")
 
 
 # Required inputs for ftn
 #-----------------------------------------------------------------------------------
-data_add <- read.csv("Kitty_microbiomass/HMGZD_data_output_12-30-2022.csv", as.is=T)
+data_add <- read.csv("Micah_EOC/HMGZD_data_output_01-03-2023.csv", as.is=T)
 #tarball <- read.csv("IGSN/HMGZD_data_output_12-28-2022.csv", as.is=T) #Use the IGSN spreadsheet for first tarball
 tarball <- readRDS("GeoMicro_aligned_tarball_2022-12-30.rds")
-key_filepath <- "Kitty_microbiomass/geomicro_mb_Key_V3.xlsx"
+key_filepath <- "Micah_EOC/geomicro_EOC_Key_V3.xlsx"
 
 
 # Pull alignment instructions from key file
@@ -92,8 +92,8 @@ if(length(extra_dups) > 0) {
 
 
 #DEBUG
-#dfx <- join_df %>% select(IGSN, layer_bot, layer_bot_ALIGN2)
-#dfx$check <- ifelse(dfx$layer_bot == dfx$layer_bot_ALIGN2, "GOOD", "BAD")
-
+#dfx <- join_df %>% select(IGSN, location_name, L1, layer_top, layer_top_ALIGN4, layer_bot, layer_bot_ALIGN4)
+#dfx$check_top <- ifelse(dfx$layer_top == dfx$layer_top_ALIGN4, "GOOD", "BAD")
+#dfx$check_bot <- ifelse(dfx$layer_bot == dfx$layer_bot_ALIGN4, "GOOD", "BAD")
 #dfz <- join_df %>% filter(!is.na(lf_low_cut))
 

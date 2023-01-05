@@ -1,0 +1,144 @@
+"","header_name","unit_levels.x","Var_long.x","var","Level.x","Notes","givenUnit.x","class.x","type.x","hardUnit.x","Comment","minValue","maxValue","unit_levels.y","Var_long.y","Level.y","givenUnit.y","class.y","type.y","hardUnit.y","definition","authority"
+"1","plot","Plot","Experimental Level 1(top level)","L1","profile",NA,NA,"exp_lvl",NA,NA,NA,NA,NA,NA,"Experimental Level 1(top level)","profile",NA,NA,NA,NA,NA,NA
+"2",NA,NA,"Experimental Level 2","L2","profile",NA,NA,"exp_lvl",NA,NA,NA,NA,NA,NA,"Experimental Level 2","profile",NA,NA,NA,NA,NA,NA
+"3",NA,NA,"Experimental Level 3","L3","profile",NA,NA,"exp_lvl",NA,NA,NA,NA,NA,NA,"Experimental Level 3","profile",NA,NA,NA,NA,NA,NA
+"4",NA,NA,"Experimental Level 4","L4","profile",NA,NA,"exp_lvl",NA,NA,NA,NA,NA,NA,"Experimental Level 4","profile",NA,NA,NA,NA,NA,NA
+"5",NA,NA,"Experimental Level 5","L5","profile",NA,NA,"exp_lvl",NA,NA,NA,NA,NA,NA,"Experimental Level 5","profile",NA,NA,NA,NA,NA,NA
+"6",NA,NA,"Experimental Level 6","L6","profile",NA,NA,"exp_lvl",NA,NA,NA,NA,NA,NA,"Experimental Level 6","profile",NA,NA,NA,NA,NA,NA
+"7","trmt","litter_manip","Treatment_1_level","tx_L1","profile","CTL=Control untreated; DL=Double litter inputs; DW=Additional wood chip inputs equal to litter input; NL=No litter inputs; NR=No belowground inputs, no roots; NI=No litter or root inputs",NA,"tx_lvl",NA,NA,NA,NA,NA,NA,"Treatment_1_level","profile",NA,NA,NA,NA,NA,NA
+"8",NA,NA,"Treatment_2_level","tx_L2","profile",NA,NA,"tx_lvl",NA,NA,NA,NA,NA,NA,"Treatment_2_level","profile",NA,NA,NA,NA,NA,NA
+"9",NA,NA,"Treatment_3_level","tx_L3","profile",NA,NA,"tx_lvl",NA,NA,NA,NA,NA,NA,"Treatment_3_level","profile",NA,NA,NA,NA,NA,NA
+"10",NA,NA,"Treatment_4_level","tx_L4","profile",NA,NA,"tx_lvl",NA,NA,NA,NA,NA,NA,"Treatment_4_level","profile",NA,NA,NA,NA,NA,NA
+"11",NA,NA,"Treatment_5_level","tx_L5","profile",NA,NA,"tx_lvl",NA,NA,NA,NA,NA,NA,"Treatment_5_level","profile",NA,NA,NA,NA,NA,NA
+"12",NA,NA,"Treatment_6_level","tx_L6","profile",NA,NA,"tx_lvl",NA,NA,NA,NA,NA,NA,"Treatment_6_level","profile",NA,NA,NA,NA,NA,NA
+"13","Year","YYYY","Observation Date","observation_date","profile",NA,"YYYY-MM-DD or MM/DD/YYYY","character",NA,NA,NA,NA,NA,NA,"Observation Date","profile","YYYY-MM-DD or MM/DD/YYYY","character",NA,NA,NA,NA
+"14",NA,NA,"Profile Vegetation","veg_note_profile","profile",NA,"species names","character",NA,NA,NA,NA,NA,NA,"Profile Vegetation","profile","species names","character",NA,NA,NA,NA
+"15",NA,NA,"Bulk Layer Total Carbon, not acid treated to remove inorganic C","lyr_c_tot","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Bulk Layer Total Carbon","layer","percent","numeric","value","percent",NA,NA
+"16","ave C%","%","Bulk Layer Organic Carbon (CN analyzer) concentration, inorganic C removed or not present","lyr_soc","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Bulk Layer Organic Carbon (CN analyzer) concentration","layer","percent","numeric","value","percent",NA,NA
+"17",NA,NA,"Bulk Layer Organic Carbon (CN analyzer) stock","lyr_soc_stock","layer",NA,"percent","numeric","value","percent",NA,0,1e+06,NA,"Bulk Layer Organic Carbon (CN analyzer) stock","layer","g m-2","numeric","value","percent",NA,NA
+"18",NA,NA,"Bulk Layer Loss on Ignition","lyr_loi","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Bulk Layer Loss on Ignition","layer","percent","numeric","value","percent",NA,NA
+"19",NA,NA,"Bulk Layer OM (Walkley Balck)","lyr_som_WalkleyBlack","layer",NA,NA,NA,NA,NA,NA,0,100,NA,"Bulk Layer OM (Walkley Balck)","layer","percent",NA,NA,NA,NA,NA
+"20","ave N%","%","Bulk Layer Total Nitrogen concentration","lyr_n_tot","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Bulk Layer Total Nitrogen concentration","layer","percent","numeric","value","percent",NA,NA
+"21",NA,NA,"Bulk Layer Total Nitrogen stock","lyr_n_tot_stock","layer",NA,"percent","numeric","value","percent",NA,0,1e+05,NA,"Bulk Layer Total Nitrogen stock","layer","g m-2","numeric","value","percent",NA,NA
+"22",NA,NA,"Bulk Layer C:N","lyr_c_to_n","layer",NA,"unitless","numeric","value","unitless",NA,0,100,NA,"Bulk Layer C:N","layer","unitless","numeric","value","unitless",NA,NA
+"23",NA,"per mil","Bulk Layer d15N","lyr_15n","layer",NA,"permil","numeric","value","permil",NA,-30,30,NA,"Bulk Layer d15N","layer","permil","numeric","value","permil",NA,NA
+"24",NA,"per mil","Bulk Layer d13C","lyr_13c","layer",NA,"permil","numeric","value","permil",NA,-40,0,NA,"Bulk Layer d13C","layer","permil","numeric","value","permil",NA,NA
+"25","top_depth","m","Layer Top","layer_top","layer",NA,"cm","numeric",NA,"cm",NA,-10,400,NA,"Layer Top","layer","cm","numeric",NA,"cm",NA,NA
+"26","bottom_depth","mm","Layer Bottom","layer_bot","layer",NA,"cm","numeric",NA,"cm",NA,-1,500,NA,"Layer Bottom","layer","cm","numeric",NA,"cm",NA,NA
+"27",NA,NA,"Horizon","hzn","layer",NA,NA,"character",NA,NA,NA,NA,NA,NA,"Horizon","layer",NA,"character",NA,NA,NA,NA
+"28",NA,NA,"Bulk Density, Coarse Fragments Removed","bd_samp","layer",NA,"g cm-3","numeric","value","g cm-3",NA,0.1,2,NA,"Bulk Density, Coarse Fragments Removed","layer","g cm-3","numeric","value","g cm-3",NA,NA
+"29",NA,NA,"Bulk Density With Coarse Fragments","bd_tot","layer",NA,"g cm-3","numeric","value","g cm-3",NA,0.1,2,NA,"Bulk Density With Coarse Fragments","layer","g cm-3","numeric","value","g cm-3",NA,NA
+"30",NA,NA,"Bulk Density Method or Other Notes","^bd_","layer",NA,NA,"character","method",NA,NA,NA,NA,NA,"Bulk Density Method or Other Notes","layer",NA,"character","method",NA,NA,NA
+"31",NA,NA,"Soil pH CaCl2","ph_cacl","layer",NA,"unitless","numeric","value",NA,NA,0,14,NA,"Soil pH CaCl2","layer","unitless","numeric","value",NA,NA,NA
+"32",NA,NA,"Soil pH in water","ph_h2o","layer",NA,"unitless","numeric","value",NA,NA,0,14,NA,"Soil pH in water","layer","unitless","numeric","value",NA,NA,NA
+"33",NA,NA,"Soil pH Other","ph_other","layer",NA,"unitless","numeric","value",NA,NA,0,14,NA,"Soil pH Other","layer","unitless","numeric","value",NA,NA,NA
+"34",NA,NA,"Sand","sand","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Sand","layer","percent","numeric","value","percent",NA,NA
+"35",NA,NA,"Silt","silt","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Silt","layer","percent","numeric","value","percent",NA,NA
+"36",NA,NA,"Clay","clay","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Clay","layer","percent","numeric","value","percent",NA,NA
+"37",NA,NA,"Coarse Fraction","coarse_frac","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Coarse Fraction","layer","percent","numeric","value","percent",NA,NA
+"38",NA,NA,"Coarse Fraction Size Threshold Used","coarse_tot","layer",NA,"mm","character","method",NA,NA,0,10,NA,"Coarse Fraction Size Threshold Used","layer","mm","character","method",NA,NA,NA
+"39",NA,NA,"Texture Class","profile_texture_class","profile",NA,"(texture_class)","factor",NA,NA,NA,NA,NA,NA,"Texture Class","profile","(texture_class)","factor",NA,NA,NA,NA
+"40",NA,NA,"Bulk Layer Surface Area Measured By BET","bet_surface_area","layer",NA,NA,"character","value",NA,NA,NA,NA,NA,"Bulk Layer Surface Area Measured By BET","layer",NA,"character","value",NA,NA,NA
+"41",NA,NA,"Calcium Carbonate","caco3","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"Calcium Carbonate","layer","percent","numeric","value","percent",NA,NA
+"42",NA,NA,"Cation Exchange","cat_exch","layer",NA,"cmol H+ kg-1","numeric","value","cmol H+ kg-1",NA,0,200,NA,"Cation Exchange","layer","cmol H+ kg-1","numeric","value","cmol H+ kg-1",NA,NA
+"43",NA,NA,"Sum of Bases","base_sum","layer",NA,"meq 100g-1","numeric","value","meq 100g-1",NA,0,500,NA,"Sum of Bases","layer","meq 100g-1","numeric","value","meq 100g-1",NA,NA
+"44",NA,NA,"Sum of Cation Exchange Capacity","cec_sum","layer",NA,"meq 100g-1","numeric","value","meq 100g-1",NA,0,500,NA,"Sum of Cation Exchange Capacity","layer","meq 100g-1","numeric","value","meq 100g-1",NA,NA
+"45",NA,NA,"Effective Cation Exchange Capacity","ecec","layer",NA,"meq 100g-1","numeric","value","meq 100g-1",NA,0,200,NA,"Effective Cation Exchange Capacity","layer","meq 100g-1","numeric","value","meq 100g-1",NA,NA
+"46",NA,NA,"% Base Saturation","bs","layer",NA,"percent","numeric","value","percent",NA,0,100,NA,"% Base Saturation","layer","percent","numeric","value","percent",NA,NA
+"47",NA,NA,"Microbial biomass C, raw value","mbc_raw","layer",NA,"mgC/g","numeric","method",NA,NA,0,100,NA,"Microbial biomass C, raw value","layer","mgC/g","numeric","method",NA,NA,NA
+"48",NA,NA,"Microbial biomass C, reported Value After Transformation","mbc_trans","layer",NA,"mgC/g","character","value","mgC/g",NA,0,100,NA,"Microbial biomass C, reported Value After Transformation","layer","mgC/g","character","value","mgC/g",NA,NA
+"49",NA,NA,"Microbial biomass N, raw value","mbn_raw","layer",NA,"mgN/g","numeric","method",NA,NA,0,33,NA,"Microbial biomass N, raw value","layer","mgN/g","numeric","method",NA,NA,NA
+"50",NA,NA,"Microbial biomass N, reported Value After Transformation","mbn_trans","layer",NA,"mgN/g","character","value","mgC/g",NA,0,33,NA,"Microbial biomass N, reported Value After Transformation","layer","mgN/g","character","value","mgC/g",NA,NA
+"51",NA,NA,"Microbial biomass P, raw value","mbp_raw","layer",NA,"mgP/g","numeric","method",NA,NA,0,10,NA,"Microbial biomass P, raw value","layer","mgP/g","numeric","method",NA,NA,NA
+"52",NA,NA,"Microbial biomass P, reported Value After Transformation","mbp_trans","layer",NA,"mgP/g","character","value","mgC/g",NA,0,10,NA,"Microbial biomass P, reported Value After Transformation","layer","mgP/g","character","value","mgC/g",NA,NA
+"53",NA,NA,"Microbial Biomass C:N","mb_cn","layer",NA,"unitless",NA,NA,NA,NA,0,50,NA,"Microbial Biomass C:N","layer","unitless",NA,NA,NA,NA,NA
+"54",NA,NA,"Microbial Biomass C:P","mb_cp","layer",NA,"unitless",NA,NA,NA,NA,0,500,NA,"Microbial Biomass C:P","layer","unitless",NA,NA,NA,NA,NA
+"55",NA,NA,"Microbial Biomass N:P","mb_np","layer",NA,"unitless",NA,NA,NA,NA,0,50,NA,"Microbial Biomass N:P","layer","unitless",NA,NA,NA,NA,NA
+"56",NA,NA,"Microbial Biomass Method","mbc_method","layer",NA,"(mbc_method)","factor","method",NA,NA,NA,NA,NA,"Microbial Biomass Method","layer","(mbc_method)","factor","method",NA,NA,NA
+"57",NA,NA,"Extractable Phosphorus","p_ex","layer",NA,NA,"numeric","value",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"58",NA,NA,"Specify Units For P Data","p_units","layer",NA,NA,"factor","unit",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"59",NA,NA,"Specify Method For P","p_method","layer",NA,NA,"character","method",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"60",NA,NA,"Net N mineralization","n_min","layer",NA,NA,NA,NA,NA,NA,0,1000,NA,"Net N mineralization","layer",NA,NA,NA,NA,NA,NA
+"61",NA,NA,"Soil Taxonomy","soil_taxon","profile",NA,NA,"character",NA,NA,NA,NA,NA,NA,"Soil Taxonomy","profile",NA,"character",NA,NA,NA,NA
+"62",NA,NA,"Soil Series","soil_series","profile",NA,NA,"character",NA,NA,NA,NA,NA,NA,"Soil Series","profile",NA,"character",NA,NA,NA,NA
+"63",NA,NA,"Depth to Bedrock","bedrock_depth","profile",NA,"cm","numeric",NA,"cm",NA,0,1e+05,NA,"Depth to Bedrock","profile","cm","numeric",NA,"cm",NA,NA
+"64",NA,NA,"Thaw Depth","thaw_depth_profile","profile",NA,"cm","numeric",NA,"cm",NA,0,1e+05,NA,"Thaw Depth","profile","cm","numeric",NA,"cm",NA,NA
+"65",NA,NA,"Fire Frequency","fire_freq","profile",NA,NA,NA,NA,NA,NA,NA,NA,NA,"Fire Frequency","profile",NA,NA,NA,NA,NA,NA
+"66",NA,NA,"comments","comment_profile","profile",NA,NA,NA,NA,NA,NA,NA,NA,NA,"comments","profile",NA,NA,NA,NA,NA,NA
+"67",NA,NA,"Pyrophosphate Extractable Al","lyr_al_py","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Pyrophosphate Extractable Al","layer","mg/g","numeric","value","mg/g",NA,NA
+"68",NA,NA,"Pyrophosphate Extractable Si","lyr_si_py","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Pyrophosphate Extractable Si","layer","mg/g","numeric","value","mg/g",NA,NA
+"69",NA,NA,"Pyrophosphate Extractable C","lyr_c_py","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Pyrophosphate Extractable C","layer","mg/g","numeric","value","mg/g",NA,NA
+"70",NA,NA,"Pyrophosphate Notes: Concentration, Extraction Time, Sequential or Parallel","lyr_py$","layer",NA,NA,"character","method",NA,NA,NA,NA,NA,"Pyrophosphate Notes: Concentration, Extraction Time, Sequential or Parallel","layer",NA,"character","method",NA,NA,NA
+"71",NA,NA,"Oxalate Extractable Fe","lyr_fe_ox","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Oxalate Extractable Fe","layer","mg/g","numeric","value","mg/g",NA,NA
+"72",NA,NA,"Oxalate Extractable Al","lyr_al_ox","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Oxalate Extractable Al","layer","mg/g","numeric","value","mg/g",NA,NA
+"73",NA,NA,"Oxalate Extractable Si","lyr_si_ox","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Oxalate Extractable Si","layer","mg/g","numeric","value","mg/g",NA,NA
+"74",NA,NA,"Oxalate Notes: Concentration, Extraction Time, Sequential or Parallel","lyr_ox$","layer",NA,NA,"character","method",NA,NA,NA,NA,NA,"Oxalate Notes: Concentration, Extraction Time, Sequential or Parallel","layer",NA,"character","method",NA,NA,NA
+"75",NA,NA,"Hydroxylamine Extractable Fe","lyr_fe_hy","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Hydroxylamine Extractable Fe","layer","mg/g","numeric","value","mg/g",NA,NA
+"76",NA,NA,"Hydroxylamine Extractable Al","lyr_al_hy","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Hydroxylamine Extractable Al","layer","mg/g","numeric","value","mg/g",NA,NA
+"77",NA,NA,"Hydroxylamine Extractable Si","lyr_si_hy","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Hydroxylamine Extractable Si","layer","mg/g","numeric","value","mg/g",NA,NA
+"78",NA,NA,"Hydroxylamine Extractable C","lyr_c_hy","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Hydroxylamine Extractable C","layer","mg/g","numeric","value","mg/g",NA,NA
+"79",NA,NA,"Hydroxylamine Notes: Concentration, Extraction Time, Sequential or Parallel","lyr_hy$","layer",NA,"mg/g","character","method","mg/g",NA,NA,NA,NA,"Hydroxylamine Notes: Concentration, Extraction Time, Sequential or Parallel","layer","mg/g","character","method","mg/g",NA,NA
+"80",NA,NA,"Dithionite Extractable Fe","lyr_fe_dith","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Dithionite Extractable Fe","layer","mg/g","numeric","value","mg/g",NA,NA
+"81",NA,NA,"Dithionite Extractable Al","lyr_al_dith","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Dithionite Extractable Al","layer","mg/g","numeric","value","mg/g",NA,NA
+"82",NA,NA,"Dithionite Extractable Si","lyr_si_dith","layer",NA,"mg/g","numeric","value","mg/g",NA,0,1000,NA,"Dithionite Extractable Si","layer","mg/g","numeric","value","mg/g",NA,NA
+"83",NA,NA,"Dithionite Notes: Concentration, Extraction Time, Sequential or Parallel","lyr_dith$","layer",NA,NA,"character","method",NA,NA,0,1000,NA,"Dithionite Notes: Concentration, Extraction Time, Sequential or Parallel","layer",NA,"character","method",NA,NA,NA
+"84",NA,NA,"Quartz Abundance","lyr_quartz","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Quartz Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"85",NA,NA,"Alkali Feldspar Abundance","lyr_alkali_feldspar","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Alkali Feldspar Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"86",NA,NA,"Plagioclase Feldspar Abundance","lyr_plag_feldspar","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Plagioclase Feldspar Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"87",NA,NA,"Mica + Chlorite Abundance","lyr_mica_chlorite","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Mica + Chlorite Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"88",NA,NA,"Amphibole (Hornblende)","lyr_amphibole","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Amphibole (Hornblende)","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"89",NA,NA,"Enstatite + Augite + Diopside","lyr_pyroxine","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Enstatite + Augite + Diopside","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"90",NA,NA,"Olivine Abundance","lyr_olivine","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Olivine Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"91",NA,NA,"Volcanic Glass Abundance","lyr_volc_glass","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Volcanic Glass Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"92",NA,NA,"Kaolinite + Halloysite","lyr_kaol_halloy","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Kaolinite + Halloysite","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"93",NA,NA,"Smectite (Montmorillonite) + Vermincullite","lyr_smect_vermic","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Smectite (Montmorillonite) + Vermincullite","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"94",NA,NA,"Gibbsite Abundance","lyr_gibbsite","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Gibbsite Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"95",NA,NA,"Goethite + Hematite + Magnetite + Lepidocrocite","lyr_fe_oxides","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Goethite + Hematite + Magnetite + Lepidocrocite","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"96",NA,NA,"Imogolite + Allophane","lyr_imog_alloph","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Imogolite + Allophane","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"97",NA,NA,"Ferrihydrite Abundance","lyr_ferrihydrite","layer",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Ferrihydrite Abundance","layer","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"98",NA,NA,"Radiocarbon Laboratory ID","lyr_radiolabID","layer",NA,"rc_lab","character","method",NA,NA,NA,NA,NA,"Radiocarbon Laboratory ID","layer","rc_lab","character","method",NA,NA,NA
+"99",NA,NA,"Radiocarbon Laboratory layer Number","lyr_radiolab_lyrnum","layer",NA,NA,"character","method",NA,NA,NA,NA,NA,"Radiocarbon Laboratory layer Number","layer",NA,"character","method",NA,NA,NA
+"100",NA,NA,"Radiocarbon Analysis Year","lyr_radioanlys_yr","layer",NA,"YYYY","character","method","YYYY",NA,NA,NA,NA,"Radiocarbon Analysis Year","layer","YYYY","character","method","YYYY",NA,NA
+"101",NA,"permil","Bulk Layer <U+0394>14C","lyr_14c","layer",NA,"permil","numeric","value","permil",NA,-10000,10000,"permil","Bulk Layer <U+0394>14C","layer","permil","numeric","value","permil",NA,NA
+"102",NA,"permil","Bulk Layer <U+0394>14C Standard Deviation","lyr_14c_sdv","layer",NA,"permil","numeric","sigma","permil",NA,-10000,10000,"permil","Bulk Layer <U+0394>14C Standard Deviation","layer","permil","numeric","sigma","permil",NA,NA
+"103",NA,NA,"Bulk Layer Fraction Modern","lyr_frc_modern","layer",NA,NA,"numeric","value",NA,NA,0,1,NA,"Bulk Layer Fraction Modern","layer",NA,"numeric","value",NA,NA,NA
+"104",NA,NA,"Bulk Layer Fraction Modern Standard Deviation","lyr_frc_modern_sdv","layer",NA,NA,"numeric","sigma",NA,NA,NA,NA,NA,"Bulk Layer Fraction Modern Standard Deviation","layer",NA,"numeric","sigma",NA,NA,NA
+"105",NA,NA,"Fractionation Scheme","frc_scheme","fraction",NA,"(f_scheme)","character","method",NA,NA,NA,NA,NA,"Fractionation Scheme","fraction","(f_scheme)","character","method",NA,NA,NA
+"106",NA,NA,"Fraction Property","frc_property","fraction",NA,"(f_property)","character","method",NA,NA,NA,NA,NA,"Fraction Property","fraction","(f_property)","character","method",NA,NA,NA
+"107",NA,NA,"Fractionation Scheme Units","frc_scheme_units","fraction",NA,"(f_scheme_units)","character","method",NA,NA,NA,NA,NA,"Fractionation Scheme Units","fraction","(f_scheme_units)","character","method",NA,NA,NA
+"108",NA,NA,"Lower Cutoff Numerical (e.g., density, diameter, days, etc.)","frc_low_cutoff","fraction",NA,NA,"character","method",NA,NA,NA,NA,NA,"Lower Cutoff Numerical (e.g., density, diameter, days, etc.)","fraction",NA,"character","method",NA,NA,NA
+"109",NA,NA,"Upper Cutoff Numerical (e.g., density, diameter, days, etc.)","frc_high_cutoff","fraction",NA,NA,"character","method",NA,NA,NA,NA,NA,"Upper Cutoff Numerical (e.g., density, diameter, days, etc.)","fraction",NA,"character","method",NA,NA,NA
+"110",NA,NA,"Concentration of Extractant","frc_extr_conc","fraction",NA,"moles","character","method","moles",NA,NA,NA,NA,"Concentration of Extractant","fraction","moles","character","method","moles",NA,NA
+"111",NA,NA,"Sequential Fractionation?","frc_sqtl","fraction",NA,"Yes or Blank","character","method","Yes or Blank",NA,NA,NA,NA,"Sequential Fractionation?","fraction","Yes or Blank","character","method","Yes or Blank",NA,NA
+"112",NA,NA,"Numerical Ordering of Fractions From the Same Sequence","frc_seq_order","fraction",NA,NA,"character","method",NA,NA,NA,NA,NA,"Numerical Ordering of Fractions From the Same Sequence","fraction",NA,"character","method",NA,NA,NA
+"113",NA,NA,"Was Fraction a Composite?","frc_composite","fraction",NA,"Yes or Blank","character","method","Yes or Blank",NA,NA,NA,NA,"Was Fraction a Composite?","fraction","Yes or Blank","character","method","Yes or Blank",NA,NA
+"114",NA,NA,"Fraction Notes","frc_notes","fraction",NA,NA,"character","method",NA,NA,NA,NA,NA,"Fraction Notes","fraction",NA,"character","method",NA,NA,NA
+"115",NA,NA,"Fraction Proportion of layer Carbon","frc_c_perc","fraction",NA,"percent","numeric","value","percent",NA,0,100,NA,"Fraction Proportion of layer Carbon","fraction","percent","numeric","value","percent",NA,NA
+"116",NA,NA,"Fraction Proportion of layer Mass","frc_mass_perc","fraction",NA,"percent","numeric","value","percent",NA,0,100,NA,"Fraction Proportion of layer Mass","fraction","percent","numeric","value","percent",NA,NA
+"117",NA,NA,"Fraction Total Carbon","frc_c_tot","fraction",NA,"percent","numeric","value","percent",NA,0,100,NA,"Fraction Total Carbon","fraction","percent","numeric","value","percent",NA,NA
+"118",NA,NA,"Fraction Organic Carbon","frc_oc","fraction",NA,"percent","numeric","value","percent",NA,0,100,NA,"Fraction Organic Carbon","fraction","percent","numeric","value","percent",NA,NA
+"119",NA,NA,"Fraction Total Nitrogen","frc_n_tot","fraction",NA,"percent","numeric","value","percent",NA,0,100,NA,"Fraction Total Nitrogen","fraction","percent","numeric","value","percent",NA,NA
+"120",NA,NA,"Fraction C:N","frc_c_to_n","fraction",NA,NA,"numeric","value","unitless",NA,0,100,NA,"Fraction C:N","fraction",NA,"numeric","value","unitless",NA,NA
+"121",NA,"permil","Fraction d15N","frc_15n","fraction",NA,"permil","numeric","value","permil",NA,-30,30,"permil","Fraction d15N","fraction","permil","numeric","value","permil",NA,NA
+"122",NA,"permil","Fraction d13C","frc_13c","fraction",NA,"permil","numeric","value","permil",NA,-40,0,"permil","Fraction d13C","fraction","permil","numeric","value","permil",NA,NA
+"123",NA,NA,"Radiocarbon Laboratory ID","frc_radiolabID","fraction",NA,NA,"character","method",NA,NA,NA,NA,NA,"Radiocarbon Laboratory ID","fraction",NA,"character","method",NA,NA,NA
+"124",NA,NA,"Radiocarbon Laboratory layer Number","frc_radiolab_lyrnum","fraction",NA,NA,"character","method",NA,NA,NA,NA,NA,"Radiocarbon Laboratory layer Number","fraction",NA,"character","method",NA,NA,NA
+"125",NA,NA,"Radiocarbon Analysis Year","frc_radioanlys_yr","fraction",NA,"YYYY","character","method","YYYY",NA,NA,NA,NA,"Radiocarbon Analysis Year","fraction","YYYY","character","method","YYYY",NA,NA
+"126",NA,"permil","Fraction <U+0394>14C","frc_14c","fraction",NA,"permil","numeric","value","permil",NA,-10000,10000,"permil","Fraction <U+0394>14C","fraction","permil","numeric","value","permil",NA,NA
+"127",NA,"permil","Fraction <U+0394>14C Standard Deviation","frc_14c_sdv","fraction",NA,"permil","numeric","sigma","permil",NA,-10000,10000,"permil","Fraction <U+0394>14C Standard Deviation","fraction","permil","numeric","sigma","permil",NA,NA
+"128",NA,NA,"Fraction Fraction Modern","frc_frc_modern","fraction",NA,NA,"numeric","value",NA,NA,0,1,NA,"Fraction Fraction Modern","fraction",NA,"numeric","value",NA,NA,NA
+"129",NA,NA,"Fraction Fraction Modern Standard Deviation","frc_frc_modern_sdv","fraction",NA,NA,"numeric","sigma",NA,NA,NA,NA,NA,"Fraction Fraction Modern Standard Deviation","fraction",NA,"numeric","sigma",NA,NA,NA
+"130",NA,NA,"Quartz Abundance","frc_quartz","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Quartz Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"131",NA,NA,"Alkali Feldspar Abundance","frc_alkali_feldspar","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Alkali Feldspar Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"132",NA,NA,"Plagioclase Feldspar Abundance","frc_plag_feldspar","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Plagioclase Feldspar Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"133",NA,NA,"Mica + Chlorite","frc_mica_chlorite","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Mica + Chlorite","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"134",NA,NA,"Amphibole (Hornblende)","frc_amphibole","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Amphibole (Hornblende)","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"135",NA,NA,"Enstatite + Augite + Diopside","frc_pyroxine","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Enstatite + Augite + Diopside","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"136",NA,NA,"Olivine Abundance","frc_olivine","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Olivine Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"137",NA,NA,"Volcanic Glass Abundance","frc_volc_glass","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Volcanic Glass Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"138",NA,NA,"Kaolinite + Halloysite","frc_kaol_halloy","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Kaolinite + Halloysite","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"139",NA,NA,"Smectite (Montmorillonite) + Vermincullite","frc_smect_vermic","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Smectite (Montmorillonite) + Vermincullite","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"140",NA,NA,"Gibbsite Abundance","frc_gibbsite","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Gibbsite Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"141",NA,NA,"Goethite + Hematite + Magnetite + Lepidocrocite","frc_fe_oxides","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Goethite + Hematite + Magnetite + Lepidocrocite","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"142",NA,NA,"Imogolite + Allophane","frc_imog_alloph","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Imogolite + Allophane","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
+"143",NA,NA,"Ferrihydrite Abundance","frc_ferrihydrite","fraction",NA,"percent or +/++/+++","character","value","percent or +/++/+++",NA,0,100,NA,"Ferrihydrite Abundance","fraction","percent or +/++/+++","character","value","percent or +/++/+++",NA,NA
