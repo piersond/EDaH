@@ -383,26 +383,26 @@ function(input, output, session) {
     
     plot_analyte <- input$sensor1_analyte
     
-    fig <- plot_ly(type = 'scatter', mode = 'lines+markers')
+    fig <- plot_ly(type = 'scatter', mode = 'markers')#, mode = 'lines+markers')
   
     if(input$surf_show){
       fig <- fig %>% add_trace(x = df_surf$TIMESTAMP, y = df_surf[[`plot_analyte`]], name = paste0(plot_analyte, " Shallow"), 
-                               fill="tozeroy", fillcolor='rgba(26,150,65,0.5)',               
-                               line = list(color = 'rgba(26,150,65,0.7)', width = 2),
+                               #fill="tozeroy", fillcolor='rgba(26,150,65,0.5)',               
+                               #line = list(color = 'rgba(26,150,65,0.7)', width = 2),
                                marker = list(color = 'rgba(26,150,65,0.8)', size = 3))
     }
     
     if(input$mid_show){
       fig <- fig %>% add_trace(x = df_mid$TIMESTAMP, y = df_mid[[`plot_analyte`]], name = paste0(plot_analyte, " Middle"), 
-                               fill="tozeroy", fillcolor='rgba(16,110,25,0.5)',               
-                               line = list(color = 'rgba(16,110,25,0.7)', width = 2),
+                               #fill="tozeroy", fillcolor='rgba(16,110,25,0.5)',               
+                               #line = list(color = 'rgba(16,110,25,0.7)', width = 2),
                                marker = list(color = 'rgba(16,110,25,0.8)', size = 5))
     }
     
     if(input$deep_show){
       fig <- fig %>% add_trace(x = df_deep$TIMESTAMP, y = df_deep[[`plot_analyte`]], name = paste0(plot_analyte, " Deep"), 
-                               fill="tozeroy", fillcolor='rgba(8,50,5,0.5)',               
-                               line = list(color = 'rgba(8,50,5,0.7)', width = 2),
+                               #fill="tozeroy", fillcolor='rgba(8,50,5,0.5)',               
+                               #line = list(color = 'rgba(8,50,5,0.7)', width = 2),
                                marker = list(color = 'rgba(8,50,5,0.8)', size = 3))
     }
     
