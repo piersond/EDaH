@@ -16,6 +16,18 @@ drop_cols <- c('google_id', 'addit_contact_email', 'addit_contact_person', 'auth
 ### SERVER STARTS HERE ###
 function(input, output, session) {
 
+### UI observe quick fixes
+  
+  # Prevent including option"ALL" with other site options
+  observeEvent(input$plot_site, {
+    if(length(input$plot_site) > 1 & input$plot_site[1] == "ALL"){
+      updateSelectInput(session, "plot_site", selected = input$plot_site[-1])
+    } else if("ALL" %in% input$plot_site){
+      updateSelectInput(session, "plot_site", selected = "ALL")
+    }
+  })
+  
+  
   
 ### PLOT EXPLORER STARTS HERE ###  
   observeEvent(c(input$plot_x, input$plot_y, input$plot_color), {
@@ -31,16 +43,21 @@ function(input, output, session) {
     
     #Plotly plot
     output$chart1 <- renderPlotly({
+      
+gradient_lbl <- paste(
+                  strwrap(names(num_vars)[num_vars == input$plot_color], width = 12, simplify = T), 
+                  collapse = "\n")
+
+      
       p1 <- ggplot(data=plot_df, aes(x=x_data, y=y_data, color=col_data)) +
               geom_point() +
               xlab(names(num_vars)[num_vars == input$plot_x]) +
               ylab(names(num_vars)[num_vars == input$plot_y]) +
-              labs(color=names(num_vars)[num_vars == input$plot_color]) +
+              labs(color=gradient_lbl) +
               scale_color_viridis(discrete=FALSE) +
               theme_minimal()
       
-      p2 <- ggplotly(p1)
-      p2
+      ggplotly(p1)
     })
     
     #Create plot datatable

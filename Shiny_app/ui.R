@@ -89,15 +89,32 @@ fluidPage(
 tabPanel("Plot Explorer",
          fluidRow(
            column(2, style = "background-color:#e4e7eb;",
-                  h2("Plot options:"),
-                  hr(),
-                  selectInput("plot_type", "Plot type:", c("Scatter")),#,"Bar","Box", "Time Series")),
-                  selectInput("plot_x", "X-axis Variable:", num_vars,
+                  br(),
+                  wellPanel(
+                    h4("Data Filter"),
+                    selectInput(
+                      'plot_site',
+                      'Sites:',
+                      choices = c("ALL", site_names),
+                      selected = "ALL",
+                      multiple = T
+                    ),
+                    sliderInput("plot_depth", label = "Soil depth range:", min = 0, 
+                                max = max_depth, value = c(0, max_depth))
+                  ),
+                  br(),
+                  wellPanel(
+                  h4("Plot Setup"),
+                  #selectInput("plot_type", "Plot type:", c("Scatter")),#,"Bar","Box", "Time Series")),
+                  selectInput("plot_x", "X-axis:", num_vars,
                               selected = "lf_13c"),
-                  selectInput("plot_y", "Y-axis Variable:", num_vars,
+                  selectInput("plot_y", "Y-axis:", num_vars,
                               selected = "enz_n_lnTrans"),
-                  selectInput("plot_color", "Color by:", num_vars,
+                  selectInput("plot_color", "Color by:", all_vars,
                               selected = "enz_n_lnTrans"),
+                  selectInput("facet_by", "Split plot by:", cat_vars,
+                              selected = "enz_n_lnTrans")
+                  ),
                   hr(),
                   helpText("Notes:")
            ),
@@ -208,7 +225,7 @@ tabPanel("Sensors",
       hr(), # Insert a horizontal line break
       
       # Add a custom panel element to add a crosshair button to each data table row 
-      conditionalPanel("false", icon("crosshair")), 
+      conditionalPanel("false", icon("crosshair", verify_fa = FALSE)), 
 
       # Insert a datatable object (set up in server.R)
       DT::dataTableOutput("databaseTBL")

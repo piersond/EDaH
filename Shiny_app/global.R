@@ -19,7 +19,7 @@ library(DT)
 ### LOAD DATABASE & VARIABLES
 ########################################################
 app_db <- readRDS("data/GeoMicro_database.rds")
-app_db  <- type.convert(app_db)
+app_db  <- suppressWarnings(type.convert(app_db))
 app_db$uniqueID <- paste0("ID",seq(1,nrow(app_db),1))
 app_db <- app_db %>% filter(!is.na(lat)) %>% filter(!is.na(long))
 
@@ -95,16 +95,42 @@ app_CZCN_pits <- app_db %>% distinct(lat, long, location_name, L1)
 # Global app varibales
 ########################
 # Choices for map panel drop-down
+all_vars <- var_info %>% 
+  filter(!is.na(var)) %>%
+  filter(!is.na(var_long)) %>%
+  pull(var)
+names(all_vars) <- var_info %>% 
+  filter(!is.na(var)) %>%
+  filter(!is.na(var_long)) %>%
+  pull(var_long) %>%
+  gsub("[<].*[>]", "", .)
+
 num_vars <- var_info %>% 
-              filter(!is.na(var)) %>%
-              filter(!is.na(var_long)) %>%
-              filter(class == "numeric") %>%
-              pull(var)
+  filter(!is.na(var)) %>%
+  filter(!is.na(var_long)) %>%
+  filter(class == "numeric") %>%
+  pull(var)
 names(num_vars) <- var_info %>% 
-                    filter(!is.na(var)) %>%
-                    filter(!is.na(var_long)) %>%
-                    filter(class == "numeric") %>%
-                    pull(var_long)
+  filter(!is.na(var)) %>%
+  filter(!is.na(var_long)) %>%
+  filter(class == "numeric") %>%
+  pull(var_long) %>%
+  gsub("[<].*[>]", "", .)
+
+cat_vars <- var_info %>% 
+  filter(!is.na(var)) %>%
+  filter(!is.na(var_long)) %>%
+  filter(class != "numeric") %>%
+  pull(var)
+names(cat_vars) <- var_info %>% 
+  filter(!is.na(var)) %>%
+  filter(!is.na(var_long)) %>%
+  filter(class != "numeric") %>%
+  pull(var_long)
+
+site_names <- gsub("([a-z])([A-Z])","\\1 \\2", unique(app_db$location_name))
+max_depth <- max(app_db$layer_top)
+
 
 # Add a "None" option
 #num_vars <- c(num_vars, setNames("None", "None"))
