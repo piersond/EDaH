@@ -16,18 +16,6 @@ drop_cols <- c('google_id', 'addit_contact_email', 'addit_contact_person', 'auth
 ### SERVER STARTS HERE ###
 function(input, output, session) {
 
-### UI observe quick fixes
-  
-  # Prevent including option"ALL" with other site options
-  observeEvent(input$plot_site, {
-    if(length(input$plot_site) > 1 & input$plot_site[1] == "ALL"){
-      updateSelectInput(session, "plot_site", selected = input$plot_site[-1])
-    } else if("ALL" %in% input$plot_site){
-      updateSelectInput(session, "plot_site", selected = "ALL")
-    }
-  })
-  
-  
   
 ### PLOT EXPLORER STARTS HERE ###  
   observeEvent(c(input$plot_x, input$plot_y, input$plot_color), {
@@ -43,21 +31,16 @@ function(input, output, session) {
     
     #Plotly plot
     output$chart1 <- renderPlotly({
-      
-    gradient_lbl <- paste(
-                  strwrap(names(num_vars)[num_vars == input$plot_color], width = 12, simplify = T), 
-                  collapse = "\n")
-
-      
       p1 <- ggplot(data=plot_df, aes(x=x_data, y=y_data, color=col_data)) +
               geom_point() +
               xlab(names(num_vars)[num_vars == input$plot_x]) +
               ylab(names(num_vars)[num_vars == input$plot_y]) +
-              labs(color=gradient_lbl) +
+              labs(color=names(num_vars)[num_vars == input$plot_color]) +
               scale_color_viridis(discrete=FALSE) +
               theme_minimal()
       
-      ggplotly(p1) %>% layout(height = 700, width = 1500)
+      p2 <- ggplotly(p1)
+      p2
     })
     
     #Create plot datatable
@@ -367,7 +350,7 @@ function(input, output, session) {
   # Get list of location names
   senID_loc <- unique(sensor_df$Site)
   updateSelectInput(session, "sensor1_ID_loc", choices = senID_loc)
-  
+
   # Update list of site at the selected location
   senID_site <- reactive({
     df <- sensor_df %>% filter(Site == input$sensor1_ID_loc)  
@@ -382,34 +365,14 @@ function(input, output, session) {
   
   #When sensor group changes, update sensor file dropdown options
   observe({
-    site_opt <- senID_site()
-    updateSelectInput(session, "sensor1_ID_site", choices = site_opt, selected = site_opt[1])
-    pos_opt <- senID_pos()  
-    updateSelectInput(session, "sensor1_ID_pos", choices = pos_opt, selected = pos_opt[1])
+    updateSelectInput(session, "sensor1_ID_site", choices = senID_site())#, selected = senID_site()[1])
+    updateSelectInput(session, "sensor1_ID_pos", choices = senID_pos())#, selected = senID_pos()[1])
   })
-  
-  # sensor_data <- reactive({
-  #   if(input$sensor_timestep == 1) {
-  #     df = sensor_df_daily
-  #   } else if(input$sensor_timestep == 2) {
-  #     df = sensor_df_hourly
-  #   } else if(input$sensor_timestep == 3) {
-  #     df = sensor_df
-  #   }
-  #   df
-  # })
-
   
   #Create sensor plot
   output$plot_sens1 <- renderPlotly({
     
-    if(input$sensor_timestep == 1) {
-    sensor_plot_df <- sensor_df_daily
-    } else if(input$sensor_timestep == 2) {
-      sensor_plot_df <- sensor_df
-    } 
-    
-    df <- sensor_plot_df %>% filter(Site == input$sensor1_ID_loc) %>%
+    df <- sensor_df %>% filter(Site == input$sensor1_ID_loc) %>%
                         filter(Subsite == input$sensor1_ID_site) %>%
                         filter(Pit == input$sensor1_ID_pos) %>%
                         arrange(TIMESTAMP)
@@ -420,72 +383,27 @@ function(input, output, session) {
     
     plot_analyte <- input$sensor1_analyte
     
-    fig <- plot_ly(type = 'scatter', mode = 'markers')#, mode = 'lines+markers')
+    fig <- plot_ly(type = 'scatter', mode = 'markers')#mode = 'lines+markers')
   
     if(input$surf_show){
-      if(input$sens_plot_style == 1) {
-      fig <- plot_ly(type = 'scatter', mode = 'markers') %>% 
-                add_trace(x = df_surf$TIMESTAMP, y = df_surf[[`plot_analyte`]], name = paste0(plot_analyte, " Shallow"), 
-                  marker = list(color = 'rgba(26,150,65,0.8)', size = 5))
-      } else if(input$sens_plot_style == 2) {
-        fig <- plot_ly(type = 'scatter', mode = 'lines+markers') %>% 
-          add_trace(x = df_surf$TIMESTAMP, y = df_surf[[`plot_analyte`]], name = paste0(plot_analyte, " Shallow"), 
-                    line = list(color = 'rgba(26,150,65,0.7)', width = 2),
-                    marker = list(color = 'rgba(26,150,65,0.8)', size = 5))
-      } else if(input$sens_plot_style == 3) {
-        fig <- plot_ly(type = 'scatter', mode = 'lines+markers') %>% 
-          add_trace(x = df_surf$TIMESTAMP, y = df_surf[[`plot_analyte`]], name = paste0(plot_analyte, " Shallow"), 
-                    fill="tozeroy", fillcolor='rgba(26,150,65,0.5)',               
-                    line = list(color = 'rgba(26,150,65,0.7)', width = 2),
-                    marker = list(color = 'rgba(26,150,65,0.8)', size = 5))
-      }
-    } else {
-      if(input$sens_plot_style == 1) {
-        fig <- plot_ly(type = 'scatter', mode = 'markers') 
-      } else if(input$sens_plot_style == 2) {
-        fig <- plot_ly(type = 'scatter', mode = 'lines+markers') 
-      } else if(input$sens_plot_style == 3) {
-        fig <- plot_ly(type = 'scatter', mode = 'lines+markers') 
-      }      
+      fig <- fig %>% add_trace(x = df_surf$TIMESTAMP, y = df_surf[[`plot_analyte`]], name = paste0(plot_analyte, " Shallow"), 
+                               #fill="tozeroy", fillcolor='rgba(26,150,65,0.5)',               
+                               #line = list(color = 'rgba(26,150,65,0.7)', width = 2),
+                               marker = list(color = 'rgba(26,150,65,0.8)', size = 3))
     }
     
     if(input$mid_show){
-      if(input$sens_plot_style == 1) {
-        fig <- fig %>% 
-          add_trace(x = df_mid$TIMESTAMP, y = df_mid[[`plot_analyte`]], name = paste0(plot_analyte, " Middle"), 
-                    marker = list(color = 'rgba(16,110,25,0.8)', size = 5))
-      } else if(input$sens_plot_style == 2) {
-        fig <- fig %>% 
-          add_trace(x = df_mid$TIMESTAMP, y = df_mid[[`plot_analyte`]], name = paste0(plot_analyte, " Middle"), 
-                    line = list(color = 'rgba(16,110,25,0.7)', width = 2),
-                    marker = list(color = 'rgba(16,110,25,0.8)', size = 5))
-      } else if(input$sens_plot_style == 3) {
-        fig <- fig %>% 
-          add_trace(x = df_mid$TIMESTAMP, y = df_mid[[`plot_analyte`]], name = paste0(plot_analyte, " Middle"), 
-                    fill="tozeroy", fillcolor='rgba(16,110,25,0.5)',                
-                    line = list(color = 'rgba(26,150,65,0.7)', width = 2),
-                    marker = list(color = 'rgba(16,110,25,0.8)', size = 5))
-      }
+      fig <- fig %>% add_trace(x = df_mid$TIMESTAMP, y = df_mid[[`plot_analyte`]], name = paste0(plot_analyte, " Middle"), 
+                               #fill="tozeroy", fillcolor='rgba(16,110,25,0.5)',               
+                               #line = list(color = 'rgba(16,110,25,0.7)', width = 2),
+                               marker = list(color = 'rgba(16,110,25,0.8)', size = 5))
     }
     
     if(input$deep_show){
-      if(input$sens_plot_style == 1) {
-        fig <- fig %>% 
-          add_trace(x = df_deep$TIMESTAMP, y = df_deep[[`plot_analyte`]], name = paste0(plot_analyte, " Deep"), 
-                    marker = list(color = 'rgba(8,50,5,0.8)', size = 5))
-      } else if(input$sens_plot_style == 2) {
-        fig <- fig %>% 
-          add_trace(x = df_deep$TIMESTAMP, y = df_deep[[`plot_analyte`]], name = paste0(plot_analyte, " Deep"), 
-                    line = list(color = 'rgba(8,50,5,0.7)', width = 2),
-                    marker = list(color = 'rgba(8,50,5,0.8)', size = 5))
-      } else if(input$sens_plot_style == 3) {
-        fig <- fig %>% 
-          add_trace(x = df_deep$TIMESTAMP, y = df_deep[[`plot_analyte`]], name = paste0(plot_analyte, " Deep"), 
-                    fill="tozeroy", fillcolor='rgba(8,50,5,0.5)',                  
-                    line = list(color = 'rgba(8,50,5,0.7)', width = 2),
-                    marker = list(color = 'rgba(8,50,5,0.8)', size = 5))
-  }
-
+      fig <- fig %>% add_trace(x = df_deep$TIMESTAMP, y = df_deep[[`plot_analyte`]], name = paste0(plot_analyte, " Deep"), 
+                               #fill="tozeroy", fillcolor='rgba(8,50,5,0.5)',               
+                               #line = list(color = 'rgba(8,50,5,0.7)', width = 2),
+                               marker = list(color = 'rgba(8,50,5,0.8)', size = 3))
     }
     
 
@@ -571,33 +489,11 @@ function(input, output, session) {
   # Create DataTable
   output$sensor_tbl <- DT::renderDataTable({
     
-    # Filter by timestep selection
-    if(input$sensor_timestep == 1) {
-      sensor_plot_df <- sensor_df_daily
-    } else if(input$sensor_timestep == 2) {
-      sensor_plot_df <- sensor_df
-    } 
-    
-    # Filter by location selections
-    df <- sensor_plot_df %>% filter(Site == input$sensor1_ID_loc) %>%
+    df <- sensor_df %>% filter(Site == input$sensor1_ID_loc) %>%
       filter(Subsite == input$sensor1_ID_site) %>%
       filter(Pit == input$sensor1_ID_pos) %>%
       arrange(TIMESTAMP)
     
-    # Filter by depth selections
-    if(!input$surf_show) {
-      df <- df %>% filter(Depth != "Shallow")
-    }
-    
-    if(!input$mid_show) {
-      df <- df %>% filter(Depth != "Middle")
-    }
-    
-    if(!input$deep_show) {
-      df <- df %>% filter(Depth != "Deep")
-    }
-    
-    # Create table
     DT::datatable(df,
                   rownames = FALSE,
                   options = list(dom = 't',

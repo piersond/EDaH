@@ -3,3 +3,6 @@
 /Data/GeoMicro/Sensors/sensor_data_01032023.rds
 /Shiny_app/data/Sensors/sensor_data.rds
 /Shiny_app/data/sensor_data.rds
+/Shiny_app/data/GeoMicro_database_old.rds
+/Shiny_app/data/Sensors/sensor_data_hourly.rds
+/Shiny_app/data/Sensors/sensor_data_daily.rds
