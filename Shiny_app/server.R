@@ -27,11 +27,19 @@ function(input, output, session) {
       }
   })
   
+  # Prevent including option"ALL" with other landscape_position options
+  observeEvent(input$plot_pos, {
+    if(length(input$plot_pos) > 1 & input$plot_pos[1] == "ALL"){
+      updateSelectInput(session, "plot_pos", selected = input$plot_pos[-1])
+    } else if("ALL" %in% input$plot_pos){
+      updateSelectInput(session, "plot_pos", selected = "ALL")
+    }
+  })
   
   
 ### PLOT EXPLORER STARTS HERE ###  
   observeEvent(c(input$plot_x, input$plot_y, input$plot_color, input$smrz_plot_data,
-                 input$plot_site, input$plot_depth, input$facet_by), {
+                 input$plot_site, input$plot_pos, input$plot_depth, input$facet_by), { 
     
     # Make a smaller dataframe to speed up highchart render
     plot_df <- data.frame(uniqueID = app_data["uniqueID"],
@@ -63,6 +71,11 @@ function(input, output, session) {
       plot_df <- plot_df %>% filter(location_name %in% input$plot_site)
     }
     
+    #Filter by landscape position
+    if(input$plot_pos != "ALL") {
+      plot_df <- plot_df %>% filter(L1 %in% input$plot_pos)
+    }
+    
     #Filter by depth
     plot_df <- plot_df %>% filter(layer_top >= input$plot_depth[1]) %>%
                            filter(layer_bot <= input$plot_depth[2])
@@ -82,6 +95,12 @@ function(input, output, session) {
               scale_color_viridis(discrete=FALSE) +
               theme_bw()
       
+      # Reverse Y-axis if looking at soil depth
+      if(input$plot_y == "layer_top"){
+        p1 <- p1 + scale_y_reverse()
+      }
+      
+      # Add specific conditional facet wrap options
       if(input$facet_by == "Location"){
         p1 <- p1 + facet_wrap(vars(location_name))
       }
@@ -94,7 +113,8 @@ function(input, output, session) {
         p1 <- p1 + facet_wrap(vars(parent_material))
       }
       
-      ggplotly(p1, height = 700, width = 1500) # %>% layout(height = 700, width = 1500)
+      # Output plot object via ggplotly
+      ggplotly(p1, height = 700, width = 1300) # %>% layout(height = 700, width = 1500)
     })
     
     #Create plot datatable

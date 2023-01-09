@@ -32,6 +32,12 @@ var_data_n <- data.frame(n=colSums(!is.na(app_db)))
 var_data_n$var <- row.names(var_data_n)
 var_info <- left_join(var_info, var_data_n, by=c("var" = "var"))
 
+# Grab a copy of var_info for plotting
+plot_info <- var_info 
+
+# Remove plot column from var_info
+var_info <- var_info %>% select(!app_plot)
+
 # Unique locations text line
 uniq_loc_text <- paste0("Includes ", as.character(count(unique(app_db[c("lat", "long")]))), " unique sample locations")
 
@@ -42,38 +48,46 @@ app_CZCN_pits <- app_db %>% distinct(lat, long, location_name, L1)
 # Global app variables
 #--------------------------------------------------------
 
-# Choices for panel drop-downs
-all_vars <- var_info %>% 
+# Choices for plot tab drop-downs
+all_vars <- plot_info %>% 
   filter(!is.na(var)) %>%
   filter(!is.na(var_long)) %>%
   pull(var)
-names(all_vars) <- var_info %>% 
+names(all_vars) <- plot_info %>% 
   filter(!is.na(var)) %>%
   filter(!is.na(var_long)) %>%
   pull(var_long) %>%
   gsub("[<].*[>]", "", .)
 
-num_vars <- var_info %>% 
+num_vars <- plot_info %>%
+  filter(app_plot == "num") %>%
   filter(!is.na(var)) %>%
   filter(!is.na(var_long)) %>%
-  filter(class == "numeric") %>%
+  #filter(class == "numeric") %>%
+  #arrange(var_long) %>%
   pull(var)
-names(num_vars) <- var_info %>% 
+names(num_vars) <- plot_info %>%
+  filter(app_plot == "num") %>%
   filter(!is.na(var)) %>%
   filter(!is.na(var_long)) %>%
-  filter(class == "numeric") %>%
+  #filter(class == "numeric") %>%
+  #arrange(var_long) %>%
   pull(var_long) %>%
   gsub("[<].*[>]", "", .)
 
-cat_vars <- var_info %>% 
+cat_vars <- plot_info %>% 
+  filter(app_plot == "cat") %>%
   filter(!is.na(var)) %>%
   filter(!is.na(var_long)) %>%
-  filter(class != "numeric") %>%
+  #filter(class != "numeric") %>%
+  #arrange(var_long) %>%
   pull(var)
-names(cat_vars) <- var_info %>% 
+names(cat_vars) <- plot_info %>% 
+  filter(app_plot == "cat") %>%
   filter(!is.na(var)) %>%
   filter(!is.na(var_long)) %>%
-  filter(class != "numeric") %>%
+  #filter(class != "numeric") %>%
+  #arrange(var_long) %>%
   pull(var_long)
 
 names(cat_vars) <- replace(names(cat_vars), names(cat_vars)=="Experimental Level 1(top level)", "Landscape position")
@@ -85,6 +99,9 @@ names(cat_vars) <- replace(names(cat_vars), names(cat_vars)=="Experimental Level
 
 site_names <- unique(app_db$location_name)
 names(site_names) <- gsub("([a-z])([A-Z])","\\1 \\2", unique(app_db$location_name))
+
+# Landscape position names
+landscape_positions <- unique(app_db$L1)
 
 # Get max depth for depth filter slider input
 max_depth <- max(app_db$layer_top)

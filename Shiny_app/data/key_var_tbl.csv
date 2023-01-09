@@ -1,77 +1,77 @@
-var_long,var,level,hardUnit,class,minValue,maxValue
-Name of Person Entering Data,curator_PersonName,location,NA,character,NA,NA
-Organization of Person Entering Data,curator_organization,location,NA,character,NA,NA
-Email Address of Person Entering Data,curator_email,location,NA,character,NA,NA
-Template Modification Date,modification_date,location,NA,character,NA,NA
-Additional contacts (site leads),addit_contact_person,location,NA,character,NA,NA
-Additional contacts Email,addit_contact_email,location,NA,character,NA,NA
-Unique project identifier,project_id,location,NA,NA,NA,NA
-Unique dataset identifier,dataset_id,location,NA,NA,NA,NA
-Data class,data_class,location,NA,character,NA,NA
-Header row number,header_row,location,NA,numeric,NA,NA
-Gradient study,gradient_study,location,NA,binary,NA,NA
-Includes experimental manipulations,experiments,location,NA,binary,NA,NA
-Is this a sample metadata file?,meta_tbl,location,NA,binary,NA,NA
-Base key version,key_version,location,NA,NA,NA,NA
-"Network (e.g. LTER, CZN, DIRT, NutNet, etc)",network,location,NA,character,NA,NA
-Experimental Level 1(top level),L1,profile,NA,exp_lvl,NA,NA
-Location name,location_name,location,NA,character,NA,NA
-Latitude,lat,location,NA,numeric,-90,90
-Longitude,long,location,NA,numeric,-180,180
-IGSN number,IGSN,layer,NA,NA,NA,NA
-parent_material,parent_material,location,NA,character,NA,NA
-Elevation,elevation,location,m,numeric,-500,5000
-Observation Date,observation_date,profile,NA,character,NA,NA
-Profile Vegetation,veg_note_profile,profile,NA,character,NA,NA
-Layer Top,layer_top,layer,cm,numeric,-10,400
-Layer Bottom,layer_bot,layer,cm,numeric,-1,500
-Bibliographical Reference,bibliographical_reference,location,NA,character,NA,NA
-Unique project identifier,project_id,location,NA,NA,NA,NA
-Data class,data_class,location,NA,NA,NA,NA
-Includes time-series data,time_series,location,NA,binary,NA,NA
-Control samples identifier,control_id,location,NA,NA,NA,NA
-Control treatment level,control_lvl,location,NA,NA,NA,NA
-Number of treatments,number_treatments,location,NA,numeric,NA,NA
-Was the key file modified?,key_modified,location,NA,binary,NA,NA
-Merging datafiles required? please add details to alignment notes,merge_align,location,NA,binary,NA,NA
-Alignment variable 1,align_1,location,NA,character,NA,NA
-Alignment variable 2,align_2,location,NA,character,NA,NA
-Alignment variable 3,align_3,location,NA,character,NA,NA
-"Network (e.g. LTER, CZO, DIRT, NutNet, etc)",network,location,NA,character,NA,NA
-Experimental Level 2,L2,profile,NA,exp_lvl,NA,NA
-Experimental Level 3,L3,profile,NA,exp_lvl,NA,NA
-Observation Date,observation_date,profile,NA,character,NA,NA
-Aspect class,aspect_class,profile,NA,character,NA,NA
-Parent_material,parent_material,profile,NA,character,NA,NA
-Fractionation method,frac_method,fraction,NA,character,NA,NA
-Light fraction lower cutoff,lf_low_cut,fraction,NA,numeric,NA,NA
-Light fraction upper cutoff,lf_high_cut,fraction,NA,numeric,NA,NA
-Light fraction mass proportion,lf_mass_prop,fraction,percent,numeric,0,100
-Light fraction C concentration,lf_c,fraction,percent,numeric,0,100
-Light fraction N concentration,lf_n,fraction,percent,numeric,0,100
-Light fraction <U+0394>13C,lf_13c,fraction,permil,numeric,-40,0
-Light fraction <U+0394>15NC,lf_15n,fraction,permil,numeric,-30,30
-Heavy fraction lower cutoff,hf_low_cut,fraction,NA,numeric,NA,NA
-Heavy fraction upper cutoff,hf_high_cut,fraction,NA,numeric,NA,NA
-Heavy fraction mass proportion,hf_mass_prop,fraction,percent,numeric,NA,NA
-Soil moisture,soil_moisture,layer,percent,numeric,0,100
-"Microbial biomass C, raw value",mbc_raw,layer,ug C g-1,numeric,0,100
-Extractable nitrate,no3_ex,layer,ug N g-1,numeric,NA,NA
-Extractable ammonium,nh4_ex,layer,ug N g-1,numeric,NA,NA
-Net N nitrification,n_nitrif,layer,ug N g-1 d-1,numeric,0,1000
-Net N mineralization,n_min,layer,ug N g-1 d-1,numeric,0,1000
-Extractable organic C,oc_ex,layer,mg g-1,numeric,0,10000
-Specify method for extractable C,oc_ex_method,layer,NA,character,NA,NA
-Merging multiple datafiles required? please add details to alignment notes,merge_align,location,NA,binary,NA,NA
-General key file entry comments,loc_comments,location,NA,character,NA,NA
-IGSN number,IGSN,layer,NA,character,NA,NA
-"Extracellular Enzyme a-glucosidase, dry soil weighted",enz_ag_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-"Extracellular Enzyme ß-glucosidase, dry soil weighted",enz_bg_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-"Extracellular Enzyme cellobiohydrolase, dry soil weighted",enz_cb_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-"Extracellular Enzyme ß-xylosidase, dry soil weighted",enz_bx_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-"Extracellular Enzyme N-acetylglucosaminidase, dry soil weighted",enz_nag_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-"Extracellular Enzyme acid phosphatase, dry soil weighted",enz_ap_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-"Extracellular Enzyme leucine aminopeptidase, dry soil weighted",enz_lap_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA
-Sum of carbon-acquiring extracellular enzymes,enz_c_lnTrans,layer,mmol kg-1 hr-1,numeric,NA,NA
-Sum of nitrogen-acquiring extracellular enzymes,enz_n_lnTrans,layer,mmol kg-1 hr-1,numeric,NA,NA
-Phosphorus-acquiring extracellular enzyme,enz_p_lnTrans,layer,mmol kg-1 hr-1,numeric,NA,NA
+var_long,var,level,hardUnit,class,minValue,maxValue,app_plot
+Name of Person Entering Data,curator_PersonName,location,NA,character,NA,NA,ignore
+Organization of Person Entering Data,curator_organization,location,NA,character,NA,NA,ignore
+Email Address of Person Entering Data,curator_email,location,NA,character,NA,NA,ignore
+Template Modification Date,modification_date,location,NA,character,NA,NA,ignore
+Additional contacts (site leads),addit_contact_person,location,NA,character,NA,NA,ignore
+Additional contacts Email,addit_contact_email,location,NA,character,NA,NA,ignore
+Unique project identifier,project_id,location,NA,NA,NA,NA,ignore
+Unique dataset identifier,dataset_id,location,NA,NA,NA,NA,ignore
+Data class,data_class,location,NA,character,NA,NA,ignore
+Header row number,header_row,location,NA,numeric,NA,NA,ignore
+Gradient study,gradient_study,location,NA,binary,NA,NA,ignore
+Includes experimental manipulations,experiments,location,NA,binary,NA,NA,ignore
+Is this a sample metadata file?,meta_tbl,location,NA,binary,NA,NA,ignore
+Base key version,key_version,location,NA,NA,NA,NA,ignore
+"Network (e.g. LTER, CZN, DIRT, NutNet, etc)",network,location,NA,character,NA,NA,ignore
+Experimental Level 1(top level),L1,profile,NA,exp_lvl,NA,NA,ignore
+Location name,location_name,location,NA,character,NA,NA,ignore
+Latitude,lat,location,NA,numeric,-90,90,num
+Longitude,long,location,NA,numeric,-180,180,num
+IGSN number,IGSN,layer,NA,NA,NA,NA,ignore
+parent_material,parent_material,location,NA,character,NA,NA,ignore
+Elevation,elevation,location,m,numeric,-500,5000,cat
+Observation Date,observation_date,profile,NA,character,NA,NA,ignore
+Profile Vegetation,veg_note_profile,profile,NA,character,NA,NA,ignore
+Layer Top,layer_top,layer,cm,numeric,-10,400,num
+Layer Bottom,layer_bot,layer,cm,numeric,-1,500,num
+Bibliographical Reference,bibliographical_reference,location,NA,character,NA,NA,ignore
+Unique project identifier,project_id,location,NA,NA,NA,NA,ignore
+Data class,data_class,location,NA,NA,NA,NA,ignore
+Includes time-series data,time_series,location,NA,binary,NA,NA,ignore
+Control samples identifier,control_id,location,NA,NA,NA,NA,ignore
+Control treatment level,control_lvl,location,NA,NA,NA,NA,ignore
+Number of treatments,number_treatments,location,NA,numeric,NA,NA,ignore
+Was the key file modified?,key_modified,location,NA,binary,NA,NA,ignore
+Merging datafiles required? please add details to alignment notes,merge_align,location,NA,binary,NA,NA,ignore
+Alignment variable 1,align_1,location,NA,character,NA,NA,ignore
+Alignment variable 2,align_2,location,NA,character,NA,NA,ignore
+Alignment variable 3,align_3,location,NA,character,NA,NA,ignore
+"Network (e.g. LTER, CZO, DIRT, NutNet, etc)",network,location,NA,character,NA,NA,ignore
+Experimental Level 2,L2,profile,NA,exp_lvl,NA,NA,ignore
+Experimental Level 3,L3,profile,NA,exp_lvl,NA,NA,ignore
+Observation Date,observation_date,profile,NA,character,NA,NA,ignore
+Aspect class,aspect_class,profile,NA,character,NA,NA,cat
+Parent_material,parent_material,profile,NA,character,NA,NA,cat
+Fractionation method,frac_method,fraction,NA,character,NA,NA,ignore
+Light fraction lower cutoff,lf_low_cut,fraction,NA,numeric,NA,NA,ignore
+Light fraction upper cutoff,lf_high_cut,fraction,NA,numeric,NA,NA,ignore
+Light fraction mass proportion,lf_mass_prop,fraction,percent,numeric,0,100,num
+Light fraction C concentration,lf_c,fraction,percent,numeric,0,100,num
+Light fraction N concentration,lf_n,fraction,percent,numeric,0,100,num
+Light fraction <U+0394>13C,lf_13c,fraction,permil,numeric,-40,0,num
+Light fraction <U+0394>15NC,lf_15n,fraction,permil,numeric,-30,30,num
+Heavy fraction lower cutoff,hf_low_cut,fraction,NA,numeric,NA,NA,ignore
+Heavy fraction upper cutoff,hf_high_cut,fraction,NA,numeric,NA,NA,ignore
+Heavy fraction mass proportion,hf_mass_prop,fraction,percent,numeric,NA,NA,num
+Soil moisture,soil_moisture,layer,percent,numeric,0,100,num
+"Microbial biomass C, raw value",mbc_raw,layer,ug C g-1,numeric,0,100,num
+Extractable nitrate,no3_ex,layer,ug N g-1,numeric,NA,NA,num
+Extractable ammonium,nh4_ex,layer,ug N g-1,numeric,NA,NA,num
+Net N nitrification,n_nitrif,layer,ug N g-1 d-1,numeric,0,1000,num
+Net N mineralization,n_min,layer,ug N g-1 d-1,numeric,0,1000,num
+Extractable organic C,oc_ex,layer,mg g-1,numeric,0,10000,num
+Specify method for extractable C,oc_ex_method,layer,NA,character,NA,NA,ignore
+Merging multiple datafiles required? please add details to alignment notes,merge_align,location,NA,binary,NA,NA,ignore
+General key file entry comments,loc_comments,location,NA,character,NA,NA,ignore
+IGSN number,IGSN,layer,NA,character,NA,NA,ignore
+"Extracellular Enzyme a-glucosidase, dry soil weighted",enz_ag_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+"Extracellular Enzyme ß-glucosidase, dry soil weighted",enz_bg_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+"Extracellular Enzyme cellobiohydrolase, dry soil weighted",enz_cb_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+"Extracellular Enzyme ß-xylosidase, dry soil weighted",enz_bx_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+"Extracellular Enzyme N-acetylglucosaminidase, dry soil weighted",enz_nag_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+"Extracellular Enzyme acid phosphatase, dry soil weighted",enz_ap_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+"Extracellular Enzyme leucine aminopeptidase, dry soil weighted",enz_lap_wtd,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+Sum of carbon-acquiring extracellular enzymes,enz_c_lnTrans,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+Sum of nitrogen-acquiring extracellular enzymes,enz_n_lnTrans,layer,mmol kg-1 hr-1,numeric,NA,NA,num
+Phosphorus-acquiring extracellular enzyme,enz_p_lnTrans,layer,mmol kg-1 hr-1,numeric,NA,NA,num
