@@ -76,12 +76,15 @@ names(cat_vars) <- var_info %>%
   filter(class != "numeric") %>%
   pull(var_long)
 
+names(cat_vars) <- replace(names(cat_vars), names(cat_vars)=="Experimental Level 1(top level)", "Landscape position")
+
 # Change any names for character type columns
 # cat_vars <- c(
 #   "Watershed" = "L1"
 # )
 
-site_names <- gsub("([a-z])([A-Z])","\\1 \\2", unique(app_db$location_name))
+site_names <- unique(app_db$location_name)
+names(site_names) <- gsub("([a-z])([A-Z])","\\1 \\2", unique(app_db$location_name))
 
 # Get max depth for depth filter slider input
 max_depth <- max(app_db$layer_top)

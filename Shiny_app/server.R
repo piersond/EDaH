@@ -20,26 +20,52 @@ function(input, output, session) {
   
   # Prevent including option"ALL" with other site options
   observeEvent(input$plot_site, {
-    if(length(input$plot_site) > 1 & input$plot_site[1] == "ALL"){
-      updateSelectInput(session, "plot_site", selected = input$plot_site[-1])
-    } else if("ALL" %in% input$plot_site){
-      updateSelectInput(session, "plot_site", selected = "ALL")
-    }
+      if(length(input$plot_site) > 1 & input$plot_site[1] == "ALL"){
+        updateSelectInput(session, "plot_site", selected = input$plot_site[-1])
+      } else if("ALL" %in% input$plot_site){
+        updateSelectInput(session, "plot_site", selected = "ALL")
+      }
   })
   
   
   
 ### PLOT EXPLORER STARTS HERE ###  
-  observeEvent(c(input$plot_x, input$plot_y, input$plot_color), {
+  observeEvent(c(input$plot_x, input$plot_y, input$plot_color, input$smrz_plot_data,
+                 input$plot_site, input$plot_depth, input$facet_by), {
     
     # Make a smaller dataframe to speed up highchart render
     plot_df <- data.frame(uniqueID = app_data["uniqueID"],
+                          location_name = app_data["location_name"],
+                          L1 = app_data["L1"],
+                          parent_material =app_data["parent_material"],
                           lat = app_data["lat"],
                           long= app_data["long"],
+                          layer_top = app_data["layer_top"],
+                          layer_bot = app_data["layer_bot"],
                           x_data = app_data[input$plot_x],
                           y_data = app_data[input$plot_y],
                           col_data = app_data[input$plot_color])
-    colnames(plot_df) <- c("uniqueID","lat", "long", "x_data", "y_data", "col_data")
+                          
+    colnames(plot_df) <- c("uniqueID", "location_name", "L1", "parent_material", 
+                           "lat", "long", "layer_top", "layer_bot", 
+                           "x_data", "y_data", "col_data")
+    
+    # Optional average across sampling dates
+    if(input$smrz_plot_data == 2) {
+      plot_df <- plot_df %>% group_by(location_name, L1, parent_material, lat, long, layer_top) %>%
+        summarize_at(vars(x_data:col_data), mean, na.rm=T)
+      
+      plot_df$uniqueID <- seq(1,nrow(plot_df), 1)
+    }
+    
+    #Filter by site
+    if(input$plot_site != "ALL") {
+      plot_df <- plot_df %>% filter(location_name %in% input$plot_site)
+    }
+    
+    #Filter by depth
+    plot_df <- plot_df %>% filter(layer_top >= input$plot_depth[1]) %>%
+                           filter(layer_bot <= input$plot_depth[2])
     
     #Plotly plot
     output$chart1 <- renderPlotly({
@@ -48,16 +74,27 @@ function(input, output, session) {
                   strwrap(names(num_vars)[num_vars == input$plot_color], width = 12, simplify = T), 
                   collapse = "\n")
 
-      
       p1 <- ggplot(data=plot_df, aes(x=x_data, y=y_data, color=col_data)) +
               geom_point() +
               xlab(names(num_vars)[num_vars == input$plot_x]) +
               ylab(names(num_vars)[num_vars == input$plot_y]) +
               labs(color=gradient_lbl) +
               scale_color_viridis(discrete=FALSE) +
-              theme_minimal()
+              theme_bw()
       
-      ggplotly(p1) %>% layout(height = 700, width = 1500)
+      if(input$facet_by == "Location"){
+        p1 <- p1 + facet_wrap(vars(location_name))
+      }
+      
+      if(input$facet_by == "Landscape position"){
+        p1 <- p1 + facet_wrap(vars(L1))
+      }
+      
+      if(input$facet_by == "Parent material"){
+        p1 <- p1 + facet_wrap(vars(parent_material))
+      }
+      
+      ggplotly(p1, height = 700, width = 1500) # %>% layout(height = 700, width = 1500)
     })
     
     #Create plot datatable
@@ -65,7 +102,9 @@ function(input, output, session) {
       mutate(Action = paste('<a class="go-map" href="" data-lat="', lat, '" data-long="', long, '" data-zip="', uniqueID, '"><i class="fa fa-crosshairs"></i></a>', sep=""))
     action <- DT::dataTableAjax(session, plot_dt_df, outputId = "ziptable")
     
-    colnames(plot_dt_df) <- c("uniqueID","lat", "long", input$plot_x, input$plot_y, input$plot_color, "Action")
+    colnames(plot_dt_df) <- c("uniqueID", "location_name", "L1", "parent_material", 
+                              "lat", "long", "layer_top", "layer_bot", 
+                              input$plot_x, input$plot_y, input$plot_color, "Action")
     
     output$plotTBL <- DT::renderDataTable({
       DT::datatable(plot_dt_df, 
