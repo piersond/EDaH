@@ -458,6 +458,7 @@ standardize_col_names <- function(df_in, profileData) {
     for(i in 1:length(diff2)){
     print(paste0("Key entry not found for data column: ", diff2[i]))
     }
+    print("------------------------------------")
     print("NOTE: Data columns not included in the key file will not be transferred to the homogenized data file.")
   }
   
@@ -490,7 +491,7 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
   # Merge unit conversions
   unit_data_to_convert <-
     left_join(unit_data, unitConv, 
-              by = "hardUnit") %>%
+              by = "hardUnit", relationship = "many-to-many") %>%
     filter(unit == givenUnit) %>%
     filter( # Resulting data is only vars that need to be converted
       !is.na(ConversionFactor),
