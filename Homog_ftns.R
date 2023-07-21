@@ -84,6 +84,9 @@ read_key_profile <- function(keyPath) {
   # Remove missing fields
   profileData <- profileData %>% dplyr::filter(!is.na(header_name)) 
   
+  #Replace column name spaces with "."
+  profileData$header_name <- gsub(" ", ".", profileData$header_name)
+  
   return(profileData)
 }
 
@@ -162,7 +165,7 @@ build_unitConv_notes <- function() {
 get_unit_conversions <- function(keyPath) {
   
   #DEBUG
-  keyPath <- key_path
+  #keyPath <- key_path
   
   unitsConversions <- read_excel(keyPath, sheet="unitConversions", na="NA")
   suppressWarnings(
