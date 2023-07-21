@@ -160,6 +160,10 @@ build_unitConv_notes <- function() {
 
 
 get_unit_conversions <- function(keyPath) {
+  
+  #DEBUG
+  keyPath <- key_path
+  
   unitsConversions <- read_excel(keyPath, sheet="unitConversions", na="NA")
   suppressWarnings(
     unitsConversions$ConversionFactor <- as.numeric(unitsConversions$ConversionFactor)
@@ -190,24 +194,26 @@ locationData_to_convert <- function(locationData, unitsConv) {
                       )
   
   # halt if unit conversion is missing
-  if(!all(locationDataUnits$var %in% LDU_conversions$var)) {
-    print("ERROR: Missing hard unit conversion factor.")
-    print("Review units and conversion table in key file.")
-    print(paste0("Missing conversion factors for: ", 
-                 setdiff(locationDataUnits$var, LDU_conversions$var)))
-    break
+  if(nrow(LDU_conversions) > 0){
+    if(!all(LDU_conversions$var %in% LDU_conversions$var)) {
+      print("ERROR: Missing hard unit conversion factor.")
+      print("Review units and conversion table in key file.")
+      print(paste0("Missing conversion factors for: ", 
+                   setdiff(locationDataUnits$var, LDU_conversions$var)))
+      #BREAK...send HOMOG UNSUCCESSFUL
+    }
+    
+    # Make sure values to be converted are numeric
+    # Check to make sure value is numeric or NA
+    if(any(is.na(suppressWarnings(as.numeric(as.character(LDU_conversions$value)))))) {
+      print(paste0("FAILED location unit conversion: Expecting numeric value"))
+      print("Fix value in location tab and retry.")
+      return()
+    }
+    
+    LDU_conversions$value <- as.numeric(LDU_conversions$value)
+    LDU_conversions$ConversionFactor <- as.numeric(LDU_conversions$ConversionFactor)
   }
-  
-  # Make sure values to be converted are numeric
-  # Check to make sure value is numeric or NA
-  if(any(is.na(suppressWarnings(as.numeric(as.character(LDU_conversions$value)))))) {
-    print(paste0("FAILED location unit conversion: Expecting numeric value"))
-    print("Fix value in location tab and retry.")
-    return()
-  }
-  
-  LDU_conversions$value <- as.numeric(LDU_conversions$value)
-  LDU_conversions$ConversionFactor <- as.numeric(LDU_conversions$ConversionFactor)
   
   return(LDU_conversions)
 }
