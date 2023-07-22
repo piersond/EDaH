@@ -5,6 +5,8 @@
 library(dplyr)
 library(readxl)
 library(purrr)  #IMPROVE: Does dplyr have a similar map ftn?
+library(rmarkdown)
+library(DT)
 
 # Homogenization Functions
 #------------------------------------------------------------------------
@@ -662,6 +664,20 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
   print("Data homogenization complete!")
   return(full_data)
 }
+
+
+### Build notes output by sending data to Rmd template
+#----------------------------------------------------------------------------
+rmarkdown::render(
+  'HMGZD_notes_template.Rmd',
+  output_file = 'HMGZD_notes.html',
+  params = list(dataname = notes[1,4],
+                notes_tbl=datatable(notes), 
+                convNotesTbl=datatable(conversionNotes), 
+                locConvNotesTbl=datatable(loc_conversion_Notes),
+                profConvNotesTbl=datatable(prof_conversion_Notes))
+)
+
 
 
 ### Compilers
