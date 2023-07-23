@@ -1,0 +1,60 @@
+---
+title: "Homogenization Notes"
+output: html_document
+theme: sandstone
+
+params:
+  data_filename: ""
+  data_path: ""
+  notes_tbl: ""
+  locConvNotesTbl: ""
+  profConvNotesTbl: ""
+  locQCnotesTbl: ""
+  profQCnotesTbl: ""
+---
+
+```{r global.options, include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE)
+```
+
+<hr style="border:3px solid black">
+
+## `r params$data_filename`
+#### `r params$data_path`
+
+<hr style="border:3px solid black">
+
+## Notes from key file
+
+`r params$notes_tbl`
+
+<hr style="border:2px solid black">
+
+## Unit conversion notes
+
+### Location
+
+`r params$locConvNotesTbl`
+
+---
+
+### Profile
+
+`r params$profConvNotesTbl`
+
+<hr style="border:2px solid black">
+
+## Quality control notes
+
+### Location
+
+`r params$locQCnotesTbl`
+
+---
+
+### Profile
+
+`r params$profQCnotesTbl`
+
+<hr style="border:2px solid black">
+  

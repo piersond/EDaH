@@ -9,7 +9,6 @@ data_dir <- "C:/GitHub/EDaH/Data/Priest River/soilChem_y5"
 ### Compiler ftn (full homog in on ftn)
 homog_data <- homog(data_dir)
 
-
 #-----------------------------------
 ### STEP BY STEP CODE
 #-----------------------------------

@@ -666,20 +666,6 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
 }
 
 
-### Build notes output by sending data to Rmd template
-#----------------------------------------------------------------------------
-rmarkdown::render(
-  'HMGZD_notes_template.Rmd',
-  output_file = 'HMGZD_notes.html',
-  params = list(dataname = notes[1,4],
-                notes_tbl=datatable(notes), 
-                convNotesTbl=datatable(conversionNotes), 
-                locConvNotesTbl=datatable(loc_conversion_Notes),
-                profConvNotesTbl=datatable(prof_conversion_Notes))
-)
-
-
-
 ### Compilers
 #----------------------------------------------------------------------------
 
@@ -736,6 +722,30 @@ homog <- function(data_dir){
   #----------------------------------------------------------------------------------
   output_path <- format_dir_path(data_dir)
   homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=F)
+  
+  
+  # Export note tables as html
+  #-----------------------------------------------------------------------------------
+  
+  # Prep notes tables
+  if(nrow(loc_conversion_Notes) > 0){locConvNotes = datatable(loc_conversion_Notes)} else {locConvNotes = "No notes found."}  
+  if(nrow(prof_conversion_Notes) > 0){profConvNotes = datatable(prof_conversion_Notes)} else {profConvNotes = "No notes found."}  
+  if(nrow(locationDataQC_Notes) > 0){locQCnotes = datatable(locationDataQC_Notes)} else {locQCnotes = "No notes found."}
+  if(nrow(profileData_QC_Notes) > 0){profQCnotes = datatable(profileData_QC_Notes)} else {profQCnotes = "No notes found."}
+
+  # render html, send data through params
+  rmarkdown::render(
+    'config/HMGZD_notes_template.Rmd',
+    output_file = paste0(output_path, 'HMGZD_data_notes.html'),
+    params = list(data_filename = basename(notes[1,4]),
+                  data_path = output_path,
+                  notes_tbl = datatable(notes), 
+                  locConvNotesTbl = locConvNotes,
+                  profConvNotesTbl = profConvNotes,
+                  locQCnotesTbl = locQCnotes,
+                  profQCnotesTbl = profQCnotes
+                  )
+  )
   
   return(homog_data)
 }
