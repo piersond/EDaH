@@ -702,7 +702,52 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
   
   print("------------------------------------")
   print("Data homogenization complete!")
+  print("------------------------------------")
   return(full_data)
+}
+
+notes_to_html <- function(EDaH_path, output_dir, base_notes, loc_conv_Notes, 
+                          prof_conv_Notes, locDataQC_Notes, profData_QC_Notes){
+  
+  #DEBUG
+  # EDaH_path <- EDaH_dir
+  # output_dir <- output_path
+  # base_notes <- notes
+  # loc_conv_Notes <- loc_conversion_Notes
+  # prof_conv_Notes <- prof_conversion_Notes
+  # locDataQC_Notes <- locationDataQC_Notes
+  # profData_QC_Notes <- profileData_QC_Notes
+  
+  # Export note tables as html
+  #-----------------------------------------------------------------------------------
+  
+  # Prep notes tables
+  if(nrow(loc_conv_Notes) > 0){locConvNotes = datatable(loc_conv_Notes)} else {locConvNotes = "No notes found."}  
+  if(nrow(prof_conv_Notes) > 0){profConvNotes = datatable(prof_conv_Notes)} else {profConvNotes = "No notes found."}  
+  if(nrow(locDataQC_Notes) > 0){locQCnotes = datatable(locDataQC_Notes)} else {locQCnotes = "No notes found."}
+  if(nrow(profData_QC_Notes) > 0){profQCnotes = datatable(profData_QC_Notes)} else {profQCnotes = "No notes found."}
+  
+  # Get path to config folder
+  notes_template_path <- paste0(EDaH_path, "/config/HMGZD_notes_template.Rmd") 
+  
+  # render html, send data through params
+  rmarkdown::render(
+    notes_template_path,#'config/HMGZD_notes_template.Rmd',
+    output_file = paste0(output_dir, 'HMGZD_data_notes.html'),
+    params = list(data_filename = basename(base_notes[1,4]),
+                  data_path = output_dir,
+                  notes_tbl = datatable(base_notes), 
+                  locConvNotesTbl = locConvNotes,
+                  profConvNotesTbl = profConvNotes,
+                  locQCnotesTbl = locQCnotes,
+                  profQCnotesTbl = profQCnotes
+    ),
+    quiet = T
+  )
+  
+  # Print success
+  print("Homgenization notes saved to HTML file in:") 
+  print(output_dir)
 }
 
 
@@ -713,6 +758,7 @@ homog <- function(data_dir, EDaH_dir){
   
   #DEBUG
   #data_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
+  #EDaH_dir = "C:/GitHub/EDaH"
   
   # Load sheets from key file
   #-----------------------------------------------------------------------
@@ -763,33 +809,14 @@ homog <- function(data_dir, EDaH_dir){
   output_path <- format_dir_path(data_dir)
   homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=F)
   
-  
-  # Export note tables as html
-  #-----------------------------------------------------------------------------------
-  
-  # Prep notes tables
-  if(nrow(loc_conversion_Notes) > 0){locConvNotes = datatable(loc_conversion_Notes)} else {locConvNotes = "No notes found."}  
-  if(nrow(prof_conversion_Notes) > 0){profConvNotes = datatable(prof_conversion_Notes)} else {profConvNotes = "No notes found."}  
-  if(nrow(locationDataQC_Notes) > 0){locQCnotes = datatable(locationDataQC_Notes)} else {locQCnotes = "No notes found."}
-  if(nrow(profileData_QC_Notes) > 0){profQCnotes = datatable(profileData_QC_Notes)} else {profQCnotes = "No notes found."}
+  # Output all homogenization notes to html file
+  notes_to_html(EDaH_path = EDaH_dir, 
+                output_dir = output_path, 
+                base_notes = notes, 
+                loc_conv_Notes = loc_conversion_Notes, 
+                prof_conv_Notes = prof_conversion_Notes, 
+                locDataQC_Notes = locationDataQC_Notes, 
+                profData_QC_Notes = profileData_QC_Notes)
 
-  # Get path to config folder
-  notes_template_path <- paste0(EDaH_dir, "/config/HMGZD_notes_template.Rmd") 
-  
-  # render html, send data through params
-  rmarkdown::render(
-    notes_template_path,#'config/HMGZD_notes_template.Rmd',
-    output_file = paste0(output_path, 'HMGZD_data_notes.html'),
-    params = list(data_filename = basename(notes[1,4]),
-                  data_path = output_path,
-                  notes_tbl = datatable(notes), 
-                  locConvNotesTbl = locConvNotes,
-                  profConvNotesTbl = profConvNotes,
-                  locQCnotesTbl = locQCnotes,
-                  profQCnotesTbl = profQCnotes
-                  ),
-    quiet = T
-  )
-  
   return(homog_data)
 }

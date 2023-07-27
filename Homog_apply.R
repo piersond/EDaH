@@ -1,4 +1,5 @@
-# Homog_apply
+
+# Run homogenization script on specified folder containing a key file-data fiel pair.
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
@@ -10,6 +11,10 @@ source(paste0(edah_dir, "/Homog_ftns.R"))
 ### Compiler ftn (full homog in on ftn)
 homog_data <- homog(data_dir, edah_dir)
 
+
+
+###############################################################################
+###############################################################################
 #-----------------------------------
 ### STEP BY STEP CODE
 #-----------------------------------
@@ -58,36 +63,17 @@ profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData) 
 
 # Combine location and profile data, export data (completes data homogenization)
 #----------------------------------------------------------------------------------
-output_path <- getwd()
+output_path <- data_dir
 homog_data <- hmgz(unitConv_locationData, stdzd_unitConv_profileData, output_path, out_csv=T, out_rds=T)
 
 
-# Profile data QA report
+# Save homogenization notes to HTML file
 #------------------------------------------------------------------------------------
-# Include homog notes and analysis plots, then export as PDF
-# Include option for analyte specific plots by importing script with ggplot code?
+notes_to_html(EDaH_path = edah_dir, 
+              output_dir = output_path, 
+              base_notes = notes, 
+              loc_conv_Notes = loc_conversion_Notes, 
+              prof_conv_Notes = prof_conversion_Notes, 
+              locDataQC_Notes = locationDataQC_Notes, 
+              profData_QC_Notes = profileData_QC_Notes)
 
-
-### Future steps:
-# Simplified starter key file
-
-# Ftn to update master key file with changes in given key file
-
-# Alignment with other HMGZD files?
-
-# Handling sensor data?
-
-# Key check function
-# e.g. ensure no duplicate vars
-# set/check required data fields
-
-
-
-# <br>
-#   
-# #### ****
-#   
-#   
-# Input: 
-#   
-# Output: 
