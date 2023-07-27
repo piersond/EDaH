@@ -8,6 +8,22 @@ library(purrr)  #IMPROVE: Does dplyr have a similar map ftn?
 library(rmarkdown)
 library(DT)
 
+# Get the path to the homog ftns
+getCurrentFileLocation <-  function()
+{
+  this_file <- commandArgs() %>% 
+    tibble::enframe(name = NULL) %>%
+    tidyr::separate(col=value, into=c("key", "value"), sep="=", fill='right') %>%
+    dplyr::filter(key == "--file") %>%
+    dplyr::pull(value)
+  if (length(this_file)==0)
+  {
+    this_file <- rstudioapi::getSourceEditorContext()$path
+  }
+  return(dirname(this_file))
+}
+
+
 # Homogenization Functions
 #------------------------------------------------------------------------
 
@@ -733,9 +749,12 @@ homog <- function(data_dir){
   if(nrow(locationDataQC_Notes) > 0){locQCnotes = datatable(locationDataQC_Notes)} else {locQCnotes = "No notes found."}
   if(nrow(profileData_QC_Notes) > 0){profQCnotes = datatable(profileData_QC_Notes)} else {profQCnotes = "No notes found."}
 
+  # Get path to config folder
+  notes_template_path <- paste0(getCurrentFileLocation(), "/HMGZD_notes_template.Rmd") 
+  
   # render html, send data through params
   rmarkdown::render(
-    'config/HMGZD_notes_template.Rmd',
+    notes_template_path,#'config/HMGZD_notes_template.Rmd',
     output_file = paste0(output_path, 'HMGZD_data_notes.html'),
     params = list(data_filename = basename(notes[1,4]),
                   data_path = output_path,
