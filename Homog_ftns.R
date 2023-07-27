@@ -23,6 +23,8 @@ getCurrentFileLocation <-  function()
   return(dirname(this_file))
 }
 
+print(getCurrentFileLocation())
+
 
 # Homogenization Functions
 #------------------------------------------------------------------------
@@ -411,6 +413,9 @@ collect_data_to_homog <- function(target_dir, locData) {
   # Fix Excel remnant characters in first column name
   colnames(data_raw)[1] <- gsub("ï..","", colnames(data_raw)[1])
   
+  # Replace X.. left by Excel in column names
+  colnames(data_raw) <- gsub("X..", "..", colnames(data_raw), perl=TRUE)
+  
   return(data_raw)
 }
 
@@ -704,7 +709,7 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
 ### Compilers
 #----------------------------------------------------------------------------
 
-homog <- function(data_dir){
+homog <- function(data_dir, EDaH_dir){
   
   #DEBUG
   #data_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
@@ -769,7 +774,7 @@ homog <- function(data_dir){
   if(nrow(profileData_QC_Notes) > 0){profQCnotes = datatable(profileData_QC_Notes)} else {profQCnotes = "No notes found."}
 
   # Get path to config folder
-  notes_template_path <- paste0(getCurrentFileLocation(), "/config/HMGZD_notes_template.Rmd") 
+  notes_template_path <- paste0(EDaH_dir, "/config/HMGZD_notes_template.Rmd") 
   
   # render html, send data through params
   rmarkdown::render(
@@ -782,7 +787,8 @@ homog <- function(data_dir){
                   profConvNotesTbl = profConvNotes,
                   locQCnotesTbl = locQCnotes,
                   profQCnotesTbl = profQCnotes
-                  )
+                  ),
+    quiet = T
   )
   
   return(homog_data)

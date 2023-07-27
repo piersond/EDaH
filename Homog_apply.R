@@ -2,12 +2,13 @@
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-source("Homog_ftns.R")
-
 data_dir <- "C:/Users/DerekPierson/Box/ltspWorkspace/ltspData/priestRiver/data/year_10/soilChem"
+edah_dir <- "C:/GitHub/EDaH"
+
+source(paste0(edah_dir, "/Homog_ftns.R"))
 
 ### Compiler ftn (full homog in on ftn)
-homog_data <- homog(data_dir)
+homog_data <- homog(data_dir, edah_dir)
 
 #-----------------------------------
 ### STEP BY STEP CODE
