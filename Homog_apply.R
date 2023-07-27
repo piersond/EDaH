@@ -4,7 +4,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("Homog_ftns.R")
 
-data_dir <- "C:/GitHub/EDaH/Data/Priest River/soilChem_y5"
+data_dir <- "C:/Users/DerekPierson/Box/ltspWorkspace/ltspData/priestRiver/data/year_10/soilChem"
 
 ### Compiler ftn (full homog in on ftn)
 homog_data <- homog(data_dir)

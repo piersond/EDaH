@@ -101,9 +101,12 @@ read_key_profile <- function(keyPath) {
   
   # Remove missing fields
   profileData <- profileData %>% dplyr::filter(!is.na(header_name)) 
-  
+
   #Replace column name spaces with "."
   profileData$header_name <- gsub(" ", ".", profileData$header_name)
+    
+  #Replace special characters in column name
+  profileData$header_name <- gsub("[^\\w.-]", ".", profileData$header_name, perl=TRUE)
   
   return(profileData)
 }
@@ -207,7 +210,7 @@ locationData_to_convert <- function(locationData, unitsConv) {
   
   # join location data with units (LDU) with conversion table
   LDU_conversions <- left_join(locationDataUnits, unitsConv, 
-                                      by = "hardUnit") %>%
+                                      by = "hardUnit", relationship = "many-to-many") %>%
                       filter(unit == givenUnit) %>%
                       filter( # Resulting data is only vars that need to be converted
                         !is.na(ConversionFactor),
@@ -374,7 +377,7 @@ locationData_QC <- function(locData) {
 collect_data_to_homog <- function(target_dir, locData) {
   
   #DEBUG
-  #target_dir = "C:/github/EDaH/Data/Geomicro/Micah_EOC"
+  #target_dir = data_dir
   #locData = unitConv_locationData
   
   #Fix slash errors in target folder path
@@ -404,6 +407,9 @@ collect_data_to_homog <- function(target_dir, locData) {
   } else {
     data_raw <- read.csv(paste0(target_dir, csvFile), skip=skip_rows, header=T, as.is=T, na.strings = c(na_val1, na_val2)) 
   }
+  
+  # Fix Excel remnant characters in first column name
+  colnames(data_raw)[1] <- gsub("ï..","", colnames(data_raw)[1])
   
   return(data_raw)
 }
@@ -476,11 +482,24 @@ standardize_col_names <- function(df_in, profileData) {
   # Select headers that need to be renamed
   header_vars <- profileData %>% select(header_name, var, class)
   
+  # Send error if key header name not foudn in data file
+  missing_data_columns <- setdiff(header_vars$header_name, colnames(df_in))
+  if(length(missing_data_columns) > 0) {
+    print("*** ERROR: MISSING DATA. DO NOT PROCEED ***")
+    print("------------------------------------------------------------")
+    for(i in 1:length(missing_data_columns)){
+      print(paste0("Data column not found for key entry: ", missing_data_columns[i]))
+    }
+    print("------------------------------------------------------------")
+  }
+  
+  ### NEED TO HAVE KILL SWITCH HERE ###
+  
   # Find data columns not included in key
   diff1 <- setdiff(colnames(df_in), header_vars$header_name)
   diff2 <- setdiff(diff1, c(header_vars$var, paste0(header_vars$var, "_level")))
   
-  # Send warning message if data column not foudn in key
+  # Send warning message if data column not found in key
   if(length(diff2) > 0) {
     for(i in 1:length(diff2)){
     print(paste0("Key entry not found for data column: ", diff2[i]))
@@ -750,7 +769,7 @@ homog <- function(data_dir){
   if(nrow(profileData_QC_Notes) > 0){profQCnotes = datatable(profileData_QC_Notes)} else {profQCnotes = "No notes found."}
 
   # Get path to config folder
-  notes_template_path <- paste0(getCurrentFileLocation(), "/HMGZD_notes_template.Rmd") 
+  notes_template_path <- paste0(getCurrentFileLocation(), "/config/HMGZD_notes_template.Rmd") 
   
   # render html, send data through params
   rmarkdown::render(
