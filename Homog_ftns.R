@@ -407,11 +407,11 @@ collect_data_to_homog <- function(target_dir, locData) {
     target_file <- excelFileList[!grepl("[~$]", excelFileList)] # remove open excel files
     data_raw <- read_excel(paste0(target_dir, target_file), sheet=1, skip=skip_rows, na=c(na_val1, na_val2))
   } else {
-    data_raw <- read.csv(paste0(target_dir, csvFile), skip=skip_rows, header=T, as.is=T, na.strings = c(na_val1, na_val2)) 
+    data_raw <- read.csv(paste0(target_dir, csvFile), skip=skip_rows, header=T, as.is=T, na.strings = c(na_val1, na_val2), encoding="UTF-8") 
   }
   
   # Fix Excel remnant characters in first column name
-  colnames(data_raw)[1] <- gsub("ï..","", colnames(data_raw)[1])
+  colnames(data_raw)[1] <- gsub("X.U.FEFF.","", colnames(data_raw)[1])
   
   # Replace X.. left by Excel in column names
   colnames(data_raw) <- gsub("X..", "..", colnames(data_raw), perl=TRUE)
