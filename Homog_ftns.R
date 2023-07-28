@@ -660,8 +660,13 @@ profileData_QC <- function(profData, df_in) {
   #df_in = stdzd_unitConv_profileData
   
   range_data <- profData %>% filter(!is.na(minValue) | !is.na(maxValue))
-  profile_QC_report <- range_data %>% split(1:nrow(range_data)) %>% map(~profileData_var_QC(profDataRow = ., df_in = df_in)) %>% bind_rows()
-
+  
+  if(nrow(range_data) > 0) {
+    profile_QC_report <- range_data %>% split(1:nrow(range_data)) %>% map(~profileData_var_QC(profDataRow = ., df_in = df_in)) %>% bind_rows()
+  } else {
+    profile_QC_report <- data.frame(Notes="No min/max QC values found")
+  }
+  
   return(profile_QC_report)
 }
 
