@@ -633,7 +633,7 @@ profileData_var_QC <- function(profDataRow, df_in){
     maxVal = as.numeric(profDataRow$maxValue)
     data_to_check = as.numeric(df_in[[profDataRow$var]]) 
     
-    if(any(data_to_check < minVal | data_to_check > maxVal)) {
+    if(any(data_to_check < minVal | data_to_check > maxVal, na.rm=TRUE)) {
        return(
         data.frame(
           var = profDataRow$var,
