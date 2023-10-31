@@ -336,21 +336,49 @@ locationData_type_check <- function(varData) {
 
 
 # Function to map through range and type checks for location data
-locationData_QC <- function(locData) {
+locationData_QC <- function(locData, unitConvTbl) {
   
   #DEBUG
   #locData = unitConv_locationData
+  #unitConvTbl = unitsConversions
   
   if(nrow(locData) > 0){
+    
+    # Check that specified units are included in unitConv table
+    location_unitValue_report <- locData %>% select(var, unit) %>%
+      filter(!is.na(unit)) %>%
+      group_by(unit) %>%
+      filter(!unit %in% unique(unitConvTbl$givenUnit)) %>%
+      ungroup() %>%
+      rename(var = var, error = unit) %>%
+      mutate(error = paste0("Unknown unit: ", error)) %>%
+      as.data.frame()
+    
+    # Print to console if unit unknown errors exist
+    if(nrow(location_unitValue_report) > 0){
+      print("--- ATTENTION: Unknown units in location key ---")
+      print(location_unitValue_report)
+      print("")
+      print("------------------------------------")
+    }
+    
+    # Check data lies within specified MIN/MAX range
     range_data <- locData %>% filter(!is.na(minValue) | !is.na(maxValue)) %>% filter(!is.na(value))
     if(nrow(range_data) > 0) {
       location_range_report <- range_data %>% split(1:nrow(range_data)) %>% map(~locationData_range_check(.)) %>% bind_rows()
     } else {
       location_range_report = data.frame(
                                 var = "ALL",
-                                error = "No range errors found.")
+                                error = "No data range constraints found.")
     }
     
+    if(nrow(location_range_report) < 1) {
+      location_range_report = data.frame(
+        var = "ALL",
+        error = "No data range errors found.")
+    }
+    
+    # Check data types matches type specified for each var 
     type_data <- locData %>% filter(!is.na(class)) %>% filter(!is.na(value)) 
     if(nrow(type_data) > 0) {
       location_type_report <- type_data %>% split(1:nrow(type_data)) %>% map(~locationData_type_check(.)) %>% bind_rows()
@@ -363,10 +391,10 @@ locationData_QC <- function(locData) {
     if(nrow(location_type_report) == 0) {
       location_type_report = data.frame(
         var = "ALL",
-        error = "No data class errors found.")
+        error = "No specified data classes found.")
     }
     
-    return(bind_rows(location_range_report, location_type_report))
+    return(bind_rows(list(location_range_report, location_type_report, location_unitValue_report)))
   } else {
     return("Error: No location data to QC")
   }
@@ -653,21 +681,43 @@ profileData_var_QC <- function(profDataRow, df_in){
 }
 
 # function to check for location vars in prescribed range
-profileData_QC <- function(profData, df_in) {
+profileData_QC <- function(profData, df_in, unitConvTbl) {
   
   #DEBUG
   #profData = profileData
   #df_in = stdzd_unitConv_profileData
+  #unitConvTbl = unitsConversions
   
+  # Check that specified units are included in unitConv table
+  profile_unitValue_report <- profData %>% select(var, unit) %>%
+    filter(!is.na(unit)) %>%
+    group_by(unit) %>%
+    filter(!unit %in% unique(unitConvTbl$givenUnit)) %>%
+    ungroup() %>%
+    rename(var = var, error = unit) %>%
+    mutate(error = paste0("Unknown unit: ", error)) %>%
+    as.data.frame()
+  
+  # Print to console if unit unknown errors exist
+  if(nrow(profile_unitValue_report) > 0){
+    print("--- ATTENTION: Unknown units in profile key ---")
+    print(profile_unitValue_report)
+    print("")
+    print("------------------------------------")
+  }
+  
+  # Check that values are within specified range
   range_data <- profData %>% filter(!is.na(minValue) | !is.na(maxValue))
   
   if(nrow(range_data) > 0) {
     profile_QC_report <- range_data %>% split(1:nrow(range_data)) %>% map(~profileData_var_QC(profDataRow = ., df_in = df_in)) %>% bind_rows()
   } else {
-    profile_QC_report <- data.frame(Notes="No min/max QC values found")
+    profile_QC_report <- data.frame(
+      var = "ALL",
+      error = "No min/max QC values found.")
   }
   
-  return(profile_QC_report)
+  return(bind_rows(list(profile_unitValue_report, profile_QC_report)))
 }
 
 
@@ -787,7 +837,7 @@ homog <- function(data_dir, EDaH_dir){
   
   # Location data QC
   #-----------------------------------------------------------------------
-  locationDataQC_Notes <- locationData_QC(unitConv_locationData) #output is notes
+  locationDataQC_Notes <- locationData_QC(unitConv_locationData, unitsConversions) #output is notes
   
   
   # Standardize profile data
@@ -806,7 +856,7 @@ homog <- function(data_dir, EDaH_dir){
   
   # Profile data QC
   #-----------------------------------------------------------------------
-  profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData) #output is notes
+  profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData, unitsConversions) #output is notes
   
   
   # Combine location and profile data, export data (completes data homogenization)

@@ -3,7 +3,7 @@
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-data_dir <- "C:/Users/DerekPierson/Box/ltspWorkspace/ltspData/council/data/year_0/soilData"
+data_dir <- "C:/Users/Derek/Box/derek.pierson Workspace/Home Office/Temp/edah issue/test_hmg"
 edah_dir <- "C:/GitHub/EDaH"
 
 source(paste0(edah_dir, "/Homog_ftns.R"))
@@ -39,7 +39,7 @@ loc_conversion_Notes <- as.data.frame(unitConv_locationOutput[[2]]) #output is n
 
 # Location data QC
 #-----------------------------------------------------------------------
-locationDataQC_Notes <- locationData_QC(unitConv_locationData) #output is notes
+locationDataQC_Notes <- locationData_QC(unitConv_locationData, unitsConversions) #output is notes
 
 
 # Standardize profile data
@@ -58,7 +58,7 @@ prof_conversion_Notes <- as.data.frame(stdzd_unitConv_profileOutput[[2]]) #outpu
 
 # Profile data QC
 #-----------------------------------------------------------------------
-profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData) #output is notes
+profileData_QC_Notes <- profileData_QC(profileData, stdzd_unitConv_profileData, unitsConversions) #output is notes
 
 
 # Combine location and profile data, export data (completes data homogenization)
