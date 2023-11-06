@@ -3,7 +3,7 @@
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-data_dir <- "C:/Users/Derek/Box/derek.pierson Workspace/Home Office/Temp/edah issue/test_hmg"
+data_dir <- "C:/Users/Derek/Box/derek.pierson Workspace/Home Office/Temp/example"
 edah_dir <- "C:/GitHub/EDaH"
 
 source(paste0(edah_dir, "/Homog_ftns.R"))

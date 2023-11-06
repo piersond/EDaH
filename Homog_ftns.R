@@ -219,6 +219,18 @@ locationData_to_convert <- function(locationData, unitsConv) {
                         ConversionFactor != 1  
                       )
   
+  # Find unit conversions without a conversion factor
+  all_to_convert <- locationDataUnits %>% filter(unit != hardUnit) %>%
+                                          filter(unit != "%" & hardUnit != "percent")
+  
+  # Throw error if missing a conversion
+  if(nrow(all_to_convert) > nrow(LDU_conversions)) {
+    print("*******************************************************")
+    print("CRITICAL ERROR: Missing unit conversion factor")
+    print(all_to_convert %>% filter(!var %in% LDU_conversions$var) %>% select(value, var, unit, hardUnit) %>% as.data.frame())
+    print("*******************************************************")
+  }
+  
   # halt if unit conversion is missing
   if(nrow(LDU_conversions) > 0){
     if(!all(LDU_conversions$var %in% LDU_conversions$var)) {
@@ -567,6 +579,9 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
   unit_data <- profileData %>% filter(!is.na(hardUnit)) %>%
     filter(var != "observation_date")
   
+  # Find unit conversions without a conversion factor
+  all_to_convert <- unit_data %>% filter(unit != hardUnit)
+  
   # Merge unit conversions
   unit_data_to_convert <-
     left_join(unit_data, unitConv, 
@@ -576,6 +591,14 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
       !is.na(ConversionFactor),
       ConversionFactor != 1  
     )
+  
+  # Throw error if missing a conversion
+  if(nrow(all_to_convert) > nrow(unit_data_to_convert )) {
+    print("*******************************************************")
+    print("CRITICAL ERROR: Missing unit conversion factor")
+    print(as.data.frame(all_to_convert) %>% filter(!var %in% unit_data_to_convert$var) %>% select(var, unit, hardUnit) %>% as.data.frame())
+    print("*******************************************************")
+  }
   
   # Break and report if conversion factor is missing
   missing_conversion <-
@@ -745,6 +768,9 @@ hmgz <- function(prepared_locData, prepared_profData, out_path, out_csv=T, out_r
   
   # Join location and profile data
   full_data <- cbind(rep_loc_data, prepared_profData)
+  
+  # Add key path to end of data
+  full_data$key_path <- find_key_path(out_path)
   
   #write homogenized data to .csv and/or .rds
   if(out_csv) {
