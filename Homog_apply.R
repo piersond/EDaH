@@ -3,14 +3,13 @@
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-data_dir <- "C:/Users/Derek/Box/derek.pierson Workspace/Home Office/Temp/example"
+data_dir <- "C:/Users/DerekPierson/Box/derek.pierson Workspace/Home Office/Temp/example"
 edah_dir <- "C:/GitHub/EDaH"
 
 source(paste0(edah_dir, "/Homog_ftns.R"))
 
 ### Compiler ftn (full homog in on ftn)
-homog_data <- homog(data_dir, edah_dir)
-
+homog_data <- homog(data_dir, edah_dir, remove_HMGZD = T)
 
 
 ###############################################################################
@@ -21,6 +20,7 @@ homog_data <- homog(data_dir, edah_dir)
 
 # Load sheets from key file
 #-----------------------------------------------------------------------
+remove_HMGZD(data_dir) # Removes all HMGZD files from data directory
 key_path <- find_key_path(data_dir)
 locationData <- read_key_location(key_path)
 profileData <- read_key_profile(key_path)

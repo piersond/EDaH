@@ -44,6 +44,30 @@ format_dir_path <- function(target_dir) {
   return(key_dir)
 }
 
+# Remove HMGZD files
+remove_HMGZD <- function(target_dir) {
+  #DEBUG
+  #target_dir = "C:/Users/DerekPierson/Box/derek.pierson Workspace/Home Office/Temp/example"
+  
+  target_dir <- format_dir_path(target_dir)
+  
+  # list files in Google directory
+  dirFileList <- list.files(target_dir)
+  
+  # Find HMGZD files
+  HMGZD_files <- dirFileList[grepl("HMGZD", dirFileList)]
+  
+  # Remove all HMGZD files in target directory
+  if(length(HMGZD_files > 0)){
+    print("Removed all pre-existing 'HMGZD' files from target directory")
+    print("-------------------------------------------------------------")
+    print("")
+    sapply(paste0(target_dir, HMGZD_files), file.remove)
+  }
+}
+
+
+
 # Get full path to key file
 find_key_path <- function(target_dir) {
   
@@ -835,11 +859,15 @@ notes_to_html <- function(EDaH_path, output_dir, base_notes, loc_conv_Notes,
 ### Compilers
 #----------------------------------------------------------------------------
 
-homog <- function(data_dir, EDaH_dir){
+homog <- function(data_dir, EDaH_dir, remove_HMGZD = T){
   
   #DEBUG
   #data_dir = "C:\\GitHub\\CZnetGM_SoDaH\\Homog\\Test_dir\\AND_10YR_CN"
   #EDaH_dir = "C:/GitHub/EDaH"
+  
+  if(remove_HMGZD){
+    remove_HMGZD(data_dir)
+  }
   
   # Load sheets from key file
   #-----------------------------------------------------------------------
