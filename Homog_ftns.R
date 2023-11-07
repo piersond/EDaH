@@ -218,7 +218,7 @@ get_unit_conversions <- function(keyPath) {
   suppressWarnings(
     unitsConversions$ConversionFactor <- as.numeric(unitsConversions$ConversionFactor)
     )
-  
+
   return(unitsConversions)
 }
 
@@ -615,6 +615,9 @@ profileUnitConversion <- function(df_in, profileData, unitConv, print_msg = T) {
       !is.na(ConversionFactor),
       ConversionFactor != 1  
     )
+  
+  # Remove row if the units are % and "percent"
+  all_to_convert <- all_to_convert[!(all_to_convert$unit == "%" & all_to_convert$hardUnit == "percent"),]
   
   # Throw error if missing a conversion
   if(nrow(all_to_convert) > nrow(unit_data_to_convert )) {
